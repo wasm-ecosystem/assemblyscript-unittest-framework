@@ -19,7 +19,7 @@ export class SingleFileCoverageAnalysis {
       for (let index = startLine - 1; index < endLine; index++) {
         const codeCoverage = this.result.sourceUsedCount[index];
         if (codeCoverage === undefined) {
-          throw new Error(`unknowm error: There is no ${index} Line in file ${this.result.filename}`);
+          throw new Error(`unknown error: There is no ${index} Line in file ${this.result.filename}`);
         }
         codeCoverage.usedCount = 0;
       }
@@ -27,13 +27,15 @@ export class SingleFileCoverageAnalysis {
   }
 
   merge(results: FunctionCoverageResult[]) {
+    // SingleFileCoverageAnalysis contains FileCoverageResult
     if (results.length === 0) return;
     for (const functionCovResult of results) {
+      functionCovResult.linesToHighlight.forEach(line => this.result.linesToHighlight.add(line));
       for (const [lineIndex, count] of functionCovResult.sourceUsedCount.entries()) {
         const srcLineUsedCount = this.result.sourceUsedCount[lineIndex - 1];
         if (srcLineUsedCount === undefined) {
           throw new Error(
-            `unknowm error: There is not Line ${lineIndex} in ${JSON.stringify(this.result.sourceUsedCount)}`
+            `unknown error: There is not Line ${lineIndex} in ${JSON.stringify(this.result.sourceUsedCount)}`
           );
         }
         if (srcLineUsedCount.usedCount === CodeCoverage.default) {

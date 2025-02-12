@@ -6,6 +6,7 @@ type BranchGraph = Map<number, Map<number, boolean>>;
 export class SingleFunctionCoverageAnalysis {
   result: FunctionCoverageResult;
   branchGraph: BranchGraph = new Map();
+  notFullyCoveredBasicBlock: Set<number> = new Set();
   constructor(
     public covInfo: CovInfo,
     name: string
@@ -72,6 +73,14 @@ export class SingleFunctionCoverageAnalysis {
         toNodes.set(second, true);
       }
     }
+    for (const toNodes of this.branchGraph) {
+      let [currentBasicBlock, branchesForThatBasicBlock] = toNodes;
+      for (const isCovered of branchesForThatBasicBlock.values()) {
+        if (!isCovered) {
+          this.notFullyCoveredBasicBlock.add(currentBasicBlock);
+        }
+      }
+    }
     for (const toNodes of this.branchGraph.values()) {
       let used = 0;
       for (const toNode of toNodes.values()) {
@@ -79,5 +88,13 @@ export class SingleFunctionCoverageAnalysis {
       }
       this.result.branchCoverageRate.used += used;
     }
+    // console.log(this.notFullyCoveredBasicBlock);
+    for (const block of this.notFullyCoveredBasicBlock) {
+      const lineInfo = this.covInfo.lineInfo.get(block);
+      if (lineInfo !== undefined && lineInfo.size > 0) {
+        this.result.linesToHighlight.add(Math.max(...lineInfo));
+      }
+    }
+    // console.log(this.result.functionName, this.result.lineRange, this.result.linesToHighlight);
   }
 }

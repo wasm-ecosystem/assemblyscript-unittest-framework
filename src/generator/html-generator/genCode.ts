@@ -23,10 +23,16 @@ function generateLineCoverage(codes: CodeCoverage[]): string {
   return str.join("\n");
 }
 
-function generateSource(codes: CodeCoverage[]): string {
+function generateSource(codes: CodeCoverage[], result: FileCoverageResult): string {
   const str: string[] = [];
-  for (const code of codes) {
-    str.push(escape(code.source));
+  for (const [index, code] of codes.entries()) {
+    if (result.linesToHighlight.has(index + 1)) {
+      // IMPORTANT! to add "nocode" here to preventing prettify from adding unwanted pln class
+      str.push('<span class="missing-if-branch nocode" title="Branch not taken">!</span>' + escape(code.source));
+    }
+    else {
+      str.push(escape(code.source));
+    }
   }
   return str.join("\n");
 }
@@ -36,7 +42,7 @@ export function generateCodeHtml(relativePathofRoot: string, result: FileCoverag
 
   const lineCoutHtml = generateLineCount(codes.length);
   const lineCov = generateLineCoverage(codes);
-  const lineSource = generateSource(codes);
+  const lineSource = generateSource(codes, result);
 
   return `
 <!DOCTYPE html>

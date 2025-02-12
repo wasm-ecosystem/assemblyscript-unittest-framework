@@ -16,6 +16,7 @@ exports[`Parser generateFileCoverage 1`] = `
       "total": 18,
       "used": 9,
     },
+    "linesToHighlight": Set {},
     "sourceUsedCount": [
       CodeCoverage {
         "source": "",
@@ -241,6 +242,7 @@ exports[`Parser generateFileCoverage 1`] = `
       "total": 1,
       "used": 1,
     },
+    "linesToHighlight": Set {},
     "sourceUsedCount": [
       CodeCoverage {
         "source": "",
@@ -465,6 +467,9 @@ exports[`Parser generateFileCoverage 1`] = `
     "lineCoverageRate": Rate {
       "total": 13,
       "used": 9,
+    },
+    "linesToHighlight": Set {
+      25,
     },
     "sourceUsedCount": [
       CodeCoverage {
@@ -691,6 +696,7 @@ exports[`Parser generateFileCoverage 1`] = `
       "total": 2,
       "used": 2,
     },
+    "linesToHighlight": Set {},
     "sourceUsedCount": [
       CodeCoverage {
         "source": "",
@@ -917,6 +923,7 @@ exports[`Parser generateFunctionCoverage 1`] = `
       39,
       39,
     ],
+    "linesToHighlight": Set {},
     "sourceUsedCount": Map {
       39 => 3,
     },
@@ -931,6 +938,7 @@ exports[`Parser generateFunctionCoverage 1`] = `
       16,
       24,
     ],
+    "linesToHighlight": Set {},
     "sourceUsedCount": Map {
       16 => 3,
       17 => 3,
@@ -952,6 +960,7 @@ exports[`Parser generateFunctionCoverage 1`] = `
       45,
       45,
     ],
+    "linesToHighlight": Set {},
     "sourceUsedCount": Map {
       45 => 4,
     },
@@ -966,6 +975,9 @@ exports[`Parser generateFunctionCoverage 1`] = `
       10,
       29,
     ],
+    "linesToHighlight": Set {
+      25,
+    },
     "sourceUsedCount": Map {
       10 => 2,
       11 => 2,
@@ -989,6 +1001,7 @@ exports[`Parser generateFunctionCoverage 1`] = `
       10,
       11,
     ],
+    "linesToHighlight": Set {},
     "sourceUsedCount": Map {
       10 => 2,
       11 => 2,

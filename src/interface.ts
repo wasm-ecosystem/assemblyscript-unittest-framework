@@ -87,11 +87,13 @@ export class FileCoverageResult {
   functionCoverageRate: Rate = new Rate();
   lineCoverageRate: Rate = new Rate();
   sourceUsedCount: CodeCoverage[] = [];
+  linesToHighlight: Set<number> = new Set();
 }
 
 export class FunctionCoverageResult {
   constructor(public functionName: string) {}
   branchCoverageRate: Rate = new Rate();
+  linesToHighlight: Set<number> = new Set();
   lineRange: [number, number] = [Number.MAX_SAFE_INTEGER, Number.MIN_SAFE_INTEGER];
   /**
    * first means lineIndex;
@@ -111,6 +113,7 @@ export class FunctionCoverageResult {
     ];
     result.branchCoverageRate = Rate.summarize(infos.map((info) => info.branchCoverageRate));
     for (const info of infos) {
+      info.linesToHighlight.forEach(line => result.linesToHighlight.add(line));
       for (const [lineIndex, count] of info.sourceUsedCount.entries()) {
         const srcLineUsedCount = result.sourceUsedCount.get(lineIndex);
         result.sourceUsedCount.set(lineIndex, srcLineUsedCount === undefined ? count : srcLineUsedCount + count);
