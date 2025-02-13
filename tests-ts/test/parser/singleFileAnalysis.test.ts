@@ -36,7 +36,7 @@ describe("singleFileAnalysis", () => {
       functionName: "A",
       lineRange: [6, 9],
       branchCoverageRate: rate_A,
-      linesToHighlight: new Set<number>([]),
+      uncoveredlines: new Set<number>([]),
       sourceUsedCount: new Map([
         [6, 3],
         [7, 0],
@@ -50,7 +50,7 @@ describe("singleFileAnalysis", () => {
       functionName: "B",
       lineRange: [10, 14],
       branchCoverageRate: rate_B,
-      linesToHighlight: new Set<number>([]),
+      uncoveredlines: new Set<number>([]),
       sourceUsedCount: new Map([
         [10, 2],
         [11, 0],
@@ -90,7 +90,7 @@ describe("singleFileAnalysis", () => {
       functionName: "A",
       lineRange: [6, 30],
       branchCoverageRate: rate,
-      linesToHighlight: new Set<number>([]),
+      uncoveredlines: new Set<number>([]),
       sourceUsedCount: new Map([
         [6, 3],
         [7, 0],
