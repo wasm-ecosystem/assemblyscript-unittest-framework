@@ -8,6 +8,7 @@ test("listFunction transform", async () => {
     "..",
     "..",
     "..",
+    "..",
     "transform",
     "listFunctions.mjs"
   );

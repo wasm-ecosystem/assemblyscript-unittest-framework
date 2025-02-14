@@ -1,3 +1,99 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`listFunction transform 1`] = `Map {}`;
+exports[`listFunction transform 1`] = `
+Map {
+  "tests/ts/fixture/transformFunction.ts" => [
+    {
+      "name": "tests/ts/fixture/transformFunction/Foo.bar",
+      "range": [
+        49,
+        49,
+      ],
+    },
+    {
+      "name": "tests/ts/fixture/transformFunction/Foo#constructor",
+      "range": [
+        45,
+        45,
+      ],
+    },
+    {
+      "name": "tests/ts/fixture/transformFunction/Foo#foo",
+      "range": [
+        42,
+        42,
+      ],
+    },
+    {
+      "name": "",
+      "range": [
+        33,
+        33,
+      ],
+    },
+    {
+      "name": "tests/ts/fixture/transformFunction/subscribe",
+      "range": [
+        28,
+        28,
+      ],
+    },
+    {
+      "name": "b",
+      "range": [
+        20,
+        22,
+      ],
+    },
+    {
+      "name": "tests/ts/fixture/transformFunction/a4",
+      "range": [
+        20,
+        22,
+      ],
+    },
+    {
+      "name": "",
+      "range": [
+        16,
+        16,
+      ],
+    },
+    {
+      "name": "",
+      "range": [
+        14,
+        14,
+      ],
+    },
+    {
+      "name": "",
+      "range": [
+        12,
+        12,
+      ],
+    },
+    {
+      "name": "",
+      "range": [
+        12,
+        12,
+      ],
+    },
+    {
+      "name": "",
+      "range": [
+        4,
+        4,
+      ],
+    },
+    {
+      "name": "",
+      "range": [
+        3,
+        8,
+      ],
+    },
+  ],
+}
+`;
