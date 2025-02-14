@@ -1,7 +1,7 @@
 import { join } from "node:path";
 import { fileURLToPath, URL } from "node:url";
-import { IAssertResult } from "../../src/interface.js";
-import { AssertResult } from "../../src/assertResult.js";
+import { IAssertResult } from "../../../src/interface.js";
+import { AssertResult } from "../../../src/assertResult.js";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
@@ -39,10 +39,10 @@ test("equal failed", async () => {
   await assertResult.merge(testcaseA, expectInfoFIlePath);
   const expectFailedInfo = new Map<string, string[]>();
   expectFailedInfo.set("A", [
-    "tests-as/comparison.test.ts:10:20\tvalue: 100\texpect: = 200",
-    "tests-as/comparison.test.ts:15:27\tvalue: [10]\texpect: = [1]",
-    "tests-as/comparison.test.ts:59:22\tvalue: { 1 : 1.5, 2 : 2.5 }\texpect: = { 1: 1.5, 2 : 2.0 }",
-    `tests-as/comparison.test.ts:48:47\nvalue: \n\t${actualString}\nexpect: \n\t${expectString}`,
+    "tests/as/comparison.test.ts:10:20\tvalue: 100\texpect: = 200",
+    "tests/as/comparison.test.ts:15:27\tvalue: [10]\texpect: = [1]",
+    "tests/as/comparison.test.ts:59:22\tvalue: { 1 : 1.5, 2 : 2.5 }\texpect: = { 1: 1.5, 2 : 2.0 }",
+    `tests/as/comparison.test.ts:48:47\nvalue: \n\t${actualString}\nexpect: \n\t${expectString}`,
   ]);
   expect(assertResult.fail).toEqual(1);
   expect(assertResult.total).toEqual(28);

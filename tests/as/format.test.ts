@@ -1,5 +1,5 @@
-import { describe, endTest, expect, test } from "../assembly";
-import { toJson } from "../assembly/formatPrint";
+import { describe, endTest, expect, test } from "../../assembly";
+import { toJson } from "../../assembly/formatPrint";
 
 class A {}
 

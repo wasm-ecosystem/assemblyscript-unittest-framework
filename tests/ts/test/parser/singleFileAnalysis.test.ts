@@ -1,5 +1,5 @@
-import { FunctionCoverageResult, Rate } from "../../../src/interface.js";
-import { SingleFileCoverageAnalysis } from "../../../src/parser/singleFileAnalysis.js";
+import { FunctionCoverageResult, Rate } from "../../../../src/interface.js";
+import { SingleFileCoverageAnalysis } from "../../../../src/parser/singleFileAnalysis.js";
 
 describe("singleFileAnalysis", () => {
   const source = "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";

@@ -1,5 +1,5 @@
 import path from "node:path";
-import { findRoot, getIncludeFiles, splitCommand } from "../../../src/utils/pathResolver.js";
+import { findRoot, getIncludeFiles, splitCommand } from "../../../../src/utils/pathResolver.js";
 
 describe("splitCommand", () => {
   test("normal", () => {
@@ -20,7 +20,7 @@ describe("splitCommand", () => {
 });
 
 test("findRoot", () => {
-  expect(findRoot(["tests-as/comparison.test.ts"])).toEqual("tests-as");
+  expect(findRoot(["tests/as/comparison.test.ts"])).toEqual("tests/as");
   expect(findRoot(["tests/A/a.test.ts", "tests/B/b.test.ts"])).toEqual("tests");
   expect(() => findRoot([])).toThrowError("include length is zeros");
   expect(findRoot(["a.test.ts", "b.test.ts"])).toEqual(".");
@@ -34,7 +34,7 @@ test("getIncludeFiles", () => {
     path.normalize("src/core/instrument.ts"),
     path.normalize("src/core/precompile.ts"),
   ]);
-  expect(getIncludeFiles(["tests-ts/fixture/transformFunction.ts"], (s) => s.endsWith(".ts"))).toEqual([
-    path.normalize("tests-ts/fixture/transformFunction.ts"),
+  expect(getIncludeFiles(["tests/ts/fixture/transformFunction.ts"], (s) => s.endsWith(".ts"))).toEqual([
+    path.normalize("tests/ts/fixture/transformFunction.ts"),
   ]);
 });

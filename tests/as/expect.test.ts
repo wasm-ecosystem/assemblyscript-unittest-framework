@@ -1,4 +1,4 @@
-import { describe, endTest, expect, test } from "../assembly";
+import { describe, endTest, expect, test } from "../../assembly";
 
 describe("expect", () => {
   test("< = >", () => {

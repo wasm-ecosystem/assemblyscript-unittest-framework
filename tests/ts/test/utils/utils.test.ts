@@ -1,8 +1,8 @@
 import fs from "fs-extra";
 import { join } from "node:path";
 import { fileURLToPath, URL } from "node:url";
-import { DebugInfo, CovDebugInfo } from "../../../src/interface.js";
-import { isIncluded, json2map, checkFunctionName, checkGenerics } from "../../../src/utils/index.js";
+import { DebugInfo, CovDebugInfo } from "../../../../src/interface.js";
+import { isIncluded, json2map, checkFunctionName, checkGenerics } from "../../../../src/utils/index.js";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 

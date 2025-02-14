@@ -27,6 +27,6 @@
     "noPropertyAccessFromIndexSignature": true,
     "skipLibCheck": true
   },
-  "include": ["src/**/*.ts", "transform", "tests-ts/**/*.ts"],
+  "include": ["src/**/*.ts", "transform", "tests/ts/**/*.ts"],
   "exclude": ["assembly", "example"]
 }

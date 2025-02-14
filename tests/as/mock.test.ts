@@ -1,4 +1,4 @@
-import { describe, endTest, expect, mock, remock, test, unmock } from "../assembly";
+import { describe, endTest, expect, mock, remock, test, unmock } from "../../assembly";
 import { add, callee, caller, incr, MockClass, call_incr } from "./mockBaseFunc";
 
 const mockReturnValue: i32 = 123;

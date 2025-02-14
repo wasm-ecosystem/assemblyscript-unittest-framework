@@ -7,7 +7,7 @@ jest.unstable_mockModule("node:fs", () => ({
 }));
 
 // eslint-disable-next-line node/no-unsupported-features/es-syntax
-const { mockInstruFunc, covInstruFunc } = await import("../../../src/utils/import.js");
+const { mockInstruFunc, covInstruFunc } = await import("../../../../src/utils/import.js");
 // eslint-disable-next-line node/no-unsupported-features/es-syntax
 const fs = await import("node:fs");
 

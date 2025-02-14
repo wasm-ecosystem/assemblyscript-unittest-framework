@@ -15,9 +15,9 @@ jest.unstable_mockModule("assemblyscript/asc", () => ({
 // eslint-disable-next-line node/no-unsupported-features/es-syntax
 const { main } = await import("assemblyscript/asc");
 // eslint-disable-next-line node/no-unsupported-features/es-syntax
-const { precompile } = await import("../../../src/core/precompile.js");
+const { precompile } = await import("../../../../src/core/precompile.js");
 // eslint-disable-next-line node/no-unsupported-features/es-syntax
-const { compile } = await import("../../../src/core/compile.js");
+const { compile } = await import("../../../../src/core/compile.js");
 
 test("transform error", async () => {
   const transformFunction = join(
@@ -30,7 +30,7 @@ test("transform error", async () => {
   );
   expect(jest.isMockFunction(main)).toBeTruthy();
   await expect(async () => {
-    await precompile(["tests-ts/fixture/transformFunction.ts"], [], [], transformFunction);
+    await precompile(["tests/ts/fixture/transformFunction.ts"], [], [], transformFunction);
   }).rejects.toThrow("mock asc.main() error");
 });
 

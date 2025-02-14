@@ -1,5 +1,5 @@
-import { CovInfo, FunctionCoverageResult } from "../../../src/interface.js";
-import { SingleFunctionCoverageAnalysis } from "../../../src/parser/singleFunctionAnalysis.js";
+import { CovInfo, FunctionCoverageResult } from "../../../../src/interface.js";
+import { SingleFunctionCoverageAnalysis } from "../../../../src/parser/singleFunctionAnalysis.js";
 
 describe("singleFunctionAnalysis", () => {
   test("function with two if-else statement", () => {
