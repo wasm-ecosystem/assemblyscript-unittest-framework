@@ -72,7 +72,7 @@
     "assembly/**/*",
     "bin/**/*",
     "dist/**/*",
-    "build/bin/wasm-instrumentation.js",
+    "build_wasm/bin/wasm-instrumentation.js",
     "docs/**/*",
     "transform/**/*",
     "LICENSE",

@@ -1,0 +1,13 @@
+make directly call to function index=0
+basic block entry trace to: function=0, basic block=0
+basic block entry trace to: function=0, basic block=1
+basic block entry trace to: function=0, basic block=2
+basic block entry trace to: function=0, basic block=3
+basic block entry trace to: function=0, basic block=5
+basic block entry trace to: function=0, basic block=1
+basic block entry trace to: function=0, basic block=2
+basic block entry trace to: function=0, basic block=4
+basic block entry trace to: function=0, basic block=5
+basic block entry trace to: function=0, basic block=1
+basic block entry trace to: function=0, basic block=6
+basic block entry trace to: function=0, basic block=7

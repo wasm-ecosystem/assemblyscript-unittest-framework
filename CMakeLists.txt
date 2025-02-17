@@ -14,8 +14,12 @@ set(BUILD_SHARED_LIBS OFF)
 set(BUILD_OBJECT_LIBS OFF)
 add_subdirectory(third_party/jsoncpp)
 
-set(BUILD_TESTS OFF)
+set(BUILD_TESTS OFF CACHE BOOL "force disable binaryen's deps" FORCE)
 set(BUILD_STATIC_LIB ON)
 add_subdirectory(third_party/binaryen)
 
 add_subdirectory(instrumentation)
+
+if(NOT EMSCRIPTEN)
+  add_subdirectory(tests/cpp)
+endif()

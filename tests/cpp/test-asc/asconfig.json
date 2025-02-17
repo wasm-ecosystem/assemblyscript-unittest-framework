@@ -1,0 +1,15 @@
+{
+  "targets": {
+    "debug": {
+      "outFile": "build/debug.wasm",
+      "textFile": "build/debug.wat",
+      "sourceMap": true,
+      "debug": true,
+      "disable":["nontrapping-f2i", "bulk-memory"],
+      "target": 2
+    }
+  },
+  "options": {
+    "bindings": "esm"
+  }
+}
