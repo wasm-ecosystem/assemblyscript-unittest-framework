@@ -1,17 +1,23 @@
 import { resolve } from "path";
 import * as esbuild from "esbuild";
 import { fileURLToPath, URL } from "url";
-import child_process from "node:child_process";
-import { promisify } from "node:util";
+import { execSync } from "node:child_process";
 import pkg from "@sprout2000/esbuild-copy-plugin";
 const { copyPlugin } = pkg;
-const exec = promisify(child_process.exec);
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
-await exec("tsc --build ./transform/tsconfig.json");
+execSync("tsc --build ./transform/tsconfig.json");
 
-await exec("cmake -B build instrumentation -S instrumentation");
+function emsdkEnv() {
+  return {
+    env: "/Users/q540239/dev/emsdk:/Users/q540239/dev/emsdk/upstream/emscripten:" + process.env["PATH"],
+    ...process.env,
+  };
+}
+
+execSync("emcmake cmake -B build -S .", { encoding: "utf8", stdio: "inherit", env: emsdkEnv() });
+execSync("cmake --build build --target wasm-instrumentation", { encoding: "utf8", stdio: "inherit", env: emsdkEnv() });
 
 await esbuild.build({
   entryPoints: ["src/index.ts"],
