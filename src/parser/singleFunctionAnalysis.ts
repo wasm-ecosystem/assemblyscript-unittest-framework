@@ -1,11 +1,12 @@
 import assert from "node:assert";
-import { CodeSnippetIndex, CovInfo, FunctionCoverageResult } from "../interface.js";
+import { CodeSnippetIndex, CovInfo, FunctionCoverageResult, UncoveredBasicBlocks } from "../interface.js";
 
 type BranchGraph = Map<number, Map<number, boolean>>;
 
 export class SingleFunctionCoverageAnalysis {
   result: FunctionCoverageResult;
   branchGraph: BranchGraph = new Map();
+  notFullyCoveredBasicBlock: UncoveredBasicBlocks = new Set();
   constructor(
     public covInfo: CovInfo,
     name: string
@@ -72,12 +73,22 @@ export class SingleFunctionCoverageAnalysis {
         toNodes.set(second, true);
       }
     }
-    for (const toNodes of this.branchGraph.values()) {
+    for (const [currentBasicBlock, branchesForThatBasicBlock] of this.branchGraph) {
       let used = 0;
-      for (const toNode of toNodes.values()) {
-        if (toNode) used++;
+      for (const isCovered of branchesForThatBasicBlock.values()) {
+        if (isCovered) {
+          used++;
+        } else {
+          this.notFullyCoveredBasicBlock.add(currentBasicBlock);
+        }
       }
       this.result.branchCoverageRate.used += used;
+    }
+    for (const block of this.notFullyCoveredBasicBlock) {
+      const lineInfo = this.covInfo.lineInfo.get(block);
+      if (lineInfo !== undefined && lineInfo.size > 0) {
+        this.result.uncoveredlines.add(Math.max(...lineInfo));
+      }
     }
   }
 }
