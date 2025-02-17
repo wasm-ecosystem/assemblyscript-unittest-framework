@@ -10,5 +10,10 @@ module.exports = {
       },
     ],
   },
-  ignorePatterns: ["src/core/instrument.ts", "src/utils/import.js", "src/generator/html-generator/resource/*"],
+  ignorePatterns: [
+    "src/core/instrument.ts",
+    "src/utils/import.js",
+    "src/generator/html-generator/resource/*",
+    "third_party/*",
+  ],
 };

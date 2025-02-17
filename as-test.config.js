@@ -1,6 +1,6 @@
 export default {
   /** file include in test */
-  include: ["assembly", "tests-as"],
+  include: ["assembly", "tests/as"],
 
   /** optional: file exclude */
   exclude: [],

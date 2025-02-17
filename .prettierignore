@@ -3,4 +3,6 @@
 /dist
 /node_modules
 /transform/*.mjs
-/tests-ts/fixture
+/tests/ts/fixture
+/third_party
+/tests/cpp/lit/expectInstrument/expect.test.expect.json

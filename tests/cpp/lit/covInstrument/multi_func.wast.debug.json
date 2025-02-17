@@ -1,0 +1,25 @@
+{
+  "debugFiles": ["assembly/add.ts"],
+  "debugInfos": {
+    "assembly/add/add": { "branchInfo": [], "index": 2, "lineInfo": [[[0, 3, 11]]] },
+    "assembly/add/genA": { "branchInfo": [], "index": 0, "lineInfo": [[[0, 11, 11]]] },
+    "assembly/add/main": {
+      "branchInfo": [
+        [0, 1],
+        [0, 2]
+      ],
+      "index": 3,
+      "lineInfo": [
+        [
+          [0, 15, 12],
+          [0, 16, 8],
+          [0, 16, 12]
+        ],
+        [[0, 17, 12]],
+        [[0, 19, 12]],
+        []
+      ]
+    },
+    "assembly/add/min": { "branchInfo": [], "index": 1, "lineInfo": [[[0, 7, 11]]] }
+  }
+}

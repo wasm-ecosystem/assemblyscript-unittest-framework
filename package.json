@@ -12,9 +12,12 @@
   },
   "prettier": "@schleifner/prettier-config",
   "scripts": {
-    "build": "tsc --build ./transform/tsconfig.json && node ./build/esbuild.js",
-    "test": "node bin/as-test.js && cross-env NODE_OPTIONS=--experimental-vm-modules jest",
-    "lint": "eslint src assembly tests-ts/test --max-warnings=0 && prettier -c .",
+    "build": "tsc --build ./transform/tsconfig.json && node ./scripts/esbuild.js",
+    "test:as": "node bin/as-test.js",
+    "test:ts": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
+    "test:cpp": "cmake -B build -S . && cmake --build build && build/bin/wasm-instrumentation-test",
+    "test": "npm run test:as && npm run test:ts && npm run test:cpp",
+    "lint": "eslint src assembly tests/ts/test --max-warnings=0 && prettier -c .",
     "lint:fix": "eslint src assembly --fix && npx prettier --write .",
     "example": "node bin/as-test.js --config example/as-test.config.cjs ; node bin/as-test.js --config example/as-test.config.js"
   },
@@ -27,8 +30,7 @@
     "fs-extra": "^11.1.1",
     "glob": "^10.2.6",
     "ignore": "^5.2.4",
-    "semver": "^7.5.3",
-    "wasm-instrumentation": "1.1.0"
+    "semver": "^7.5.3"
   },
   "peerDependencies": {
     "assemblyscript": ">=0.25.1"
@@ -73,8 +75,8 @@
     "assembly/**/*",
     "bin/**/*",
     "dist/**/*",
+    "build_wasm/bin/wasm-instrumentation.js",
     "docs/**/*",
-    "example/**/*",
     "transform/**/*",
     "LICENSE",
     "README.md"
