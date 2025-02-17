@@ -1,5 +1,10 @@
-node_modules
-dist
-coverage
-coverage-ts
 .vscode
+
+/node_modules
+/dist
+
+/build*
+/transform/listFunctions.mjs
+
+/coverage
+/coverage-ts
