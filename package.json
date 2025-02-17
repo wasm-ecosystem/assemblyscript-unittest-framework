@@ -15,7 +15,7 @@
     "build": "tsc --build ./transform/tsconfig.json && node ./scripts/esbuild.js",
     "test": "node bin/as-test.js && cross-env NODE_OPTIONS=--experimental-vm-modules jest",
     "lint": "eslint src assembly tests/ts/test --max-warnings=0 && prettier -c .",
-    "lint:fix": "eslint src assembly --fix",
+    "lint:fix": "eslint src assembly --fix && npx prettier --write .",
     "example": "node bin/as-test.js --config example/as-test.config.cjs ; node bin/as-test.js --config example/as-test.config.js"
   },
   "dependencies": {

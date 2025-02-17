@@ -58,6 +58,83 @@ describe("singleFunctionAnalysis", () => {
       ])
     );
   });
+
+  test("forLoop", () => {
+    const covInfo: CovInfo = {
+      branchInfo: [
+        [1, 2],
+        [1, 3],
+      ],
+      lineInfo: new Map([
+        [0, new Set([17, 18])],
+        [1, new Set([18])],
+        [2, new Set([18, 20])],
+        [3, new Set([])],
+        [4, new Set([22])],
+      ]),
+    };
+    const traceInfo = [0, 1, 3, 4];
+    const analyzer = new SingleFunctionCoverageAnalysis(covInfo, "main");
+    const result = analyzer.update(traceInfo);
+    expect(result.uncoveredlines).toEqual(new Set([18]));
+  });
+
+  test("ifWithoutElse", () => {
+    const covInfo: CovInfo = {
+      branchInfo: [
+        [0, 1],
+        [0, 2],
+      ],
+      lineInfo: new Map([
+        [0, new Set([2])],
+        [1, new Set([3])],
+        [2, new Set([5])],
+      ]),
+    };
+    const traceInfo = [0, 1];
+    const analyzer = new SingleFunctionCoverageAnalysis(covInfo, "main");
+    const result = analyzer.update(traceInfo);
+    expect(result.uncoveredlines).toEqual(new Set([2]));
+  });
+
+  test("threeOperandOperator", () => {
+    const covInfo: CovInfo = {
+      branchInfo: [
+        [0, 1],
+        [0, 2],
+      ],
+      lineInfo: new Map([
+        [0, new Set([26])],
+        [1, new Set([26])],
+        [2, new Set([26])],
+        [3, new Set([26])],
+      ]),
+    };
+    const traceInfo = [3, 0, 1];
+    const analyzer = new SingleFunctionCoverageAnalysis(covInfo, "main");
+    const result = analyzer.update(traceInfo);
+    expect(result.uncoveredlines).toEqual(new Set([26]));
+  });
+
+  test("whileLoop", () => {
+    const covInfo: CovInfo = {
+      branchInfo: [
+        [1, 2],
+        [1, 3],
+      ],
+      lineInfo: new Map([
+        [0, new Set([9])],
+        [1, new Set([10])],
+        [2, new Set([11])],
+        [3, new Set([])],
+        [4, new Set([10, 13])],
+      ]),
+    };
+    const traceInfo = [0, 1, 3, 4];
+    const analyzer = new SingleFunctionCoverageAnalysis(covInfo, "main");
+    const result = analyzer.update(traceInfo);
+    expect(result.uncoveredlines).toEqual(new Set([10]));
+  });
 });
 
 test("mergeFromGeneric()", () => {

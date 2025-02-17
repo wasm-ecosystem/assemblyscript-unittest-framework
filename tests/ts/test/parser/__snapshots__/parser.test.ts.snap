@@ -226,6 +226,7 @@ exports[`Parser generateFileCoverage 1`] = `
       "total": 18,
       "used": 9,
     },
+    "uncoveredlines": Set {},
   },
   FileCoverageResult {
     "branchCoverageRate": Rate {
@@ -451,6 +452,7 @@ exports[`Parser generateFileCoverage 1`] = `
       "total": 1,
       "used": 1,
     },
+    "uncoveredlines": Set {},
   },
   FileCoverageResult {
     "branchCoverageRate": Rate {
@@ -675,6 +677,9 @@ exports[`Parser generateFileCoverage 1`] = `
     "statementCoverageRate": Rate {
       "total": 13,
       "used": 9,
+    },
+    "uncoveredlines": Set {
+      25,
     },
   },
   FileCoverageResult {
@@ -901,6 +906,7 @@ exports[`Parser generateFileCoverage 1`] = `
       "total": 2,
       "used": 2,
     },
+    "uncoveredlines": Set {},
   },
 ]
 `;
@@ -920,6 +926,7 @@ exports[`Parser generateFunctionCoverage 1`] = `
     "sourceUsedCount": Map {
       39 => 3,
     },
+    "uncoveredlines": Set {},
   },
   FunctionCoverageResult {
     "branchCoverageRate": Rate {
@@ -941,6 +948,7 @@ exports[`Parser generateFunctionCoverage 1`] = `
       22 => 1,
       24 => 2,
     },
+    "uncoveredlines": Set {},
   },
   FunctionCoverageResult {
     "branchCoverageRate": Rate {
@@ -955,6 +963,7 @@ exports[`Parser generateFunctionCoverage 1`] = `
     "sourceUsedCount": Map {
       45 => 4,
     },
+    "uncoveredlines": Set {},
   },
   FunctionCoverageResult {
     "branchCoverageRate": Rate {
@@ -978,6 +987,9 @@ exports[`Parser generateFunctionCoverage 1`] = `
       26 => 1,
       29 => 0,
     },
+    "uncoveredlines": Set {
+      25,
+    },
   },
   FunctionCoverageResult {
     "branchCoverageRate": Rate {
@@ -993,6 +1005,7 @@ exports[`Parser generateFunctionCoverage 1`] = `
       10 => 2,
       11 => 2,
     },
+    "uncoveredlines": Set {},
   },
 ]
 `;
