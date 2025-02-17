@@ -1,4 +1,4 @@
-import initInstrumenter from "wasm-instrumentation";
+import initInstrumenter from "../../build/bin/wasm-instrumentation.js";
 import { InstrumentResult } from "../interface.js";
 
 export async function instrument(sourceWasms: string[], sourceCodePaths: string[]): Promise<InstrumentResult[]> {

@@ -18,6 +18,7 @@ function emsdkEnv() {
 
 execSync("emcmake cmake -B build -S .", { encoding: "utf8", stdio: "inherit", env: emsdkEnv() });
 execSync("cmake --build build --target wasm-instrumentation", { encoding: "utf8", stdio: "inherit", env: emsdkEnv() });
+execSync("tsc build/bin/wasm-instrumentation.js --declaration --allowJs --emitDeclarationOnly --outDir build/bin");
 
 await esbuild.build({
   entryPoints: ["src/index.ts"],
