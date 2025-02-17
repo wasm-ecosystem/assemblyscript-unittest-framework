@@ -1,4 +1,7 @@
 #include "utils.h"
+#include "json/value.h"
+#include <unordered_map>
+#include <unordered_set>
 
 namespace testUtils {
 
