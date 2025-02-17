@@ -75,9 +75,7 @@ describe("singleFileAnalysis", () => {
 
   test("setUnTestedFunction error", () => {
     const analyzer = new SingleFileCoverageAnalysis("main", source);
-    expect(() => analyzer.setUnTestedFunction([[30, 31]])).toThrow(
-      "unknown error: There is no 29 Line in file main"
-    );
+    expect(() => analyzer.setUnTestedFunction([[30, 31]])).toThrow("unknown error: There is no 29 Line in file main");
   });
 
   test("merge error", () => {

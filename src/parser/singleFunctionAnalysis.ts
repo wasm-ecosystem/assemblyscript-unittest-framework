@@ -76,10 +76,10 @@ export class SingleFunctionCoverageAnalysis {
     for (const [currentBasicBlock, branchesForThatBasicBlock] of this.branchGraph) {
       let used = 0;
       for (const isCovered of branchesForThatBasicBlock.values()) {
-        if (!isCovered) {
-          this.notFullyCoveredBasicBlock.add(currentBasicBlock);
-        } else {
+        if (isCovered) {
           used++;
+        } else {
+          this.notFullyCoveredBasicBlock.add(currentBasicBlock);
         }
       }
       this.result.branchCoverageRate.used += used;
