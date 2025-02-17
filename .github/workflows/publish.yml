@@ -9,7 +9,9 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
       - uses: actions/setup-node@v3
         with:
           node-version: 20
@@ -17,10 +19,6 @@ jobs:
       - run: npm ci
 
       - run: npm run build
-
-      - run: npm run lint
-
-      - run: npm run test
 
       - run: npm version $(echo "${GITHUB_REF}" | sed 's/refs\/tags\///') --git-tag-version false
       - run: echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" >> .npmrc

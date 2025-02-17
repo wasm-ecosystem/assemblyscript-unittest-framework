@@ -13,7 +13,10 @@
   "prettier": "@schleifner/prettier-config",
   "scripts": {
     "build": "tsc --build ./transform/tsconfig.json && node ./scripts/esbuild.js",
-    "test": "node bin/as-test.js && cross-env NODE_OPTIONS=--experimental-vm-modules jest",
+    "test:as": "node bin/as-test.js",
+    "test:ts": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
+    "test:cpp": "cmake -B build -S . && cmake --build build && build/bin/wasm-instrumentation-test",
+    "test": "npm run test:as && npm run test:ts && npm run test:cpp",
     "lint": "eslint src assembly tests/ts/test --max-warnings=0 && prettier -c .",
     "lint:fix": "eslint src assembly --fix && npx prettier --write .",
     "example": "node bin/as-test.js --config example/as-test.config.cjs ; node bin/as-test.js --config example/as-test.config.js"

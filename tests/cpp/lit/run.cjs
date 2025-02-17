@@ -1,4 +1,4 @@
-const fs = require('fs');
+const fs = require("fs");
 const wasmBuffer = fs.readFileSync(process.argv[2]);
 const mockInstruFunc = {
   // isCall = true,  return -1 if not mocked;
@@ -55,33 +55,37 @@ const mockInstruFunc = {
   },
 };
 const imports = {
-  "mockInstrument": mockInstruFunc,
-  "covInstrument": {
+  mockInstrument: mockInstruFunc,
+  covInstrument: {
     traceExpression(functionIndex, index, type) {
       // console.log(consumer);
       switch (type) {
-        case 1: // call in 
+        case 1: // call in
           console.log(`make directly call to function index=${functionIndex}`);
           break;
-        case 2: // call out 
+        case 2: // call out
           console.log(`exit from function call index=${functionIndex}`);
           break;
         default:
           console.log(`basic block entry trace to: function=${functionIndex}, basic block=${index}`);
           break;
       }
-    }
+    },
   },
-  "env": {
+  env: {
     memory: sharedMemory,
     abort(_msg, _file, line, column) {
       console.error("abort called at index.ts:" + line + ":" + column);
     },
     seed: function () {
-      return 0xA5534817; // make tests deterministic
+      return 0xa5534817; // make tests deterministic
     },
-    log(ptr) { console.log(getString(ptr)); },
-    logi(i) { console.log(i); },
+    log(ptr) {
+      console.log(getString(ptr));
+    },
+    logi(i) {
+      console.log(i);
+    },
     "Date.now": function () {
       return new Date().getTime();
     },
@@ -89,7 +93,7 @@ const imports = {
       const memory = sharedMemory;
       console.log(`trace: ${getString(msg)}${n ? " " : ""}${args.slice(0, n).join(", ")}`);
     },
-  }
+  },
 };
 function getString(ptr) {
   if (!ptr) return "null";
@@ -102,7 +106,7 @@ function getString(ptr) {
 
 var sharedMemory = new WebAssembly.Memory({ initial: 1 });
 
-WebAssembly.instantiate(wasmBuffer, imports).then(wasmModule => {
+WebAssembly.instantiate(wasmBuffer, imports).then((wasmModule) => {
   wasmExample = wasmModule;
   const { main, memory } = wasmModule.instance.exports;
   sharedMemory = memory;

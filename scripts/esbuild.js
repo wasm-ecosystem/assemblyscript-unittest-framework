@@ -3,24 +3,33 @@ import * as esbuild from "esbuild";
 import { fileURLToPath, URL } from "url";
 import { execSync } from "node:child_process";
 import pkg from "@sprout2000/esbuild-copy-plugin";
+import { existsSync } from "node:fs";
 const { copyPlugin } = pkg;
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
 execSync("tsc --build ./transform/tsconfig.json");
 
-function emsdkEnv() {
-  return {
-    env: "/Users/q540239/dev/emsdk:/Users/q540239/dev/emsdk/upstream/emscripten:" + process.env["PATH"],
-    ...process.env,
-  };
+const env = process.env;
+
+function initEmscripten() {
+  const sdkPath = "third_party/emsdk/";
+
+  env["PATH"] = `${sdkPath}:` + env["PATH"];
+  if (!existsSync(`${sdkPath}upstream/emscripten`)) {
+    execSync("emsdk install 3.1.32", { encoding: "utf8", stdio: "inherit", env });
+    execSync("emsdk activate 3.1.32", { encoding: "utf8", stdio: "inherit", env });
+  }
+  env["PATH"] = `${sdkPath}upstream/emscripten:` + env["PATH"];
 }
 
-execSync("emcmake cmake -B build_wasm -S .", { encoding: "utf8", stdio: "inherit", env: emsdkEnv() });
+initEmscripten();
+
+execSync("emcmake cmake -B build_wasm -S .", { encoding: "utf8", stdio: "inherit", env });
 execSync("cmake --build build_wasm --target wasm-instrumentation", {
   encoding: "utf8",
   stdio: "inherit",
-  env: emsdkEnv(),
+  env,
 });
 execSync(
   "tsc build_wasm/bin/wasm-instrumentation.js --declaration --allowJs --emitDeclarationOnly --outDir build_wasm/bin"
