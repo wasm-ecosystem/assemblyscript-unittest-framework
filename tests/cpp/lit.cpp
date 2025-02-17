@@ -16,11 +16,12 @@ TEST(lit, coverageInstrumentation) {
   // step 1, prepare
   const std::filesystem::path projectPath = testUtils::getProjectPath();
   const std::filesystem::path wasmOptPath =
-      projectPath / "build" / "thirdparty" / "binaryen" / "bin" / "wasm-opt";
-  const std::filesystem::path fixtureFolder = projectPath / "test" / "lit" / "covInstrument";
-  const std::filesystem::path tmpDir = projectPath / "test" / "lit" / "build";
-  const std::filesystem::path executor = projectPath / "test" / "lit" / "run.cjs";
-  const std::filesystem::path checkPy = projectPath / "test" / "check.py";
+      projectPath / "build" / "third_party" / "binaryen" / "bin" / "wasm-opt";
+  const std::filesystem::path fixtureFolder =
+      projectPath / "tests" / "cpp" / "lit" / "covInstrument";
+  const std::filesystem::path tmpDir = projectPath / "tests" / "cpp" / "lit" / "build";
+  const std::filesystem::path executor = projectPath / "tests" / "cpp" / "lit" / "run.cjs";
+  const std::filesystem::path checkPy = projectPath / "tests" / "cpp" / "check.py";
 
   if (!exists(tmpDir)) {
     create_directory(tmpDir);
@@ -85,9 +86,10 @@ TEST(lit, coverageInstrumentation) {
 
 TEST(lit, expectInstrumentation) {
   const std::filesystem::path projectPath = testUtils::getProjectPath();
-  const std::filesystem::path fixtureFolder = projectPath / "test" / "lit" / "expectInstrument";
-  const std::filesystem::path tmpDir = projectPath / "test" / "lit" / "build";
-  const std::filesystem::path checkPy = projectPath / "test" / "check.py";
+  const std::filesystem::path fixtureFolder =
+      projectPath / "tests" / "cpp" / "lit" / "expectInstrument";
+  const std::filesystem::path tmpDir = projectPath / "tests" / "cpp" / "lit" / "build";
+  const std::filesystem::path checkPy = projectPath / "tests" / "cpp" / "check.py";
 
   if (!exists(tmpDir)) {
     create_directory(tmpDir);

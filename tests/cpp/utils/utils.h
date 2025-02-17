@@ -11,7 +11,7 @@
 
 namespace testUtils {
 
-constexpr std::string_view PROJECT_NAME("wasm-instrumentation");
+constexpr std::string_view PROJECT_NAME("assemblyscript-unittest-framework");
 
 ///
 /// @brief Get the project path

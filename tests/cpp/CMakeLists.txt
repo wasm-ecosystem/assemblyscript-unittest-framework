@@ -9,13 +9,12 @@ add_executable(
 )
 target_link_libraries(
   wasm-instrumentation-test
+  PUBLIC
+  wasm-instrumentation
   GTest::gtest_main
   binaryen
   jsoncpp_static
 )
-file(GLOB sources CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/instrumentation/*.cpp ${PROJECT_SOURCE_DIR}/instrumentation/*.hpp)
-target_sources(wasm-instrumentation-test PUBLIC ${sources})
-target_include_directories(wasm-instrumentation-test PUBLIC ${PROJECT_SOURCE_DIR}/third_party/binaryen/src ${PROJECT_SOURCE_DIR}/third_party/jsoncpp/include)
 include(GoogleTest)
 gtest_discover_tests(wasm-instrumentation-test)
 

@@ -9,12 +9,12 @@
 #include "utils/utils.h"
 
 TEST(fuzz, asc) {
-  const std::filesystem::path project_path = testUtils::getProjectPath();
-  const std::filesystem::path build_path = project_path / "build";
+  const std::filesystem::path projectPath = testUtils::getProjectPath();
+  const std::filesystem::path build_path = projectPath / "build";
   const std::filesystem::path wasmPath =
-      project_path / "test" / "fuzz" / "assemblyscript.debug.wasm";
+      projectPath / "tests" / "cpp" / "fuzz" / "assemblyscript.debug.wasm";
   const std::filesystem::path mapPath =
-      project_path / "test" / "fuzz" / "assemblyscript.debug.wasm.map";
+      projectPath / "tests" / "cpp" / "fuzz" / "assemblyscript.debug.wasm.map";
   const std::filesystem::path targetPath =
       build_path / "assemblyscript.debug.wasm.instrumented.wasm";
   const std::filesystem::path targetDebugInfoPath =
