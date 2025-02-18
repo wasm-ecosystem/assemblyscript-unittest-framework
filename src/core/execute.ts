@@ -41,6 +41,7 @@ function nodeExecutor(wasms: string[], outFolder: string, imports: Imports) {
             importObject[moduleName] = {};
           }
           if (!importObject[moduleName][funcName]) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             importObject[moduleName][funcName] = (...args: any[]): any => {
               console.log(`Default stub called for ${moduleName}.${funcName}, args:`, args);
               return 0;
