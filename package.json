@@ -12,7 +12,7 @@
   },
   "prettier": "@schleifner/prettier-config",
   "scripts": {
-    "build": "tsc --build ./transform/tsconfig.json && tsc --build ./src/tsconfig.json && node scripts/build_instrumentation.js",
+    "build": "node scripts/build_instrumentation.js && tsc --build ./transform/tsconfig.json && tsc --build ./src/tsconfig.json",
     "test:as": "node bin/as-test.js",
     "test:ts": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
     "test:cpp": "cmake -B build -S . && cmake --build build && build/bin/wasm-instrumentation-test",
