@@ -37,12 +37,13 @@ function nodeExecutor(wasms: string[], outFolder: string, imports: Imports) {
         if (imp.kind === "function") {
           const moduleName = imp.module;
           const funcName = imp.name;
-          if (!importObject[moduleName]) {
-            importObject[moduleName] = {};
-          }
-          if (!importObject[moduleName][funcName]) {
+          if (!importObject[moduleName]?.[funcName]) {
+            if (!importObject[moduleName]) {
+              importObject[moduleName] = {};
+            }
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            importObject[moduleName][funcName] = (...args: any[]): any => {
+            (importObject[moduleName] as any)[funcName] = (...args: any[]): any => {
+              // notify that a default function has been called
               console.log(`Default stub called for ${moduleName}.${funcName}, args:`, args);
               return 0;
             };
