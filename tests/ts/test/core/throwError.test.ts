@@ -1,7 +1,7 @@
 import { join } from "node:path";
 // eslint-disable-next-line node/no-extraneous-import
 import { jest } from "@jest/globals";
-import { fileURLToPath, URL } from "node:url";
+import { projectRoot } from "../../../../src/utils/projectRoot.js";
 
 jest.unstable_mockModule("assemblyscript/asc", () => ({
   main: jest.fn(() => {
@@ -20,14 +20,7 @@ const { precompile } = await import("../../../../src/core/precompile.js");
 const { compile } = await import("../../../../src/core/compile.js");
 
 test("transform error", async () => {
-  const transformFunction = join(
-    fileURLToPath(new URL(".", import.meta.url)),
-    "..",
-    "..",
-    "..",
-    "transform",
-    "listFunctions.mjs"
-  );
+  const transformFunction = join(projectRoot, "transform", "listFunctions.mjs");
   expect(jest.isMockFunction(main)).toBeTruthy();
   await expect(async () => {
     await precompile(["tests/ts/fixture/transformFunction.ts"], [], [], transformFunction);
