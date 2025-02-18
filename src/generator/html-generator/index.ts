@@ -5,23 +5,22 @@ import { basename, dirname, join, relative } from "node:path";
 import { generateFolderHtml } from "./genFolder.js";
 import { FileCoverageResult } from "../../interface.js";
 import { generateCodeHtml } from "./genCode.js";
-
-const __dirname = fileURLToPath(new URL(".", import.meta.url));
+import { projectRoot } from "../../utils/projectRoot.js";
 
 const resourceFiles = [
-  "resource/base.css",
-  "resource/block-navigation.js",
-  "resource/prettify.css",
-  "resource/prettify.js",
-  "resource/sort-arrow-sprite.png",
-  "resource/sorter.js",
+  "base.css",
+  "block-navigation.js",
+  "prettify.css",
+  "prettify.js",
+  "sort-arrow-sprite.png",
+  "sorter.js",
 ];
 
 export function genHtml(target: string, filesInfos: FileCoverageResult[]) {
   const resourceFolder = join(target, "resource");
   ensureDirSync(resourceFolder);
   for (const file of resourceFiles) {
-    copyFile(join(__dirname, file), join(resourceFolder, basename(file)), () => {
+    copyFile(join(projectRoot, "resource", file), join(resourceFolder, basename(file)), () => {
       return;
     });
   }
