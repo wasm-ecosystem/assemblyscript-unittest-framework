@@ -6,3 +6,5 @@
 /tests/ts/fixture
 /third_party
 /tests/cpp/lit/**/*.json
+/.cache
+/.github/CODEOWNERS
