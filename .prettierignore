@@ -5,4 +5,4 @@
 /transform/*.mjs
 /tests/ts/fixture
 /third_party
-/tests/cpp/lit/expectInstrument/expect.test.expect.json
+/tests/cpp/lit/**/*.json

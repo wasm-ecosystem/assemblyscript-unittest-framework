@@ -1,5 +1,4 @@
 import { ensureDirSync } from "fs-extra";
-import { fileURLToPath, URL } from "node:url";
 import { copyFile, writeFileSync } from "node:fs";
 import { basename, dirname, join, relative } from "node:path";
 import { generateFolderHtml } from "./genFolder.js";
