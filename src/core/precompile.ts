@@ -3,20 +3,18 @@
  */
 
 import ignore from "ignore";
-import { fileURLToPath, URL } from "node:url";
 import { main } from "assemblyscript/asc";
 import { join, relative, resolve } from "node:path";
 import { getIncludeFiles } from "../utils/pathResolver.js";
 import { SourceFunctionInfo, UnittestPackage } from "../interface.js";
+import { projectRoot } from "../utils/projectRoot.js";
 
 const sourceFunctions = new Map<string, SourceFunctionInfo[]>();
-const listFunctions = join(fileURLToPath(new URL(".", import.meta.url)), "..", "transform", "listFunctions.mjs");
-
 export async function precompile(
   includes: string[],
   excludes: string[],
   testcases: string[] | undefined,
-  transformFunction = listFunctions
+  transformFunction = join(projectRoot, "transform", "listFunctions.mjs")
 ): Promise<UnittestPackage> {
   // if specify testcases, use testcases for unittest
   // otherwise, get testcases(*.test.ts) in includes directory
