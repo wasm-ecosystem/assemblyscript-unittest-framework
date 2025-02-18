@@ -87,3 +87,19 @@ export function covInstruFunc(wasm: string) {
   };
   return { covInstrument };
 }
+
+export async function parseWasmImports(binary: Buffer) {
+  // list imports of a given wasm binary (buffer)
+  const mod = await WebAssembly.compile(binary);
+
+  const importList = WebAssembly.Module.imports(mod);
+
+  // importList format should be as follows：
+  // [
+  //   { module: 'env', name: 'memory', kind: 'memory' },
+  //   { module: 'env', name: 'myFunction', kind: 'function' },
+  //   ...
+  // ]
+
+  return importList;
+}

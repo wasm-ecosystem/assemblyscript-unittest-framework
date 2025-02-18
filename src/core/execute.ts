@@ -6,7 +6,7 @@ import { instantiate, Imports as ASImports } from "@assemblyscript/loader";
 import { AssertResult } from "../assertResult.js";
 import { Imports, ImportsArgument } from "../index.js";
 import { IAssertResult, InstrumentResult } from "../interface.js";
-import { mockInstruFunc, covInstruFunc } from "../utils/import.js";
+import { mockInstruFunc, covInstruFunc, parseWasmImports } from "../utils/import.js";
 const readFile = promises.readFile;
 
 function nodeExecutor(wasms: string[], outFolder: string, imports: Imports) {
@@ -30,6 +30,24 @@ function nodeExecutor(wasms: string[], outFolder: string, imports: Imports) {
         ...userDefinedImportsObject,
       } as ASImports;
       const binary = await readFile(wasm);
+      // getting a list of wasm import functions
+      const importList = await parseWasmImports(binary);
+      // supplying default function here, so no more need to define all of them in as-test.js
+      for (const imp of importList) {
+        if (imp.kind === "function") {
+          const moduleName = imp.module;
+          const funcName = imp.name;
+          if (!importObject[moduleName]) {
+            importObject[moduleName] = {};
+          }
+          if (!importObject[moduleName][funcName]) {
+            importObject[moduleName][funcName] = (...args: any[]): any => {
+              console.log(`Default stub called for ${moduleName}.${funcName}, args:`, args);
+              return 0;
+            };
+          }
+        }
+      }
       const ins = await instantiate(binary, importObject);
       importsArg.module = ins.module;
       importsArg.instance = ins.instance;
