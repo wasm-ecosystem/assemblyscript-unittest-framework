@@ -6,4 +6,6 @@
 /tests/ts/fixture
 /third_party
 /tests/cpp/lit/**/*.json
-/tests/as/default.test.ts
+/tests/ts/e2e/default.test.ts
+/.cache
+/.github/CODEOWNERS
