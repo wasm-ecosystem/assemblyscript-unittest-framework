@@ -30,7 +30,6 @@ function nodeExecutor(wasms: string[], outFolder: string, imports: Imports) {
         ...userDefinedImportsObject,
       } as ASImports;
       const binary = await readFile(wasm);
-      // getting a list of wasm import functions
       const importList = await parseWasmImports(binary);
       // supplying default function here, so no more need to define all of them in as-test.js
       for (const imp of importList) {
