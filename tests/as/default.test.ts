@@ -1,5 +1,4 @@
 import { describe, test, expect, endTest } from "../../assembly";
-import { emptyFunction } from "../../assembly/default";
 
 // Default Stub Injection Tests
 // Making sure that external functions can supplied with an empty default function so that users will be free of supplying their own
