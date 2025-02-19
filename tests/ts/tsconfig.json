@@ -1,0 +1,7 @@
+{
+  "extends": "assemblyscript/std/assembly.json",
+  "include": ["./e2e/*.ts"],
+  "compilerOptions": {
+    "strictBindCallApply": false
+  }
+}
