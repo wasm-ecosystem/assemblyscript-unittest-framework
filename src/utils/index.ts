@@ -62,8 +62,8 @@ export function supplyDefaultFunction(importList: WebAssembly.ModuleImportDescri
     if (imp.kind === "function") {
       const moduleName = imp.module;
       const funcName = imp.name;
-      if (!importObject[moduleName]?.[funcName]) {
-        if (!importObject[moduleName]) {
+      if (importObject[moduleName]?.[funcName] === undefined) {
+        if (importObject[moduleName] === undefined) {
           importObject[moduleName] = {};
         }
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
