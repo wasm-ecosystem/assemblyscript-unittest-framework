@@ -1,3 +1,5 @@
+import { Imports as ASImports } from "@assemblyscript/loader";
+
 export function json2map<V>(json: Record<string, V>): Map<string, V> {
   const res = new Map<string, V>();
   for (const key in json) {
@@ -39,4 +41,38 @@ export function checkGenerics(functionName: string): string | undefined {
     return functionName.slice(0, startIndex) + functionName.slice(endIndex + 1);
   }
   return;
+}
+
+// list imports of a given wasm binary (buffer)
+// importList format should be as follows：
+// [
+//   { module: 'env', name: 'memory', kind: 'memory' },
+//   { module: 'env', name: 'myFunction', kind: 'function' },
+//   ...
+// ]
+export async function parseWasmImports(binary: Buffer) {
+  const mod = await WebAssembly.compile(binary);
+  const importList = WebAssembly.Module.imports(mod);
+
+  return importList;
+}
+
+export function supplyDefaultFunction(importList: WebAssembly.ModuleImportDescriptor[], importObject: ASImports) {
+  for (const imp of importList) {
+    if (imp.kind === "function") {
+      const moduleName = imp.module;
+      const funcName = imp.name;
+      if (!importObject[moduleName]?.[funcName]) {
+        if (!importObject[moduleName]) {
+          importObject[moduleName] = {};
+        }
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
+        (importObject[moduleName] as any)[funcName] = (...args: any[]): any => {
+          // notify that a default function has been called
+          console.log(`Default stub called for ${moduleName}.${funcName}, args:`, args);
+          return 0;
+        };
+      }
+    }
+  }
 }

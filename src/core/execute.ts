@@ -6,7 +6,8 @@ import { instantiate, Imports as ASImports } from "@assemblyscript/loader";
 import { AssertResult } from "../assertResult.js";
 import { Imports, ImportsArgument } from "../index.js";
 import { IAssertResult, InstrumentResult } from "../interface.js";
-import { mockInstruFunc, covInstruFunc, parseWasmImports } from "../utils/import.js";
+import { mockInstruFunc, covInstruFunc } from "../utils/import.js";
+import { parseWasmImports, supplyDefaultFunction } from "../utils/index.js";
 const readFile = promises.readFile;
 
 function nodeExecutor(wasms: string[], outFolder: string, imports: Imports) {
@@ -32,23 +33,7 @@ function nodeExecutor(wasms: string[], outFolder: string, imports: Imports) {
       const binary = await readFile(wasm);
       const importList = await parseWasmImports(binary);
       // supplying default function here, so no more need to define all of them in as-test.js
-      for (const imp of importList) {
-        if (imp.kind === "function") {
-          const moduleName = imp.module;
-          const funcName = imp.name;
-          if (!importObject[moduleName]?.[funcName]) {
-            if (!importObject[moduleName]) {
-              importObject[moduleName] = {};
-            }
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
-            (importObject[moduleName] as any)[funcName] = (...args: any[]): any => {
-              // notify that a default function has been called
-              console.log(`Default stub called for ${moduleName}.${funcName}, args:`, args);
-              return 0;
-            };
-          }
-        }
-      }
+      supplyDefaultFunction(importList, importObject);
       const ins = await instantiate(binary, importObject);
       importsArg.module = ins.module;
       importsArg.instance = ins.instance;
