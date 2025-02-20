@@ -1,8 +1,15 @@
 import fs from "fs-extra";
 import { join } from "node:path";
+import { Imports as ASImports } from "@assemblyscript/loader";
 import { fileURLToPath, URL } from "node:url";
 import { DebugInfo, CovDebugInfo } from "../../../../src/interface.js";
-import { isIncluded, json2map, checkFunctionName, checkGenerics } from "../../../../src/utils/index.js";
+import {
+  isIncluded,
+  json2map,
+  checkFunctionName,
+  checkGenerics,
+  supplyDefaultFunction,
+} from "../../../../src/utils/index.js";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
@@ -64,4 +71,35 @@ test("checkGenerics", () => {
   expect(checkGenerics("noGenerics")).toEqual(undefined);
   expect(checkGenerics("func<")).toEqual(undefined);
   expect(checkGenerics("fun>a")).toEqual(undefined);
+});
+
+describe("supplyDefaultFunction", () => {
+  test("supplyTest", () => {
+    const mockImportList: WebAssembly.ModuleImportDescriptor[] = [
+      { kind: "function", module: "myenv", name: "processEvent" },
+      { kind: "function", module: "externalMath", name: "add" },
+      { kind: "function", module: "system", name: "getStatus" },
+      { kind: "function", module: "logger", name: "logWarning" },
+      { kind: "function", module: "customOps", name: "combineValues" },
+      { kind: "global", module: "myenv", name: "globalVar" },
+      { kind: "memory", module: "other", name: "memChange" },
+    ];
+
+    const mockImportObject: ASImports = {
+      myenv: {},
+      externalMath: {},
+      system: {},
+      logger: {},
+      customOps: {},
+    };
+
+    supplyDefaultFunction(mockImportList, mockImportObject);
+
+    expect(typeof mockImportObject["myenv"]?.["processEvent"]).toBe("function");
+    expect(typeof mockImportObject["system"]?.["getStatus"]).toBe("function");
+    expect(typeof mockImportObject["logger"]?.["logWarning"]).toBe("function");
+    expect(typeof mockImportObject["customOps"]?.["combineValues"]).toBe("function");
+    expect(mockImportObject["myenv"]?.["globalVar"]).toBeUndefined();
+    expect(mockImportObject["other"]?.["memChange"]).toBeUndefined();
+  });
 });
