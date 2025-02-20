@@ -81,6 +81,8 @@ describe("supplyDefaultFunction", () => {
       { kind: "function", module: "system", name: "getStatus" },
       { kind: "function", module: "logger", name: "logWarning" },
       { kind: "function", module: "customOps", name: "combineValues" },
+      { kind: "global", module: "myenv", name: "globalVar" },
+      { kind: "memory", module: "other", name: "memChange" },
     ];
 
     const mockImportObject: ASImports = {
@@ -97,5 +99,7 @@ describe("supplyDefaultFunction", () => {
     expect(typeof mockImportObject["system"]?.["getStatus"]).toBe("function");
     expect(typeof mockImportObject["logger"]?.["logWarning"]).toBe("function");
     expect(typeof mockImportObject["customOps"]?.["combineValues"]).toBe("function");
+    expect(mockImportObject["myenv"]?.["globalVar"]).toBeUndefined();
+    expect(mockImportObject["other"]?.["memChange"]).toBeUndefined();
   });
 });
