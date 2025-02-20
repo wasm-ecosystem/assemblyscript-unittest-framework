@@ -1,12 +1,6 @@
-import { jest } from "@jest/globals";
 import { Imports as ASImports } from "@assemblyscript/loader";
 
-const mockWriteFile = jest.fn();
-jest.unstable_mockModule("node:fs", () => ({
-  writeFileSync: mockWriteFile,
-}));
-
-const { supplyDefaultFunction } = await import("../../../../src/utils/index.js");
+import { supplyDefaultFunction } from "../../../../src/utils/index.js";
 
 describe("supplyDefaultFunction", () => {
   test("supplyTest", () => {
