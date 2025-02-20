@@ -15,7 +15,7 @@
     "build": "node scripts/build_instrumentation.js && tsc --build ./transform/tsconfig.json && tsc --build ./src/tsconfig.json",
     "test:as": "node bin/as-test.js",
     "test:ts": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
-    "test:cpp": "cmake -B build -S . && cmake --build build && build/bin/wasm-instrumentation-test",
+    "test:cpp": "cmake -B build -S . && cmake --build build --target wasm-instrumentation-test wasm-opt && build/bin/wasm-instrumentation-test",
     "test": "npm run test:as && npm run test:ts && npm run test:cpp",
     "lint": "eslint src assembly tests/ts/test --max-warnings=0 && prettier -c .",
     "lint:fix": "eslint src assembly --fix && npx prettier --write .",
