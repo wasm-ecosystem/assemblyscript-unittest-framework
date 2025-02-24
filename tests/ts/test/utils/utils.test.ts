@@ -2,7 +2,7 @@ import fs from "fs-extra";
 import { join } from "node:path";
 import { Imports as ASImports } from "@assemblyscript/loader";
 import { fileURLToPath, URL } from "node:url";
-import { DebugInfo, CovDebugInfo } from "../../../../src/interface.js";
+import { DebugInfo, CovDebugInfo, ImportFunctionInfo } from "../../../../src/interface.js";
 import {
   isIncluded,
   json2map,
@@ -10,6 +10,7 @@ import {
   checkGenerics,
   supplyDefaultFunction,
 } from "../../../../src/utils/index.js";
+import { Type } from "wasmparser";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
@@ -75,31 +76,28 @@ test("checkGenerics", () => {
 
 describe("supplyDefaultFunction", () => {
   test("supplyTest", () => {
-    const mockImportList: WebAssembly.ModuleImportDescriptor[] = [
-      { kind: "function", module: "myenv", name: "processEvent" },
-      { kind: "function", module: "externalMath", name: "add" },
-      { kind: "function", module: "system", name: "getStatus" },
-      { kind: "function", module: "logger", name: "logWarning" },
-      { kind: "function", module: "customOps", name: "combineValues" },
-      { kind: "global", module: "myenv", name: "globalVar" },
-      { kind: "memory", module: "other", name: "memChange" },
+    const mockInfos: ImportFunctionInfo[] = [
+      { module: "ns", name: "ut.i32", args: [new Type(-1)], return: new Type(-1) },
+      { module: "ns", name: "ut.i64", args: [new Type(-2)], return: new Type(-2) },
+      { module: "ns", name: "ut.f32", args: [new Type(-3)], return: new Type(-3) },
+      { module: "ns", name: "ut.f64", args: [new Type(-4)], return: new Type(-4) },
     ];
 
     const mockImportObject: ASImports = {
-      myenv: {},
-      externalMath: {},
-      system: {},
-      logger: {},
-      customOps: {},
+      env: {},
+      wasi_snapshot_preview1: {},
     };
+    supplyDefaultFunction(mockInfos, mockImportObject);
 
-    supplyDefaultFunction(mockImportList, mockImportObject);
-
-    expect(typeof mockImportObject["myenv"]?.["processEvent"]).toBe("function");
-    expect(typeof mockImportObject["system"]?.["getStatus"]).toBe("function");
-    expect(typeof mockImportObject["logger"]?.["logWarning"]).toBe("function");
-    expect(typeof mockImportObject["customOps"]?.["combineValues"]).toBe("function");
-    expect(mockImportObject["myenv"]?.["globalVar"]).toBeUndefined();
-    expect(mockImportObject["other"]?.["memChange"]).toBeUndefined();
+    expect(typeof mockImportObject["ns"]?.["ut.i32"]).toBe("function");
+    expect(typeof mockImportObject["ns"]?.["ut.i64"]).toBe("function");
+    expect(typeof mockImportObject["ns"]?.["ut.f32"]).toBe("function");
+    expect(typeof mockImportObject["ns"]?.["ut.f64"]).toBe("function");
+    /* eslint-disable @typescript-eslint/ban-types */
+    expect((mockImportObject["ns"]?.["ut.i32"] as Function)(0)).toEqual(0);
+    expect((mockImportObject["ns"]?.["ut.i64"] as Function)(0)).toEqual(BigInt(0));
+    expect((mockImportObject["ns"]?.["ut.f32"] as Function)(0)).toEqual(0);
+    expect((mockImportObject["ns"]?.["ut.f64"] as Function)(0)).toEqual(0);
+    /* eslint-enable @typescript-eslint/ban-types */
   });
 });

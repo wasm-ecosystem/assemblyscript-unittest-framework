@@ -1,4 +1,6 @@
 import { Imports as ASImports } from "@assemblyscript/loader";
+import { ImportFunctionInfo } from "../interface.js";
+import { TypeKind } from "wasmparser/dist/cjs/WasmParser.js";
 
 export function json2map<V>(json: Record<string, V>): Map<string, V> {
   const res = new Map<string, V>();
@@ -43,36 +45,18 @@ export function checkGenerics(functionName: string): string | undefined {
   return;
 }
 
-// list imports of a given wasm binary (buffer)
-// importList format should be as follows：
-// [
-//   { module: 'env', name: 'memory', kind: 'memory' },
-//   { module: 'env', name: 'myFunction', kind: 'function' },
-//   ...
-// ]
-export async function parseWasmImports(binary: Buffer) {
-  const mod = await WebAssembly.compile(binary);
-  const importList = WebAssembly.Module.imports(mod);
-
-  return importList;
-}
-
-export function supplyDefaultFunction(importList: WebAssembly.ModuleImportDescriptor[], importObject: ASImports) {
-  for (const imp of importList) {
-    if (imp.kind === "function") {
-      const moduleName = imp.module;
-      const funcName = imp.name;
-      if (importObject[moduleName]?.[funcName] === undefined) {
-        if (importObject[moduleName] === undefined) {
-          importObject[moduleName] = {};
-        }
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
-        (importObject[moduleName] as any)[funcName] = (...args: any[]): any => {
-          // notify that a default function has been called
-          console.log(`Default stub called for ${moduleName}.${funcName}, args:`, args);
-          return 0;
-        };
+export function supplyDefaultFunction(infos: ImportFunctionInfo[], importObject: ASImports) {
+  for (const info of infos) {
+    const module = info.module;
+    const name = info.name;
+    if (importObject[module]?.[name] === undefined) {
+      if (importObject[module] === undefined) {
+        importObject[module] = {};
       }
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+      (importObject[module] as any)[name] = (..._args: unknown[]): unknown => {
+        return info.return?.kind === TypeKind.i64 ? BigInt(0) : 0;
+      };
     }
   }
 }

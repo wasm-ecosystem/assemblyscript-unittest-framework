@@ -7,7 +7,8 @@ import { AssertResult } from "../assertResult.js";
 import { Imports, ImportsArgument } from "../index.js";
 import { IAssertResult, InstrumentResult } from "../interface.js";
 import { mockInstruFunc, covInstruFunc } from "../utils/import.js";
-import { parseWasmImports, supplyDefaultFunction } from "../utils/index.js";
+import { supplyDefaultFunction } from "../utils/index.js";
+import { parseImportFunctionInfo } from "../utils/wasmparser.js";
 const readFile = promises.readFile;
 
 function nodeExecutor(wasms: string[], outFolder: string, imports: Imports) {
@@ -31,9 +32,8 @@ function nodeExecutor(wasms: string[], outFolder: string, imports: Imports) {
         ...userDefinedImportsObject,
       } as ASImports;
       const binary = await readFile(wasm);
-      const importList = await parseWasmImports(binary);
-      // supplying default function here, so no more need to define all of them in as-test.js
-      supplyDefaultFunction(importList, importObject);
+      const importFuncList = parseImportFunctionInfo(binary);
+      supplyDefaultFunction(importFuncList, importObject);
       const ins = await instantiate(binary, importObject);
       importsArg.module = ins.module;
       importsArg.instance = ins.instance;
