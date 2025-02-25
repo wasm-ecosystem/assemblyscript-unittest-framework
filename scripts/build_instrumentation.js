@@ -19,7 +19,7 @@ function initEmscripten() {
 initEmscripten();
 
 execSync("emcmake cmake -B build_wasm -S .", { encoding: "utf8", stdio: "inherit", env });
-execSync("cmake --build build_wasm --target wasm-instrumentation", {
+execSync("cmake --build build_wasm --parallel 4 --target wasm-instrumentation", {
   encoding: "utf8",
   stdio: "inherit",
   env,
