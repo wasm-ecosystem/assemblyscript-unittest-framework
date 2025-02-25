@@ -18,7 +18,7 @@
     "test:cpp": "cmake -B build -S . && cmake --build build --target wasm-instrumentation-test wasm-opt && build/bin/wasm-instrumentation-test",
     "test": "npm run test:as && npm run test:ts && npm run test:cpp",
     "lint": "eslint src assembly tests/ts/test --max-warnings=0 && prettier -c .",
-    "lint:fix": "eslint src assembly --fix && npx prettier --write .",
+    "lint:fix": "eslint src assembly --fix && prettier --write .",
     "example": "node bin/as-test.js --config example/as-test.config.cjs ; node bin/as-test.js --config example/as-test.config.js"
   },
   "dependencies": {
@@ -43,6 +43,7 @@
     "@types/glob": "^7.2.0",
     "@types/jest": "^29.5.2",
     "@types/node": "^20.9.1",
+    "wasmparser": "5.11.1",
     "assemblyscript-prettier": "^3.0.1",
     "cross-env": "^7.0.3",
     "jest": "^29.5.0",

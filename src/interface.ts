@@ -3,6 +3,8 @@
  */
 // input
 
+import { Type } from "wasmparser";
+
 // instrumented file information
 export interface InstrumentResult {
   sourceWasm: string;
@@ -62,6 +64,13 @@ export interface IAssertResult {
   fail: number;
   total: number;
   failed_info: AssertFailMessage;
+}
+
+export interface ImportFunctionInfo {
+  module: string;
+  name: string;
+  args: Type[];
+  return: Type | undefined;
 }
 
 // output
