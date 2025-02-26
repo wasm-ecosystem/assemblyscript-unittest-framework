@@ -4,7 +4,7 @@
   "description": "assemblyscript unit test framework",
   "main": "assembly/index.ts",
   "bin": {
-    "as-test": "./bin/as-test.js"
+    "as-test": "bin/as-test.js"
   },
   "type": "module",
   "engines": {
@@ -61,7 +61,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Schleifner/assemblyscript-unittest-framework.git"
+    "url": "git+https://github.com/wasm-ecosystem/assemblyscript-unittest-framework.git"
   },
   "contributors": [
     "Congcong Cai <congcong.cai@bmw.com>",

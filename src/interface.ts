@@ -158,5 +158,5 @@ export interface SourceFunctionInfo {
   range: [number, number];
 }
 
-export const OrganizationName = "Schleifner";
-export const Repository = "https://github.com/Schleifner/assemblyscript-unittest-framework";
+export const OrganizationName = "wasm-ecosystem";
+export const Repository = "https://github.com/wasm-ecosystem/assemblyscript-unittest-framework";
