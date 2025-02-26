@@ -4,7 +4,6 @@
 #include <cstddef>
 #include <cstdint>
 #include <iostream>
-#include <regex>
 #include <string_view>
 #include <utility>
 #include <vector>
@@ -139,7 +138,6 @@ public:
 private:
   wasm::Module *const module;  ///< working module
   const std::string checkMock; ///< mock check string
-  const std::regex functionFilter = std::regex("~lib/.+");
   wasm::Builder moduleBuilder; ///< module builder
   uint32_t expectIndex = 0U;   ///< expectation index, auto increase
   wasm::ExpressionStack expressionStack;
