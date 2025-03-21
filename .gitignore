@@ -8,3 +8,5 @@
 
 /coverage
 /coverage-ts
+
+/tests/cpp/lit/build
