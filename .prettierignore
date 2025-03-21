@@ -5,6 +5,6 @@
 /transform/*.mjs
 /tests/ts/fixture
 /third_party
-/tests/cpp/lit/**/*.json
+/tests/cpp/lit/expectInstrument**/*.json
 /.cache
 /.github/CODEOWNERS

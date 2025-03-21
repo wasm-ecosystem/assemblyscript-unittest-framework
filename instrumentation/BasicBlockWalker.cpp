@@ -1,5 +1,11 @@
 #include "BasicBlockWalker.hpp"
+#include <algorithm>
 #include <cfg/cfg-traversal.h>
+#include <iostream>
+#include <memory>
+#include <set>
+#include <utility>
+#include <wasm.h>
 #include "ir/branch-utils.h"
 
 namespace wasmInstrumentation {
@@ -27,30 +33,72 @@ void BasicBlockWalker::visitExpression(wasm::Expression *curr) noexcept {
   }
 }
 
-void BasicBlockWalker::unlinkEmptyBlock() noexcept {
-  const auto lambda = [](std::unique_ptr<BasicBlock> &block) {
-    if (block->contents.exprs.empty() && block->out.size() == 1) {
-      const auto outBlock = block->out[0];
-      outBlock->in.erase(std::find(outBlock->in.begin(), outBlock->in.end(), block.get()));
-      for (auto &inBlock : block->in) {
-        inBlock->out.erase(std::find(inBlock->out.begin(), inBlock->out.end(), block.get()));
-        inBlock->out.push_back(outBlock);
-        outBlock->in.push_back(inBlock);
+static bool
+isBasicBlockContainUnreachable(BasicBlockWalker::BasicBlock &block,
+                               std::set<BasicBlockWalker::BasicBlock *> unreachableBlocks) {
+  return (!block.contents.exprs.empty() &&
+          std::any_of(block.contents.exprs.begin(), block.contents.exprs.end(),
+                      [](wasm::Expression *expr) {
+                        return expr->is<wasm::Unreachable>();
+                      })) ||
+         (!block.in.empty() &&
+          std::all_of(block.in.begin(), block.in.end(),
+                      [&unreachableBlocks](BasicBlockWalker::BasicBlock *inBlock) {
+                        return unreachableBlocks.find(inBlock) != unreachableBlocks.end();
+                      }));
+};
+
+static void removeDuplicates(std::vector<BasicBlockWalker::BasicBlock *> &list) {
+  std::sort(list.begin(), list.end());
+  list.erase(std::unique(list.begin(), list.end()), list.end());
+}
+
+void BasicBlockWalker::cleanBlock() noexcept {
+  bool isModified = true;
+  std::set<BasicBlock *> unreachableBlocks{};
+  while (isModified) {
+    isModified = false;
+    for (auto &block : basicBlocks) {
+      if (isBasicBlockContainUnreachable(*block, unreachableBlocks)) {
+        isModified |= unreachableBlocks.insert(block.get()).second;
       }
-      block->in.clear();
-      block->out.clear();
-      return true;
     }
-    return false;
-  };
-  basicBlocks.erase(std::remove_if(basicBlocks.begin(), basicBlocks.end(), lambda),
-                    basicBlocks.end());
+  }
+  std::set<BasicBlock *> emptyBlocks{};
+  for (auto &block : basicBlocks) {
+    if (block->contents.exprs.empty() && block->out.size() == 1) {
+      emptyBlocks.insert(block.get());
+    }
+  }
+
+  std::set<BasicBlock *> targetCleanBlocks{};
+  targetCleanBlocks.insert(unreachableBlocks.begin(), unreachableBlocks.end());
+  targetCleanBlocks.insert(emptyBlocks.begin(), emptyBlocks.end());
+
+  for (auto &block : targetCleanBlocks) {
+    for (auto &outBlock : block->out) {
+      outBlock->in.erase(std::find(outBlock->in.begin(), outBlock->in.end(), block));
+      outBlock->in.insert(outBlock->in.end(), block->in.begin(), block->in.end());
+      removeDuplicates(outBlock->in);
+    }
+    for (auto &inBlock : block->in) {
+      inBlock->out.erase(std::find(inBlock->out.begin(), inBlock->out.end(), block));
+      inBlock->out.insert(inBlock->out.end(), block->out.begin(), block->out.end());
+      removeDuplicates(inBlock->out);
+    }
+    block->in.clear();
+    block->out.clear();
+    basicBlocks.erase(std::find_if(basicBlocks.begin(), basicBlocks.end(),
+                                   [&block](std::unique_ptr<BasicBlock> const &b) -> bool {
+                                     return b.get() == block;
+                                   }));
+  }
 }
 
 void BasicBlockWalker::doWalkFunction(wasm::Function *const func) noexcept {
   wasm::CFGWalker<BasicBlockWalker, wasm::UnifiedExpressionVisitor<BasicBlockWalker>,
                   BasicBlockInfo>::doWalkFunction(func);
-  unlinkEmptyBlock();
+  cleanBlock();
   // LCOV_EXCL_START
   if (basicBlocks.size() > UINT32_MAX) {
     std::cerr << "Error: BasicBlocks length exceeds UINT32_MAX\n";

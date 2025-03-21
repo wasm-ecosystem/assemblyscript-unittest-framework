@@ -167,7 +167,7 @@ private:
   ///
   /// @brief remove empty block that do not belong to any branch
   ///
-  void unlinkEmptyBlock() noexcept;
+  void cleanBlock() noexcept;
 };
 } // namespace wasmInstrumentation
 
