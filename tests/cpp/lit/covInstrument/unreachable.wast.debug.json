@@ -1,0 +1,27 @@
+{
+  "debugFiles": ["assembly/index.ts"],
+  "debugInfos": {
+    "assembly/index/f": {
+      "branchInfo": [],
+      "index": 0,
+      "lineInfo": [
+        [
+          [0, 5, 2],
+          [0, 5, 9],
+          [0, 5, 14]
+        ],
+        []
+      ]
+    },
+    "assembly/index/main": {
+      "branchInfo": [],
+      "index": 1,
+      "lineInfo": [
+        [
+          [0, 2, 2],
+          [0, 2, 4]
+        ]
+      ]
+    }
+  }
+}
