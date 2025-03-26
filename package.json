@@ -17,7 +17,7 @@
     "test:ts": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
     "test:cpp": "cmake -B build -S . && cmake --build build --parallel 4 --target wasm-instrumentation-test wasm-opt && build/bin/wasm-instrumentation-test",
     "test": "npm run test:as && npm run test:ts && npm run test:cpp",
-    "lint": "eslint src assembly tests/ts/test --max-warnings=0 && prettier -c .",
+    "lint": "eslint src assembly transform tests/ts/test --max-warnings=0 && prettier -c .",
     "lint:fix": "eslint src assembly --fix && prettier --write .",
     "example": "node bin/as-test.js --config example/as-test.config.cjs ; node bin/as-test.js --config example/as-test.config.js"
   },
