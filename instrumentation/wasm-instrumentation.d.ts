@@ -16,4 +16,4 @@ interface Instrumenter {
   _free(ptr: number): void;
 }
 
-declare function initInstrumenter(initInstrumenter?: {}): Promise;
+declare function initInstrumenter(initInstrumenter?: {}): Promise<Instrumenter>;

@@ -1,7 +1,7 @@
-import { glob } from "glob";
 import assert from "node:assert";
 import fs from "fs-extra";
 import { dirname, join, relative, resolve } from "node:path";
+import fastGlob from "fast-glob";
 
 export function splitCommand(cmdline: string): { cmd: string; argv: string[] } {
   const res = new Array<string>();
@@ -79,7 +79,9 @@ export function findRoot(filePaths: string[]): string {
 
 export function getIncludeFiles(includePatterns: string[], filter: (path: string) => boolean): string[] {
   const flatPatterns = includePatterns.flatMap((pattern) => {
-    const res = glob.sync(pattern);
+    // Append '/*' if the pattern is a folder name
+    const adjustedPattern = fs.statSync(pattern).isDirectory() ? `${pattern}/*` : pattern;
+    const res = fastGlob.sync(adjustedPattern);
     return res;
   });
   const files = flatPatterns.flatMap((flatPattern) => {
