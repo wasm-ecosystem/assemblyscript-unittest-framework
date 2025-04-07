@@ -23,7 +23,7 @@ test("isIncluded", () => {
 
 test("json2map", () => {
   const debugInfoFile = join(__dirname, "..", "..", "fixture", "ifBlock.debugInfo.json");
-  // eslint-disable-next-line import/no-named-as-default-member
+
   const debugInfo = fs.readJsonSync(debugInfoFile) as DebugInfo;
 
   expect(debugInfo.debugFiles).toEqual(["index.ts"]);
@@ -93,11 +93,11 @@ describe("supplyDefaultFunction", () => {
     expect(typeof mockImportObject["ns"]?.["ut.i64"]).toBe("function");
     expect(typeof mockImportObject["ns"]?.["ut.f32"]).toBe("function");
     expect(typeof mockImportObject["ns"]?.["ut.f64"]).toBe("function");
-    /* eslint-disable @typescript-eslint/ban-types */
-    expect((mockImportObject["ns"]?.["ut.i32"] as Function)(0)).toEqual(0);
-    expect((mockImportObject["ns"]?.["ut.i64"] as Function)(0)).toEqual(BigInt(0));
-    expect((mockImportObject["ns"]?.["ut.f32"] as Function)(0)).toEqual(0);
-    expect((mockImportObject["ns"]?.["ut.f64"] as Function)(0)).toEqual(0);
-    /* eslint-enable @typescript-eslint/ban-types */
+
+    // Explicitly cast to the expected function type for type safety
+    expect((mockImportObject["ns"]?.["ut.i32"] as (arg: number) => number)(0)).toEqual(0);
+    expect((mockImportObject["ns"]?.["ut.i64"] as (arg: number) => bigint)(0)).toEqual(BigInt(0));
+    expect((mockImportObject["ns"]?.["ut.f32"] as (arg: number) => number)(0)).toEqual(0);
+    expect((mockImportObject["ns"]?.["ut.f64"] as (arg: number) => number)(0)).toEqual(0);
   });
 });

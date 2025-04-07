@@ -1,7 +1,5 @@
 import { execSync } from "node:child_process";
-import { existsSync } from "node:fs";
-
-execSync("tsc --build ./transform/tsconfig.json");
+import { existsSync, copyFileSync } from "node:fs";
 
 const env = process.env;
 
@@ -19,11 +17,10 @@ function initEmscripten() {
 initEmscripten();
 
 execSync("emcmake cmake -B build_wasm -S .", { encoding: "utf8", stdio: "inherit", env });
-execSync("cmake --build build_wasm --parallel 4 --target wasm-instrumentation", {
+execSync("cmake --build build_wasm --parallel --target wasm-instrumentation", {
   encoding: "utf8",
   stdio: "inherit",
   env,
 });
-execSync(
-  "tsc build_wasm/bin/wasm-instrumentation.js --declaration --allowJs --emitDeclarationOnly --outDir build_wasm/bin"
-);
+
+copyFileSync("instrumentation/wasm-instrumentation.d.ts", "build_wasm/bin/wasm-instrumentation.d.ts");

@@ -1,4 +1,4 @@
-import fs from "fs-extra"; // eslint-disable-line import/no-named-as-default-member
+import fs from "fs-extra";
 import { readFile } from "node:fs/promises";
 import { checkFunctionName, checkGenerics, isIncluded, json2map } from "../utils/index.js";
 import { SingleFileCoverageAnalysis } from "./singleFileAnalysis.js";
@@ -37,7 +37,6 @@ export class Parser {
   }
 
   private async getTempCovTraceMap(traceFile: string) {
-    // eslint-disable-next-line import/no-named-as-default-member
     const traces = (await fs.readJson(traceFile)) as CovTrace[];
     const tempCovTraceMap = new Map<FunctionIndex, CodeSnippetIndex[]>();
     for (const trace of traces) {
@@ -53,7 +52,6 @@ export class Parser {
   }
 
   private async getDebugInfos(debugInfoFile: string) {
-    // eslint-disable-next-line import/no-named-as-default-member
     const debugInfo = (await fs.readJson(debugInfoFile)) as DebugInfo;
     const debugInfos = json2map(debugInfo.debugInfos);
     const debugFiles = debugInfo.debugFiles;

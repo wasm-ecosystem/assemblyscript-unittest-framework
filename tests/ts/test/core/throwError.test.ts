@@ -1,5 +1,5 @@
 import { join } from "node:path";
-// eslint-disable-next-line node/no-extraneous-import
+// eslint-disable-next-line n/no-extraneous-import
 import { jest } from "@jest/globals";
 import { projectRoot } from "../../../../src/utils/projectRoot.js";
 
@@ -12,11 +12,8 @@ jest.unstable_mockModule("assemblyscript/asc", () => ({
   }),
 }));
 
-// eslint-disable-next-line node/no-unsupported-features/es-syntax
 const { main } = await import("assemblyscript/asc");
-// eslint-disable-next-line node/no-unsupported-features/es-syntax
 const { precompile } = await import("../../../../src/core/precompile.js");
-// eslint-disable-next-line node/no-unsupported-features/es-syntax
 const { compile } = await import("../../../../src/core/compile.js");
 
 test("transform error", async () => {

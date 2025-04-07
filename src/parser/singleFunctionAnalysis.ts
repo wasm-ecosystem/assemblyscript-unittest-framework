@@ -25,8 +25,8 @@ export class SingleFunctionCoverageAnalysis {
     }
     for (const lineIndexSet of covInfo.lineInfo.values()) {
       for (const lineIndex of lineIndexSet.values()) {
-        minLine = minLine > lineIndex ? lineIndex : minLine;
-        maxLine = maxLine > lineIndex ? maxLine : lineIndex;
+        minLine = Math.min(minLine, lineIndex);
+        maxLine = Math.max(maxLine, lineIndex);
         this.result.sourceUsedCount.set(lineIndex, 0);
       }
     }
@@ -63,6 +63,12 @@ export class SingleFunctionCoverageAnalysis {
     if (this.branchGraph.size === 0) {
       return;
     }
+    this.markCoveredBranches(indexSerialInSingleFunction);
+    this.calculateBranchCoverage();
+    this.addUncoveredLines();
+  }
+
+  private markCoveredBranches(indexSerialInSingleFunction: CodeSnippetIndex[]) {
     for (let i = 1; i < indexSerialInSingleFunction.length; i++) {
       const first = indexSerialInSingleFunction[i - 1],
         second = indexSerialInSingleFunction[i];
@@ -73,6 +79,9 @@ export class SingleFunctionCoverageAnalysis {
         toNodes.set(second, true);
       }
     }
+  }
+
+  private calculateBranchCoverage() {
     for (const [currentBasicBlock, branchesForThatBasicBlock] of this.branchGraph) {
       let used = 0;
       for (const isCovered of branchesForThatBasicBlock.values()) {
@@ -84,6 +93,9 @@ export class SingleFunctionCoverageAnalysis {
       }
       this.result.branchCoverageRate.used += used;
     }
+  }
+
+  private addUncoveredLines() {
     for (const block of this.notFullyCoveredBasicBlock) {
       const lineInfo = this.covInfo.lineInfo.get(block);
       if (lineInfo !== undefined && lineInfo.size > 0) {

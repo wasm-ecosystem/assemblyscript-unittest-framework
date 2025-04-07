@@ -1,5 +1,5 @@
 import { join } from "node:path";
-// eslint-disable-next-line node/no-extraneous-import
+// eslint-disable-next-line n/no-extraneous-import
 import { jest } from "@jest/globals";
 import { fileURLToPath, URL } from "node:url";
 import { SourceFunctionInfo } from "../../../../src/interface.js";
@@ -8,9 +8,7 @@ jest.unstable_mockModule("node:fs/promises", () => ({
   readFile: jest.fn(() => "\n".repeat(50)),
 }));
 
-// eslint-disable-next-line node/no-unsupported-features/es-syntax
 const { Parser } = await import("../../../../src/parser/index.js");
-// eslint-disable-next-line node/no-unsupported-features/es-syntax
 const { readFile } = await import("node:fs/promises");
 const dirname = fileURLToPath(new URL(".", import.meta.url));
 

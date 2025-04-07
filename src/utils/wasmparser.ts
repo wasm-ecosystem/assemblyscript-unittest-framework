@@ -10,12 +10,12 @@ import {
 import { ImportFunctionInfo } from "../interface.js";
 import assert from "node:assert";
 
-export function parseImportFunctionInfo(buf: Uint8Array) {
+export function parseImportFunctionInfo(buf: ArrayBuffer) {
   const reader = new BinaryReader();
   const types: ITypeEntry[] = [];
   const result: ImportFunctionInfo[] = [];
-  reader.setData(buf, 0, buf.length);
-  // eslint-disable-next-line no-constant-condition
+  reader.setData(buf, 0, buf.byteLength);
+
   while (true) {
     if (!reader.read()) {
       return result;

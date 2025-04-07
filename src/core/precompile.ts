@@ -38,7 +38,7 @@ export async function precompile(
 export function getRelatedFiles(includes: string[], excludes: string[], filter: (path: string) => boolean) {
   const result: string[] = [];
   const includeFiles = getIncludeFiles(includes, (path) => path.endsWith(".ts")); // a
-  const exc = ignore.default().add(excludes);
+  const exc = ignore().add(excludes);
 
   for (const path of includeFiles) {
     const relativePath = relative(".", path);
@@ -69,5 +69,5 @@ async function transform(sourceCodePath: string, transformFunction: string) {
     console.error(stderr.toString());
     throw error;
   }
-  sourceFunctions.set(sourceCodePath, functionInfos as SourceFunctionInfo[]);
+  sourceFunctions.set(sourceCodePath, functionInfos);
 }

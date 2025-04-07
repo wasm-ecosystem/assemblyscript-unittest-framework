@@ -22,9 +22,9 @@ describe("splitCommand", () => {
 test("findRoot", () => {
   expect(findRoot(["tests/as/comparison.test.ts"])).toEqual("tests/as");
   expect(findRoot(["tests/A/a.test.ts", "tests/B/b.test.ts"])).toEqual("tests");
-  expect(() => findRoot([])).toThrowError("include length is zeros");
+  expect(() => findRoot([])).toThrow("include length is zeros");
   expect(findRoot(["a.test.ts", "b.test.ts"])).toEqual(".");
-  expect(() => findRoot(["../a.test.ts", "b.test.ts"])).toThrowError("file path out of project range");
+  expect(() => findRoot(["../a.test.ts", "b.test.ts"])).toThrow("file path out of project range");
 });
 
 test("getIncludeFiles", () => {
