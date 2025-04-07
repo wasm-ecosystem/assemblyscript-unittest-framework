@@ -66,10 +66,12 @@ class SourceFunctionTransform extends Transform {
       (source) => source.sourceKind === SourceKind.UserEntry && !source.normalizedPath.startsWith("~lib/")
     );
     this.visitNode(entrySource);
-    global.functionInfos = this.functionInfos.reverse();
+    this.functionInfos.reverse();
+    globalThis.functionInfos = this.functionInfos;
   }
 
   visitNode(node: Node) {
+    // eslint-disable-next-line sonarjs/max-switch-cases
     switch (node.kind) {
       case NodeKind.Source: {
         this.visitSource(node as Source);
@@ -357,7 +359,7 @@ class SourceFunctionTransform extends Transform {
   visitUnaryPrefixExpression(node: UnaryPrefixExpression) {
     this.visitNode(node.operand);
   }
-
+  // eslint-disable-next-line sonarjs/no-identical-functions
   visitBlockStatement(node: BlockStatement) {
     for (const statement of node.statements) {
       this.visitNode(statement);
@@ -459,13 +461,13 @@ class SourceFunctionTransform extends Transform {
       this.visitEnumValueDeclaration(value);
     }
   }
-
+  // eslint-disable-next-line sonarjs/no-identical-functions
   visitEnumValueDeclaration(node: EnumValueDeclaration) {
     if (node.initializer) {
       this.visitNode(node.initializer);
     }
   }
-
+  // eslint-disable-next-line sonarjs/no-identical-functions
   visitFieldDeclaration(node: FieldDeclaration) {
     if (node.initializer) {
       this.visitNode(node.initializer);
@@ -514,13 +516,13 @@ class SourceFunctionTransform extends Transform {
   visitMethodDeclaration(node: MethodDeclaration) {
     this.visitFunctionDeclaration(node);
   }
-
+  // eslint-disable-next-line sonarjs/no-identical-functions
   visitNamespaceDeclaration(node: NamespaceDeclaration) {
     for (const member of node.members) {
       this.visitNode(member);
     }
   }
-
+  // eslint-disable-next-line sonarjs/no-identical-functions
   visitVariableDeclaration(node: VariableDeclaration) {
     if (node.initializer) {
       this.visitNode(node.initializer);

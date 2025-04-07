@@ -42,7 +42,7 @@ export function checkGenerics(functionName: string): string | undefined {
   if (startIndex !== -1 && endIndex !== -1) {
     return functionName.slice(0, startIndex) + functionName.slice(endIndex + 1);
   }
-  return;
+  return undefined;
 }
 
 export function supplyDefaultFunction(infos: ImportFunctionInfo[], importObject: ASImports) {

@@ -1,6 +1,4 @@
-import type { JestConfigWithTsJest } from "ts-jest";
-
-const config: JestConfigWithTsJest = {
+const config = {
   roots: ["tests/ts"],
   extensionsToTreatAsEsm: [".ts"],
   verbose: true,
@@ -12,10 +10,11 @@ const config: JestConfigWithTsJest = {
   transform: {
     "^.+\\.(ts|tsx)?$": ["ts-jest", { useESM: true }],
   },
+  transformIgnorePatterns: ["<rootDir>/third_party"],
   moduleNameMapper: {
     "^(\\.{1,2}/.*)\\.js$": "$1",
   },
-  testPathIgnorePatterns: ["./dist"],
+  testPathIgnorePatterns: ["/dist/", "/third_party/", "/node_modules/"],
   testTimeout: 10000,
 };
 

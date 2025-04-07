@@ -31,8 +31,12 @@ function nodeExecutor(wasms: string[], outFolder: string, imports: Imports) {
         ...covInstruFunc(wasm),
         ...userDefinedImportsObject,
       } as ASImports;
-      const binary = await readFile(wasm);
-      const importFuncList = parseImportFunctionInfo(binary);
+      const binaryBuffer = await readFile(wasm);
+      const binary = binaryBuffer.buffer.slice(
+        binaryBuffer.byteOffset,
+        binaryBuffer.byteOffset + binaryBuffer.byteLength
+      );
+      const importFuncList = parseImportFunctionInfo(binary as ArrayBuffer);
       supplyDefaultFunction(importFuncList, importObject);
       const ins = await instantiate(binary, importObject);
       importsArg.module = ins.module;
@@ -59,8 +63,6 @@ export async function execWasmBinarys(
   ensureDirSync(outFolder);
 
   const wasmPaths = instrumentResult.map((res) => res.instrumentedWasm);
-
-  // eslint-disable-next-line unicorn/prefer-ternary
 
   await nodeExecutor(wasmPaths, outFolder, imports);
 

@@ -1,4 +1,4 @@
-// eslint-disable-next-line node/no-extraneous-import
+// eslint-disable-next-line n/no-extraneous-import
 import { jest } from "@jest/globals";
 
 const mockWriteFile = jest.fn();
@@ -6,9 +6,7 @@ jest.unstable_mockModule("node:fs", () => ({
   writeFileSync: mockWriteFile,
 }));
 
-// eslint-disable-next-line node/no-unsupported-features/es-syntax
 const { mockInstruFunc, covInstruFunc } = await import("../../../../src/utils/import.js");
-// eslint-disable-next-line node/no-unsupported-features/es-syntax
 const fs = await import("node:fs");
 
 describe("imports", () => {
@@ -22,7 +20,7 @@ describe("imports", () => {
     expect(mockInstruFunc["mockFunctionStatus.getCalls"](1, 4)).toEqual(1);
     expect(mockInstruFunc["mockFunctionStatus.getCalls"](2, 4)).toEqual(0);
     expect(mockInstruFunc["mockFunctionStatus.getCalls"](1, 3)).toEqual(0);
-    expect(() => mockInstruFunc["mockFunctionStatus.get"](2)).toThrowError();
+    expect(() => mockInstruFunc["mockFunctionStatus.get"](2)).toThrow();
     // unmock(oldFunction)
     mockInstruFunc["mockFunctionStatus.setIgnore"](1, true);
     expect(mockInstruFunc.checkMock(1, false)).toEqual(1);

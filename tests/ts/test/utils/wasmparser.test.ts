@@ -9,6 +9,7 @@ const __dirname = fileURLToPath(new URL(".", import.meta.url));
 test("parseImportFunctionInfo", () => {
   const fp = join(__dirname, "..", "..", "fixture", "defaultImportTest.wasm");
   const buf = readFileSync(fp);
+  const arrayBuffer = buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength); // Convert Buffer to ArrayBuffer
   const expectedInfo = [
     {
       module: "env",
@@ -48,5 +49,5 @@ test("parseImportFunctionInfo", () => {
     },
   ];
 
-  expect(parseImportFunctionInfo(buf)).toEqual(expectedInfo);
+  expect(parseImportFunctionInfo(arrayBuffer as ArrayBuffer)).toEqual(expectedInfo); // Pass ArrayBuffer
 });
