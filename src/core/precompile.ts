@@ -57,17 +57,10 @@ export function getRelatedFiles(includes: string[], excludes: string[], filter: 
 }
 
 async function transform(sourceCodePath: string, transformFunction: string, flags: string) {
-  let ascArgv = [
-      sourceCodePath,
-      "--noEmit",
-      "--disableWarning",
-     "--transform",
-      transformFunction,
-      "-O0",
-  ]
+  let ascArgv = [sourceCodePath, "--noEmit", "--disableWarning", "--transform", transformFunction, "-O0"];
   if (flags) {
-      const argv = flags.split(" ");
-      ascArgv = ascArgv.concat(argv);
+    const argv = flags.split(" ");
+    ascArgv = ascArgv.concat(argv);
   }
   const { error, stderr } = await main(ascArgv);
   if (error) {
