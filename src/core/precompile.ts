@@ -14,6 +14,7 @@ export async function precompile(
   includes: string[],
   excludes: string[],
   testcases: string[] | undefined,
+  flags: string,
   transformFunction = join(projectRoot, "transform", "listFunctions.mjs")
 ): Promise<UnittestPackage> {
   // if specify testcases, use testcases for unittest
@@ -23,7 +24,7 @@ export async function precompile(
   const sourceCodePaths = getRelatedFiles(includes, excludes, (path: string) => !path.endsWith(".test.ts"));
   const sourceCodeTransforms: Promise<void>[] = [];
   for (const sourceCodePath of sourceCodePaths.values()) {
-    sourceCodeTransforms.push(transform(sourceCodePath, transformFunction));
+    sourceCodeTransforms.push(transform(sourceCodePath, transformFunction, flags));
   }
   await Promise.all(sourceCodeTransforms);
 
@@ -55,15 +56,13 @@ export function getRelatedFiles(includes: string[], excludes: string[], filter: 
   return result;
 }
 
-async function transform(sourceCodePath: string, transformFunction: string) {
-  const { error, stderr } = await main([
-    sourceCodePath,
-    "--noEmit",
-    "--disableWarning",
-    "--transform",
-    transformFunction,
-    "-O0",
-  ]);
+async function transform(sourceCodePath: string, transformFunction: string, flags: string) {
+  let ascArgv = [sourceCodePath, "--noEmit", "--disableWarning", "--transform", transformFunction, "-O0"];
+  if (flags) {
+    const argv = flags.split(" ");
+    ascArgv = ascArgv.concat(argv);
+  }
+  const { error, stderr } = await main(ascArgv);
   if (error) {
     // eslint-disable-next-line @typescript-eslint/no-base-to-string
     console.error(stderr.toString());
