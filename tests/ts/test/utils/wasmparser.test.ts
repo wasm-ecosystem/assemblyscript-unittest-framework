@@ -49,5 +49,5 @@ test("parseImportFunctionInfo", () => {
     },
   ];
 
-  expect(parseImportFunctionInfo(arrayBuffer as ArrayBuffer)).toEqual(expectedInfo); // Pass ArrayBuffer
+  expect(parseImportFunctionInfo(arrayBuffer)).toEqual(expectedInfo); // Pass ArrayBuffer
 });
