@@ -5,6 +5,7 @@
 
 /build*
 /transform/listFunctions.mjs
+/transform/tsconfig.tsbuildinfo
 
 /coverage
 /coverage-ts
