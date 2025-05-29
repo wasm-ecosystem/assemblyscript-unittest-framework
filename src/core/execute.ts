@@ -11,47 +11,40 @@ import { supplyDefaultFunction } from "../utils/index.js";
 import { parseImportFunctionInfo } from "../utils/wasmparser.js";
 const readFile = promises.readFile;
 
-function nodeExecutor(wasms: string[], outFolder: string, imports: Imports) {
-  return Promise.all(
-    wasms.map(async (wasm) => {
-      const wasi = new WASI({
-        args: ["node", basename(wasm)],
-        env: process.env,
-        preopens: {
-          "/": outFolder,
-        },
-        version: "preview1",
-      });
+async function nodeExecutor(wasm: string, outFolder: string, imports: Imports) {
+  const wasi = new WASI({
+    args: ["node", basename(wasm)],
+    env: process.env,
+    preopens: {
+      "/": outFolder,
+    },
+    version: "preview1",
+  });
 
-      const importsArg = new ImportsArgument();
-      const userDefinedImportsObject = imports === null ? {} : imports(importsArg);
-      const importObject: ASImports = {
-        wasi_snapshot_preview1: wasi.wasiImport,
-        mockInstrument: mockInstruFunc,
-        ...covInstruFunc(wasm),
-        ...userDefinedImportsObject,
-      } as ASImports;
-      const binaryBuffer = await readFile(wasm);
-      const binary = binaryBuffer.buffer.slice(
-        binaryBuffer.byteOffset,
-        binaryBuffer.byteOffset + binaryBuffer.byteLength
-      );
-      const importFuncList = parseImportFunctionInfo(binary as ArrayBuffer);
-      supplyDefaultFunction(importFuncList, importObject);
-      const ins = await instantiate(binary, importObject);
-      importsArg.module = ins.module;
-      importsArg.instance = ins.instance;
-      importsArg.exports = ins.exports;
-      try {
-        wasi.start(ins);
-      } catch (error) {
-        if (error instanceof Error) {
-          console.error(error.stack);
-        }
-        throw new Error("node executor abort.");
-      }
-    })
-  );
+  const importsArg = new ImportsArgument();
+  const userDefinedImportsObject = imports === null ? {} : imports(importsArg);
+  const importObject: ASImports = {
+    wasi_snapshot_preview1: wasi.wasiImport,
+    mockInstrument: mockInstruFunc,
+    ...covInstruFunc(wasm),
+    ...userDefinedImportsObject,
+  } as ASImports;
+  const binaryBuffer = await readFile(wasm);
+  const binary = binaryBuffer.buffer.slice(binaryBuffer.byteOffset, binaryBuffer.byteOffset + binaryBuffer.byteLength);
+  const importFuncList = parseImportFunctionInfo(binary as ArrayBuffer);
+  supplyDefaultFunction(importFuncList, importObject);
+  const ins = await instantiate(binary, importObject);
+  importsArg.module = ins.module;
+  importsArg.instance = ins.instance;
+  importsArg.exports = ins.exports;
+  try {
+    wasi.start(ins);
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(error.stack);
+    }
+    throw new Error("node executor abort.");
+  }
 }
 
 export async function execWasmBinarys(
@@ -61,13 +54,9 @@ export async function execWasmBinarys(
 ): Promise<AssertResult> {
   const assertRes = new AssertResult();
   ensureDirSync(outFolder);
-
-  const wasmPaths = instrumentResult.map((res) => res.instrumentedWasm);
-
-  await nodeExecutor(wasmPaths, outFolder, imports);
-
-  await Promise.all(
-    instrumentResult.map(async (res) => {
+  await Promise.all<void>(
+    instrumentResult.map(async (res): Promise<void> => {
+      await nodeExecutor(res.instrumentedWasm, outFolder, imports);
       const { instrumentedWasm, expectInfo } = res;
       const assertLogFilePath = join(outFolder, basename(instrumentedWasm).slice(0, -4).concat("assert.log"));
 

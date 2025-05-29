@@ -25,7 +25,8 @@
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "isolatedModules": true
   },
   "include": ["src/**/*.ts", "transform", "tests/ts/**/*.ts"],
   "exclude": ["assembly", "example"]
