@@ -35,7 +35,7 @@ export class ExecutionRecorder implements IAssertResult {
         },
         collectCheckResult: (result: number, codeInfoIndex: number, actualValue: number, expectValue: number): void => {
           this.collectCheckResult(
-            result != 0,
+            result !== 0,
             codeInfoIndex,
             arg.exports!.__getString(actualValue),
             arg.exports!.__getString(expectValue)

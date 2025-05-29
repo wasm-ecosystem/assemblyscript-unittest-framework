@@ -1,4 +1,4 @@
-import { ExecutionRecorder } from "../../../../src/core/execution_recorder.js";
+import { ExecutionRecorder } from "../../../../src/core/executionRecorder.js";
 
 describe("execution recorder", () => {
   describe("description", () => {

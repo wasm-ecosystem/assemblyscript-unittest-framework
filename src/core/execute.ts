@@ -9,7 +9,8 @@ import { InstrumentResult } from "../interface.js";
 import { mockInstruFunc, covInstruFunc } from "../utils/import.js";
 import { supplyDefaultFunction } from "../utils/index.js";
 import { parseImportFunctionInfo } from "../utils/wasmparser.js";
-import { ExecutionRecorder } from "./execution_recorder.js";
+import { ExecutionRecorder } from "./executionRecorder.js";
+
 const readFile = promises.readFile;
 
 async function nodeExecutor(wasm: string, outFolder: string, imports: Imports): Promise<ExecutionRecorder> {
