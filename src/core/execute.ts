@@ -5,57 +5,12 @@ import { basename } from "node:path";
 import { instantiate, Imports as ASImports } from "@assemblyscript/loader";
 import { AssertResult } from "../assertResult.js";
 import { Imports, ImportsArgument } from "../index.js";
-import { AssertFailMessage, AssertMessage, IAssertResult, InstrumentResult } from "../interface.js";
+import { InstrumentResult } from "../interface.js";
 import { mockInstruFunc, covInstruFunc } from "../utils/import.js";
 import { supplyDefaultFunction } from "../utils/index.js";
 import { parseImportFunctionInfo } from "../utils/wasmparser.js";
+import { ExecutionRecorder } from "./execution_recorder.js";
 const readFile = promises.readFile;
-
-class ExecutionRecorder implements IAssertResult {
-  total: number = 0;
-  fail: number = 0;
-  failed_info: AssertFailMessage = {};
-  currentTestDescriptions: string[] = [];
-
-  addDescription(description: string): void {
-    this.currentTestDescriptions.push(description);
-  }
-  removeDescription(): void {
-    this.currentTestDescriptions.pop();
-  }
-  collectCheckResult(result: boolean, codeInfoIndex: number, actualValue: string, expectValue: string): void {
-    this.total++;
-    if (!result) {
-      this.fail++;
-      const testCaseFullName = this.currentTestDescriptions.join(" - ");
-      const assertMessage: AssertMessage = [codeInfoIndex.toString(), actualValue, expectValue];
-      this.failed_info[testCaseFullName] = this.failed_info[testCaseFullName] || [];
-      this.failed_info[testCaseFullName].push(assertMessage);
-    }
-  }
-
-  getCollectionFuncSet(arg: ImportsArgument): Record<string, Record<string, unknown>> {
-    const exports = arg.exports!;
-    return {
-      __unittest_framework_env: {
-        addDescription: (description: number): void => {
-          this.addDescription(exports.__getString(description));
-        },
-        removeDescription: (): void => {
-          this.removeDescription();
-        },
-        collectCheckResult: (result: number, codeInfoIndex: number, actualValue: number, expectValue: number): void => {
-          this.collectCheckResult(
-            result != 0,
-            codeInfoIndex,
-            exports.__getString(actualValue),
-            exports.__getString(expectValue)
-          );
-        },
-      },
-    };
-  }
-}
 
 async function nodeExecutor(wasm: string, outFolder: string, imports: Imports): Promise<ExecutionRecorder> {
   const wasi = new WASI({

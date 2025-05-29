@@ -31,6 +31,7 @@ test("getIncludeFiles", () => {
   expect(getIncludeFiles(["src/core"], (s) => s.endsWith(".ts"))).toEqual([
     path.normalize("src/core/compile.ts"),
     path.normalize("src/core/execute.ts"),
+    path.normalize("src/core/execution_recorder.ts"),
     path.normalize("src/core/instrument.ts"),
     path.normalize("src/core/precompile.ts"),
   ]);
