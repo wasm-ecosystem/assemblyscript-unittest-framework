@@ -1,6 +1,6 @@
 import { promises } from "node:fs";
 import { json2map } from "./utils/index.js";
-import { AssertErrorMessages, AssertMessages, ErrorMessages, ExpectInfo, IAssertResult } from "./interface.js";
+import { AssertErrorMessages, AssertMessage, ErrorMessages, ExpectInfo, IAssertResult } from "./interface.js";
 
 const readFile = promises.readFile;
 
@@ -17,7 +17,7 @@ export class AssertResult {
       try {
         const expectContent = await readFile(expectInfoFilePath, { encoding: "utf8" });
         expectInfo = json2map(JSON.parse(expectContent) as ExpectInfo);
-        for (const [key, value] of json2map<AssertMessages>(result.failed_info)) {
+        for (const [key, value] of json2map<AssertMessage[]>(result.failed_info)) {
           const errorMsgs: ErrorMessages = [];
           for (const msg of value) {
             const [index, actualValue, expectValue] = msg;
