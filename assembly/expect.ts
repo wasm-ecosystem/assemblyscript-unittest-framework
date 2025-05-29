@@ -1,5 +1,5 @@
 import { equal, isNull } from "./comparison";
-import { assertResult } from "./assertCollector";
+import { assertResult } from "./env";
 import { toJson } from "./formatPrint";
 
 
