@@ -28,14 +28,8 @@ test("findRoot", () => {
 });
 
 test("getIncludeFiles", () => {
-  expect(getIncludeFiles(["src/core"], (s) => s.endsWith(".ts"))).toEqual([
-    path.normalize("src/core/compile.ts"),
-    path.normalize("src/core/execute.ts"),
-    path.normalize("src/core/executionRecorder.ts"),
-    path.normalize("src/core/instrument.ts"),
-    path.normalize("src/core/precompile.ts"),
-  ]);
-  expect(getIncludeFiles(["tests/ts/fixture/transformFunction.ts"], (s) => s.endsWith(".ts"))).toEqual([
-    path.normalize("tests/ts/fixture/transformFunction.ts"),
+  expect(getIncludeFiles(["tests/ts/test/utils/resources"], (s) => s.endsWith(".resource"))).toEqual([
+    path.normalize("tests/ts/test/utils/resources/a.resource"),
+    path.normalize("tests/ts/test/utils/resources/b.resource"),
   ]);
 });
