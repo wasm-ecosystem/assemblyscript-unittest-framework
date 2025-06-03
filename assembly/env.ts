@@ -1,0 +1,18 @@
+export namespace assertResult {
+
+  @external("__unittest_framework_env","addDescription")
+  export declare function addDescription(description: string): void;
+
+
+  @external("__unittest_framework_env","removeDescription")
+  export declare function removeDescription(): void;
+
+
+  @external("__unittest_framework_env","collectCheckResult")
+  export declare function collectCheckResult(
+    result: bool,
+    codeInfoIndex: number,
+    actualValue: string,
+    expectValue: string,
+  ): void;
+}

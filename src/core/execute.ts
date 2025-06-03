@@ -1,17 +1,19 @@
 import { WASI } from "node:wasi";
 import { promises } from "node:fs";
 import { ensureDirSync } from "fs-extra";
-import { basename, join } from "node:path";
+import { basename } from "node:path";
 import { instantiate, Imports as ASImports } from "@assemblyscript/loader";
 import { AssertResult } from "../assertResult.js";
 import { Imports, ImportsArgument } from "../index.js";
-import { IAssertResult, InstrumentResult } from "../interface.js";
+import { InstrumentResult } from "../interface.js";
 import { mockInstruFunc, covInstruFunc } from "../utils/import.js";
 import { supplyDefaultFunction } from "../utils/index.js";
 import { parseImportFunctionInfo } from "../utils/wasmparser.js";
+import { ExecutionRecorder } from "./executionRecorder.js";
+
 const readFile = promises.readFile;
 
-async function nodeExecutor(wasm: string, outFolder: string, imports: Imports) {
+async function nodeExecutor(wasm: string, outFolder: string, imports: Imports): Promise<ExecutionRecorder> {
   const wasi = new WASI({
     args: ["node", basename(wasm)],
     env: process.env,
@@ -21,10 +23,13 @@ async function nodeExecutor(wasm: string, outFolder: string, imports: Imports) {
     version: "preview1",
   });
 
+  const recorder = new ExecutionRecorder();
+
   const importsArg = new ImportsArgument();
   const userDefinedImportsObject = imports === null ? {} : imports(importsArg);
   const importObject: ASImports = {
     wasi_snapshot_preview1: wasi.wasiImport,
+    ...recorder.getCollectionFuncSet(importsArg),
     mockInstrument: mockInstruFunc,
     ...covInstruFunc(wasm),
     ...userDefinedImportsObject,
@@ -45,6 +50,7 @@ async function nodeExecutor(wasm: string, outFolder: string, imports: Imports) {
     }
     throw new Error("node executor abort.");
   }
+  return recorder;
 }
 
 export async function execWasmBinarys(
@@ -56,22 +62,9 @@ export async function execWasmBinarys(
   ensureDirSync(outFolder);
   await Promise.all<void>(
     instrumentResult.map(async (res): Promise<void> => {
-      await nodeExecutor(res.instrumentedWasm, outFolder, imports);
       const { instrumentedWasm, expectInfo } = res;
-      const assertLogFilePath = join(outFolder, basename(instrumentedWasm).slice(0, -4).concat("assert.log"));
-
-      let content;
-      try {
-        content = await readFile(assertLogFilePath, { encoding: "utf8" });
-      } catch (error) {
-        if (error instanceof Error) {
-          console.error(error.stack);
-        }
-        throw new Error(`maybe forget call "endTest()" at the end of "*.test.ts" or Job abort before output`);
-      }
-      const assertResult = JSON.parse(content) as IAssertResult;
-
-      await assertRes.merge(assertResult, expectInfo);
+      const recorder: ExecutionRecorder = await nodeExecutor(instrumentedWasm, outFolder, imports);
+      await assertRes.merge(recorder, expectInfo);
     })
   );
   return assertRes;

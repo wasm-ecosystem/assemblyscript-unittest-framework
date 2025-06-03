@@ -51,8 +51,8 @@ export type TestCaseName = string;
 export type ExpectInfoIndex = string;
 export type AssertExpectValue = string;
 export type AssertActualValue = string;
-export type AssertMessages = [ExpectInfoIndex, AssertActualValue, AssertExpectValue][];
-export type AssertFailMessage = Record<TestCaseName, AssertMessages>;
+export type AssertMessage = [ExpectInfoIndex, AssertActualValue, AssertExpectValue];
+export type AssertFailMessage = Record<TestCaseName, AssertMessage[]>;
 
 export type ErrorMessages = string[];
 export type AssertErrorMessages = Map<TestCaseName, ErrorMessages>;

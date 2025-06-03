@@ -1,4 +1,4 @@
-import { assertResult } from "./assertCollector";
+import { assertResult } from "./env";
 import { MockFn, mockFunctionStatus } from "./mockInstrument";
 
 export function describeImpl(
