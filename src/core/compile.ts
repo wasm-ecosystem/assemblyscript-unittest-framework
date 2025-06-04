@@ -3,7 +3,6 @@ import { join, relative } from "node:path";
 import { findRoot } from "../utils/pathResolver.js";
 
 export async function compile(testCodePaths: string[], outputFolder: string, compileFlags: string): Promise<string[]> {
-  const pms: Promise<void>[] = [];
   const wasm: string[] = [];
   const root = findRoot(testCodePaths);
   const compile = async (testCodePath: string) => {
@@ -33,10 +32,12 @@ export async function compile(testCodePaths: string[], outputFolder: string, com
       throw error;
     }
   };
-  for (const testCodePath of testCodePaths) {
-    pms.push(compile(testCodePath));
+
+  // Here, for-await is more efficient and less memory cost than Promise.all()
+  for (const codePath of testCodePaths) {
+    await compile(codePath);
   }
-  await Promise.all(pms);
+
   return wasm;
 }
 

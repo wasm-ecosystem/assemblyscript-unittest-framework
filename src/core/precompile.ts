@@ -22,11 +22,14 @@ export async function precompile(
   const testCodePaths = testcases ?? getRelatedFiles(includes, excludes, (path: string) => path.endsWith(".test.ts"));
 
   const sourceCodePaths = getRelatedFiles(includes, excludes, (path: string) => !path.endsWith(".test.ts"));
-  const sourceCodeTransforms: Promise<void>[] = [];
-  for (const sourceCodePath of sourceCodePaths.values()) {
-    sourceCodeTransforms.push(transform(sourceCodePath, transformFunction, flags));
+
+  // The batchSize = 2 is empirical data after benchmarking
+  const batchSize = 2;
+  for (let i = 0; i < sourceCodePaths.length; i += batchSize) {
+    await Promise.all(
+      sourceCodePaths.slice(i, i + batchSize).map((sourcePath) => transform(sourcePath, transformFunction, flags))
+    );
   }
-  await Promise.all(sourceCodeTransforms);
 
   return {
     testCodePaths,
