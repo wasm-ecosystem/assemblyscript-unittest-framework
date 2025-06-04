@@ -26,3 +26,10 @@ const testapp = spawn("node", argv, { stdio: "inherit" });
 testapp.on("close", function (code) {
   exit(code);
 });
+
+testapp.on("exit", (_code, signal) => {
+  if (signal === "SIGABRT") {
+    // node heap out of memory
+    exit(-1);
+  }
+});
