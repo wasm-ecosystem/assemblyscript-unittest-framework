@@ -4,8 +4,7 @@ import { ensureDirSync } from "fs-extra";
 import { basename } from "node:path";
 import { instantiate, Imports as ASImports } from "@assemblyscript/loader";
 import { AssertResult } from "../assertResult.js";
-import { Imports, ImportsArgument } from "../index.js";
-import { InstrumentResult } from "../interface.js";
+import { InstrumentResult, Imports, ImportsArgument } from "../interface.js";
 import { mockInstruFunc, covInstruFunc } from "../utils/import.js";
 import { supplyDefaultFunction } from "../utils/index.js";
 import { parseImportFunctionInfo } from "../utils/wasmparser.js";
@@ -13,7 +12,7 @@ import { ExecutionRecorder } from "./executionRecorder.js";
 
 const readFile = promises.readFile;
 
-async function nodeExecutor(wasm: string, outFolder: string, imports: Imports): Promise<ExecutionRecorder> {
+async function nodeExecutor(wasm: string, outFolder: string, imports?: Imports): Promise<ExecutionRecorder> {
   const wasi = new WASI({
     args: ["node", basename(wasm)],
     env: process.env,
@@ -26,7 +25,7 @@ async function nodeExecutor(wasm: string, outFolder: string, imports: Imports): 
   const recorder = new ExecutionRecorder();
 
   const importsArg = new ImportsArgument();
-  const userDefinedImportsObject = imports === null ? {} : imports(importsArg);
+  const userDefinedImportsObject = imports === undefined ? {} : imports!(importsArg);
   const importObject: ASImports = {
     wasi_snapshot_preview1: wasi.wasiImport,
     ...recorder.getCollectionFuncSet(importsArg),
@@ -56,7 +55,7 @@ async function nodeExecutor(wasm: string, outFolder: string, imports: Imports): 
 export async function execWasmBinarys(
   outFolder: string,
   instrumentResult: InstrumentResult[],
-  imports: Imports
+  imports?: Imports
 ): Promise<AssertResult> {
   const assertRes = new AssertResult();
   ensureDirSync(outFolder);

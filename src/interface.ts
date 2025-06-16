@@ -4,6 +4,7 @@
 // input
 
 import { Type } from "wasmparser";
+import { ASUtil } from "@assemblyscript/loader";
 
 // instrumented file information
 export interface InstrumentResult {
@@ -150,8 +151,8 @@ export class CodeCoverage {
 
 export interface UnittestPackage {
   readonly testCodePaths: string[];
-  readonly matchedTestNames: string[];
-  readonly sourceFunctions: Map<string, SourceFunctionInfo[]>;
+  readonly matchedTestNames?: string[];
+  readonly sourceFunctions?: Map<string, SourceFunctionInfo[]>;
 }
 
 export interface SourceFunctionInfo {
@@ -163,6 +164,33 @@ export interface TestNameInfo {
   testName: string;
   testFilePath: string;
 }
+
+export class ImportsArgument {
+  module: WebAssembly.Module | null = null;
+  instance: WebAssembly.Instance | null = null;
+  exports: (ASUtil & Record<string, unknown>) | null = null;
+}
+
+export type Imports = ((arg: ImportsArgument) => Record<string, unknown>) | null;
+
+export interface TestOption {
+  includes: string[];
+  excludes: string[];
+  testcases?: string[];
+  testNamePattern?: string;
+  collectCoverage: boolean;
+
+  flags: string;
+  imports?: Imports;
+
+  tempFolder: string;
+  outputFolder: string;
+  mode: OutputMode | OutputMode[];
+  warnLimit?: number;
+  errorLimit?: number;
+}
+
+export type OutputMode = "html" | "json" | "table";
 
 export const OrganizationName = "wasm-ecosystem";
 export const Repository = "https://github.com/wasm-ecosystem/assemblyscript-unittest-framework";

@@ -1,5 +1,4 @@
-import { ImportsArgument } from "../index.js";
-import { AssertFailMessage, AssertMessage, IAssertResult } from "../interface.js";
+import { AssertFailMessage, AssertMessage, IAssertResult, ImportsArgument } from "../interface.js";
 
 export class ExecutionRecorder implements IAssertResult {
   total: number = 0;

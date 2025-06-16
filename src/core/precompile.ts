@@ -14,14 +14,16 @@ export async function precompile(
   excludes: string[],
   testcases: string[] | undefined,
   testNamePattern: string | undefined,
+  collectCoverage: boolean,
   flags: string
 ): Promise<UnittestPackage> {
   // if specify testcases, use testcases for unittest
   // otherwise, get testcases(*.test.ts) in includes directory
   const testCodePaths = testcases ?? getRelatedFiles(includes, excludes, (path: string) => path.endsWith(".test.ts"));
 
-  const matchedTestNames: string[] = [];
   if (testNamePattern) {
+    const matchedTestNames: string[] = [];
+    const matchedTestFiles = new Set<string>();
     const testNameInfos = new Map<string, string[]>();
     const testNameTransformFunction = join(projectRoot, "transform", "listTestNames.mjs");
     for (const testCodePath of testCodePaths) {
@@ -34,31 +36,38 @@ export async function precompile(
       for (const testName of testNames) {
         if (regexPattern.test(testName)) {
           matchedTestNames.push(testName);
+          matchedTestFiles.add(fileName);
         }
       }
     }
+    return {
+      testCodePaths: Array.from(matchedTestFiles),
+      matchedTestNames: matchedTestNames,
+    };
   }
 
-  const sourceCodePaths = getRelatedFiles(includes, excludes, (path: string) => !path.endsWith(".test.ts"));
-  const sourceFunctions = new Map<string, SourceFunctionInfo[]>();
-  const sourceTransformFunction = join(projectRoot, "transform", "listFunctions.mjs");
-  // The batchSize = 2 is empirical data after benchmarking
-  const batchSize = 2;
-  for (let i = 0; i < sourceCodePaths.length; i += batchSize) {
-    await Promise.all(
-      sourceCodePaths.slice(i, i + batchSize).map((sourcePath) =>
-        transform(sourceTransformFunction, sourcePath, flags, () => {
-          sourceFunctions.set(sourcePath, functionInfos);
-        })
-      )
-    );
+  if (collectCoverage) {
+    const sourceFunctions = new Map<string, SourceFunctionInfo[]>();
+    const sourceCodePaths = getRelatedFiles(includes, excludes, (path: string) => !path.endsWith(".test.ts"));
+    const sourceTransformFunction = join(projectRoot, "transform", "listFunctions.mjs");
+    // The batchSize = 2 is empirical data after benchmarking
+    const batchSize = 2;
+    for (let i = 0; i < sourceCodePaths.length; i += batchSize) {
+      await Promise.all(
+        sourceCodePaths.slice(i, i + batchSize).map((sourcePath) =>
+          transform(sourceTransformFunction, sourcePath, flags, () => {
+            sourceFunctions.set(sourcePath, functionInfos);
+          })
+        )
+      );
+    }
+    return {
+      testCodePaths,
+      sourceFunctions,
+    };
   }
 
-  return {
-    testCodePaths,
-    matchedTestNames,
-    sourceFunctions,
-  };
+  return { testCodePaths };
 }
 
 async function transform(transformFunction: string, codePath: string, flags: string, collectCallback: () => void) {
