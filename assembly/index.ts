@@ -6,7 +6,6 @@ import {
   testImpl,
   unmockImpl,
 } from "./implement";
-import { output } from "./output";
 import { MockFn } from "./mockInstrument";
 export { MockFn } from "./mockInstrument";
 
@@ -57,6 +56,7 @@ export function expect<T>(value: T): Value<T> {
   return new Value<T>(value);
 }
 
-export function endTest(): void {
-  output();
-}
+/**
+ * @deprecated no need to use endTest now
+ */
+export function endTest(): void {}
