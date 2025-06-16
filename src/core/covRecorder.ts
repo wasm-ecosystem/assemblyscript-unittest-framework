@@ -1,4 +1,3 @@
-import assert from "node:assert";
 import { writeFileSync } from "node:fs";
 
 export class CoverageRecorder {
