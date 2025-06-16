@@ -6,11 +6,26 @@
 import { Type } from "wasmparser";
 
 // instrumented file information
-export interface InstrumentResult {
-  sourceWasm: string;
-  instrumentedWasm: string;
-  debugInfo: string;
-  expectInfo: string;
+export class InstrumentResult {
+  constructor(public baseName: string) {}
+  get sourceWasm() {
+    return this.baseName.concat(".wasm");
+  }
+  get instrumentedWasm(): string {
+    return this.baseName.concat(".instrumented.wasm");
+  }
+  get sourceMap(): string {
+    return this.baseName.concat(".wasm.map");
+  }
+  get debugInfo(): string {
+    return this.baseName.concat(".debugInfo.json");
+  }
+  get expectInfo(): string {
+    return this.baseName.concat(".expectInfo.json");
+  }
+  get traceFile(): string {
+    return this.baseName.concat(".trace");
+  }
 }
 
 export type CodeSnippetIndex = number;

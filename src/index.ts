@@ -6,7 +6,7 @@ import { compile } from "./core/compile.js";
 import { AssertResult } from "./assertResult.js";
 import { precompile } from "./core/precompile.js";
 import { instrument } from "./core/instrument.js";
-import { execWasmBinarys } from "./core/execute.js";
+import { execWasmBinaries } from "./core/execute.js";
 import { generateReport, reportConfig } from "./generator/index.js";
 
 function logAssertResult(trace: AssertResult): void {
@@ -81,12 +81,11 @@ export async function start_unit_test(fo: FileOption, to: TestOption, oo: Output
   console.log(chalk.blueBright("compile testcases: ") + chalk.bold.greenBright("OK"));
   const instrumentResult = await instrument(wasmPaths, Array.from(unittestPackage.sourceFunctions.keys()));
   console.log(chalk.blueBright("instrument: ") + chalk.bold.greenBright("OK"));
-  const executedResult = await execWasmBinarys(oo.tempFolder, instrumentResult, to.imports);
+  const executedResult = await execWasmBinaries(oo.tempFolder, instrumentResult, to.imports);
   console.log(chalk.blueBright("execute testcases: ") + chalk.bold.greenBright("OK"));
   logAssertResult(executedResult);
-  const debugInfoFiles = instrumentResult.map((res) => res.debugInfo);
   const parser = new Parser();
-  const fileCoverageInfo = await parser.parse(debugInfoFiles, unittestPackage.sourceFunctions);
+  const fileCoverageInfo = await parser.parse(instrumentResult, unittestPackage.sourceFunctions);
   reportConfig.warningLimit = oo.warnLimit ?? reportConfig.warningLimit;
   reportConfig.errorLimit = oo.errorLimit ?? reportConfig.errorLimit;
   generateReport(oo.mode, oo.outputFolder, fileCoverageInfo);

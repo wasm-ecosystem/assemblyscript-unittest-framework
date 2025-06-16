@@ -1,7 +1,6 @@
 import { WASI } from "node:wasi";
 import { promises } from "node:fs";
 import { ensureDirSync } from "fs-extra";
-import { basename } from "node:path";
 import { instantiate, Imports as ASImports } from "@assemblyscript/loader";
 import { AssertResult } from "../assertResult.js";
 import { Imports, ImportsArgument } from "../index.js";
@@ -14,9 +13,13 @@ import { CoverageRecorder } from "./covRecorder.js";
 
 const readFile = promises.readFile;
 
-async function nodeExecutor(wasm: string, outFolder: string, imports: Imports): Promise<ExecutionRecorder> {
+async function nodeExecutor(
+  instrumentResult: InstrumentResult,
+  outFolder: string,
+  imports: Imports
+): Promise<ExecutionRecorder> {
   const wasi = new WASI({
-    args: ["node", basename(wasm)],
+    args: ["node", instrumentResult.baseName],
     env: process.env,
     preopens: {
       "/": outFolder,
@@ -36,7 +39,7 @@ async function nodeExecutor(wasm: string, outFolder: string, imports: Imports): 
     ...coverageRecorder.getCollectionFuncSet(),
     ...userDefinedImportsObject,
   } as ASImports;
-  const binaryBuffer = await readFile(wasm);
+  const binaryBuffer = await readFile(instrumentResult.instrumentedWasm);
   const binary = binaryBuffer.buffer.slice(binaryBuffer.byteOffset, binaryBuffer.byteOffset + binaryBuffer.byteLength);
   const importFuncList = parseImportFunctionInfo(binary as ArrayBuffer);
   supplyDefaultFunction(importFuncList, importObject);
@@ -52,22 +55,21 @@ async function nodeExecutor(wasm: string, outFolder: string, imports: Imports): 
     }
     throw new Error("node executor abort.");
   }
-  coverageRecorder.outputTrace(wasm);
+  coverageRecorder.outputTrace(instrumentResult.traceFile);
   return executionRecorder;
 }
 
-export async function execWasmBinarys(
+export async function execWasmBinaries(
   outFolder: string,
-  instrumentResult: InstrumentResult[],
+  instrumentResults: InstrumentResult[],
   imports: Imports
 ): Promise<AssertResult> {
   const assertRes = new AssertResult();
   ensureDirSync(outFolder);
   await Promise.all<void>(
-    instrumentResult.map(async (res): Promise<void> => {
-      const { instrumentedWasm, expectInfo } = res;
-      const recorder: ExecutionRecorder = await nodeExecutor(instrumentedWasm, outFolder, imports);
-      await assertRes.merge(recorder, expectInfo);
+    instrumentResults.map(async (instrumentResult): Promise<void> => {
+      const recorder: ExecutionRecorder = await nodeExecutor(instrumentResult, outFolder, imports);
+      await assertRes.merge(recorder, instrumentResult.expectInfo);
     })
   );
   return assertRes;

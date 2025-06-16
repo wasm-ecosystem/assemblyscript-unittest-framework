@@ -2,7 +2,7 @@ import { join } from "node:path";
 // eslint-disable-next-line n/no-extraneous-import
 import { jest } from "@jest/globals";
 import { fileURLToPath, URL } from "node:url";
-import { SourceFunctionInfo } from "../../../../src/interface.js";
+import { InstrumentResult, SourceFunctionInfo } from "../../../../src/interface.js";
 
 jest.unstable_mockModule("node:fs/promises", () => ({
   readFile: jest.fn(() => "\n".repeat(50)),
@@ -16,8 +16,7 @@ describe("Parser", () => {
   const parser = new Parser();
 
   test("traceParse", async () => {
-    const debugFilePath = join(dirname, "..", "..", "fixture", "traceParse.debugInfo.json");
-    await parser.traceParse(debugFilePath);
+    await parser.traceParse(new InstrumentResult(join(dirname, "..", "..", "fixture", "traceParse")));
     expect(parser.functionCovInfoMap).toMatchSnapshot();
     expect(parser.functionCovTraceMap).toMatchSnapshot();
   });
