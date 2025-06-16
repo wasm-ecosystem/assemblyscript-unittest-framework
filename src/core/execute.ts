@@ -4,11 +4,12 @@ import { ensureDirSync } from "fs-extra";
 import { basename } from "node:path";
 import { instantiate, Imports as ASImports } from "@assemblyscript/loader";
 import { AssertResult } from "../assertResult.js";
-import { InstrumentResult, Imports, ImportsArgument } from "../interface.js";
-import { mockInstruFunc, covInstruFunc } from "../utils/import.js";
+import { Imports, ImportsArgument, InstrumentResult } from "../interface.js";
+import { mockInstrumentFunc } from "../utils/import.js";
 import { supplyDefaultFunction } from "../utils/index.js";
 import { parseImportFunctionInfo } from "../utils/wasmparser.js";
 import { ExecutionRecorder } from "./executionRecorder.js";
+import { CoverageRecorder } from "./covRecorder.js";
 
 const readFile = promises.readFile;
 
@@ -22,15 +23,16 @@ async function nodeExecutor(wasm: string, outFolder: string, imports?: Imports):
     version: "preview1",
   });
 
-  const recorder = new ExecutionRecorder();
+  const executionRecorder = new ExecutionRecorder();
+  const coverageRecorder = new CoverageRecorder();
 
   const importsArg = new ImportsArgument();
   const userDefinedImportsObject = imports === undefined ? {} : imports!(importsArg);
   const importObject: ASImports = {
     wasi_snapshot_preview1: wasi.wasiImport,
-    ...recorder.getCollectionFuncSet(importsArg),
-    mockInstrument: mockInstruFunc,
-    ...covInstruFunc(wasm),
+    ...executionRecorder.getCollectionFuncSet(importsArg),
+    mockInstrument: mockInstrumentFunc,
+    ...coverageRecorder.getCollectionFuncSet(),
     ...userDefinedImportsObject,
   } as ASImports;
   const binaryBuffer = await readFile(wasm);
@@ -49,7 +51,8 @@ async function nodeExecutor(wasm: string, outFolder: string, imports?: Imports):
     }
     throw new Error("node executor abort.");
   }
-  return recorder;
+  coverageRecorder.outputTrace(wasm);
+  return executionRecorder;
 }
 
 export async function execWasmBinarys(
