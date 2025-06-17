@@ -5,7 +5,7 @@ import chalk from "chalk";
 
 const readFile = promises.readFile;
 
-export class AssertResult {
+export class ExecutionResult {
   fail = 0;
   total = 0;
   failedInfos: FailedInfoMap = new Map();
@@ -18,7 +18,7 @@ export class AssertResult {
       try {
         const expectContent = await readFile(expectInfoFilePath, { encoding: "utf8" });
         expectInfo = json2map(JSON.parse(expectContent) as ExpectInfo);
-        for (const [testcaseName, value] of json2map<AssertMessage[]>(result.failed_info)) {
+        for (const [testcaseName, value] of json2map<AssertMessage[]>(result.failedInfo)) {
           const errorMsgs: string[] = [];
           for (const msg of value) {
             const [index, actualValue, expectValue] = msg;

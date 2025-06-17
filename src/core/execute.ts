@@ -2,13 +2,13 @@ import { WASI } from "node:wasi";
 import { promises } from "node:fs";
 import { ensureDirSync } from "fs-extra";
 import { instantiate, Imports as ASImports } from "@assemblyscript/loader";
-import { AssertResult } from "../assertResult.js";
+import { ExecutionResult } from "../executionResult.js";
 import { Imports, ImportsArgument } from "../index.js";
 import { InstrumentResult } from "../interface.js";
 import { mockInstrumentFunc } from "../utils/import.js";
 import { supplyDefaultFunction } from "../utils/index.js";
 import { parseImportFunctionInfo } from "../utils/wasmparser.js";
-import { ExecutionRecorder } from "./executionRecorder.js";
+import { ExecutionRecorder, SingleExecutionResult } from "./executionRecorder.js";
 import { CoverageRecorder } from "./covRecorder.js";
 
 const readFile = promises.readFile;
@@ -17,7 +17,7 @@ async function nodeExecutor(
   instrumentResult: InstrumentResult,
   outFolder: string,
   imports: Imports
-): Promise<ExecutionRecorder> {
+): Promise<SingleExecutionResult> {
   const wasi = new WASI({
     args: ["node", instrumentResult.baseName],
     env: process.env,
@@ -56,20 +56,20 @@ async function nodeExecutor(
     throw new Error("node executor abort.");
   }
   coverageRecorder.outputTrace(instrumentResult.traceFile);
-  return executionRecorder;
+  return executionRecorder.result;
 }
 
 export async function execWasmBinaries(
   outFolder: string,
   instrumentResults: InstrumentResult[],
   imports: Imports
-): Promise<AssertResult> {
-  const assertRes = new AssertResult();
+): Promise<ExecutionResult> {
+  const assertRes = new ExecutionResult();
   ensureDirSync(outFolder);
   await Promise.all<void>(
     instrumentResults.map(async (instrumentResult): Promise<void> => {
-      const recorder: ExecutionRecorder = await nodeExecutor(instrumentResult, outFolder, imports);
-      await assertRes.merge(recorder, instrumentResult.expectInfo);
+      const result: SingleExecutionResult = await nodeExecutor(instrumentResult, outFolder, imports);
+      await assertRes.merge(result, instrumentResult.expectInfo);
     })
   );
   return assertRes;

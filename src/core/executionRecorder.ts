@@ -27,12 +27,16 @@ class LogRecorder {
   }
 }
 
-// to do: split execution environment and recorder
-export class ExecutionRecorder implements IAssertResult, UnitTestFramework {
+export class SingleExecutionResult implements IAssertResult {
   total: number = 0;
   fail: number = 0;
-  failed_info: AssertFailMessage = {};
+  failedInfo: AssertFailMessage = {};
   failedLogMessages: FailedLogMessages = {};
+}
+
+// to do: split execution environment and recorder
+export class ExecutionRecorder implements UnitTestFramework {
+  result = new SingleExecutionResult();
 
   registerFunctions: [string, number][] = [];
   #currentTestDescriptions: string[] = [];
@@ -56,19 +60,21 @@ export class ExecutionRecorder implements IAssertResult, UnitTestFramework {
     const logMessages: string[] | null = this.#logRecorder.onFinishTest();
     if (logMessages !== null) {
       const testCaseFullName = this.#currentTestDescription;
-      this.failedLogMessages[testCaseFullName] = (this.failedLogMessages[testCaseFullName] || []).concat(logMessages);
+      this.result.failedLogMessages[testCaseFullName] = (this.result.failedLogMessages[testCaseFullName] || []).concat(
+        logMessages
+      );
     }
   }
 
   collectCheckResult(result: boolean, codeInfoIndex: number, actualValue: string, expectValue: string): void {
-    this.total++;
+    this.result.total++;
     if (!result) {
       this.#logRecorder.markTestFailed();
-      this.fail++;
+      this.result.fail++;
       const testCaseFullName = this.#currentTestDescription;
       const assertMessage: AssertMessage = [codeInfoIndex.toString(), actualValue, expectValue];
-      this.failed_info[testCaseFullName] = this.failed_info[testCaseFullName] || [];
-      this.failed_info[testCaseFullName].push(assertMessage);
+      this.result.failedInfo[testCaseFullName] = this.result.failedInfo[testCaseFullName] || [];
+      this.result.failedInfo[testCaseFullName].push(assertMessage);
     }
   }
 

@@ -79,7 +79,7 @@ export type ExpectInfo = Record<ExpectInfoIndex, ExpectInfoDebugLocation>;
 export interface IAssertResult {
   fail: number;
   total: number;
-  failed_info: AssertFailMessage;
+  failedInfo: AssertFailMessage;
   failedLogMessages: FailedLogMessages;
 }
 
