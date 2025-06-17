@@ -1,6 +1,6 @@
 # Assemblyscript Unittest Framework
 
-<div style="text-align: center;">
+<div align="center">
   <a href="https://deepwiki.com/wasm-ecosystem/assemblyscript-unittest-framework">
     <img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki" />
   </a>
@@ -20,6 +20,8 @@ A comprehensive AssemblyScript testing solution, offering developers a robust su
 - Function Mocking
 - Coverage statistics
 - Expectations
+
+Documentation: https://wasm-ecosystem.github.io/assemblyscript-unittest-framework/
 
 ## Architecture
 
