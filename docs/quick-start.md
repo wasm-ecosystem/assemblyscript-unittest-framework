@@ -1,4 +1,4 @@
-# Getting Started
+## Getting Started
 
 Install Assemblyscript Unittest Framework using npm
 
