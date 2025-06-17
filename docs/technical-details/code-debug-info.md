@@ -19,13 +19,13 @@
 }
 ```
 
-```js
+```ts
 interface CodeDebugInfo {
     debugFiles: string[];
     debugInfos: Record<string, FunctionDebugInfo>;
 }
 
-interface FunctiondebugInfo {
+interface FunctionDebugInfo {
     index: number;
     branchInfo: Branch[];
     lineInfo: LineInfos;

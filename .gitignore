@@ -11,3 +11,6 @@
 /coverage-ts
 
 /tests/cpp/lit/build
+
+/docs/.vitepress/dist
+/docs/.vitepress/cache
