@@ -44,9 +44,11 @@ export class AssertResult {
   }
 
   print(log: (msg: string) => void): void {
-    const render = (failed: number, total: number) =>
-      (this.fail === 0 ? chalk.greenBright(total) : chalk.redBright(total - failed)) + "/" + this.total.toString();
-    log(`\ntest case: ${render(this.fail, this.total)} (success/total)\n`);
+    const rate =
+      (this.fail === 0 ? chalk.greenBright(this.total) : chalk.redBright(this.total - this.fail)) +
+      "/" +
+      this.total.toString();
+    log(`\ntest case: ${rate} (success/total)\n`);
     if (this.fail !== 0) {
       log(chalk.red("Error Message: "));
       for (const [testcaseName, { assertMessages, logMessages }] of this.failedInfos.entries()) {

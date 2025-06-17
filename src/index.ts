@@ -3,7 +3,6 @@ import { emptydirSync } from "fs-extra";
 import { ASUtil } from "@assemblyscript/loader";
 import { Parser } from "./parser/index.js";
 import { compile } from "./core/compile.js";
-import { AssertResult } from "./assertResult.js";
 import { precompile } from "./core/precompile.js";
 import { instrument } from "./core/instrument.js";
 import { execWasmBinaries } from "./core/execute.js";

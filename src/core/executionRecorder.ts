@@ -27,7 +27,7 @@ class LogRecorder {
   }
 }
 
-// TODO: split execution environment and recorder
+// to do: split execution environment and recorder
 export class ExecutionRecorder implements IAssertResult, UnitTestFramework {
   total: number = 0;
   fail: number = 0;
@@ -53,8 +53,8 @@ export class ExecutionRecorder implements IAssertResult, UnitTestFramework {
     this.#logRecorder.onStartTest();
   }
   _finishTestFunction(): void {
-    let logMessages: string[] | null = this.#logRecorder.onFinishTest();
-    if (logMessages != null) {
+    const logMessages: string[] | null = this.#logRecorder.onFinishTest();
+    if (logMessages !== null) {
       const testCaseFullName = this.#currentTestDescription;
       this.failedLogMessages[testCaseFullName] = (this.failedLogMessages[testCaseFullName] || []).concat(logMessages);
     }

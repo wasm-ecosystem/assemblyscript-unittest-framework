@@ -71,7 +71,7 @@ test("print", async () => {
   const expectInfoFIlePath = join(__dirname, "..", "fixture", "assertResultTest.expectInfo.json");
   await assertResult.merge(testcaseA, expectInfoFIlePath);
 
-  let outputs: string[] = [];
+  const outputs: string[] = [];
   assertResult.print((msg) => outputs.push(msg));
 
   expect(outputs.join("\n")).toMatchSnapshot();
