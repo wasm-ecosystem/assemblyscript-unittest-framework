@@ -4,6 +4,7 @@ export class ExecutionRecorder implements IAssertResult {
   total: number = 0;
   fail: number = 0;
   failed_info: AssertFailMessage = {};
+  registerFunctions: [string, number][] = [];
   _currentTestDescriptions: string[] = [];
 
   _addDescription(description: string): void {
@@ -11,6 +12,10 @@ export class ExecutionRecorder implements IAssertResult {
   }
   _removeDescription(): void {
     this._currentTestDescriptions.pop();
+  }
+  registerTestFunction(fncIndex: number): void {
+    const testCaseFullName = this._currentTestDescriptions.join(" - ");
+    this.registerFunctions.push([testCaseFullName, fncIndex]);
   }
   collectCheckResult(result: boolean, codeInfoIndex: number, actualValue: string, expectValue: string): void {
     this.total++;
@@ -31,6 +36,9 @@ export class ExecutionRecorder implements IAssertResult {
         },
         removeDescription: (): void => {
           this._removeDescription();
+        },
+        registerTestFunction: (index: number): void => {
+          this.registerTestFunction(index);
         },
         collectCheckResult: (result: number, codeInfoIndex: number, actualValue: number, expectValue: number): void => {
           this.collectCheckResult(

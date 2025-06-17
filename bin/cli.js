@@ -40,7 +40,8 @@ const excludes = config.exclude || [];
 validatArgument(includes, excludes);
 
 // if enabled testcase or testNamePattern, disable collectCoverage by default
-const collectCoverage = Boolean(options.collectCoverage) || config.collectCoverage || (!options.testcase && !options.testNamePattern); 
+const collectCoverage =
+  Boolean(options.collectCoverage) || config.collectCoverage || (!options.testcase && !options.testNamePattern);
 
 const testOption = {
   includes,
@@ -57,7 +58,7 @@ const testOption = {
   mode: options.mode || config.mode || "table",
   warnLimit: Number(options.coverageLimit?.at(1)),
   errorLimit: Number(options.coverageLimit?.at(0)),
-}
+};
 
 start_unit_test(testOption)
   .then((success) => {
