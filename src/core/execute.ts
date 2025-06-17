@@ -30,7 +30,7 @@ async function nodeExecutor(
   const executionRecorder = new ExecutionRecorder();
   const coverageRecorder = new CoverageRecorder();
 
-  const importsArg = new ImportsArgument();
+  const importsArg = new ImportsArgument(executionRecorder);
   const userDefinedImportsObject = imports === null ? {} : imports(importsArg);
   const importObject: ASImports = {
     wasi_snapshot_preview1: wasi.wasiImport,

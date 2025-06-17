@@ -1,32 +1,79 @@
-import { ImportsArgument } from "../index.js";
-import { AssertFailMessage, AssertMessage, IAssertResult } from "../interface.js";
+import { ImportsArgument, UnitTestFramework } from "../index.js";
+import { AssertFailMessage, AssertMessage, IAssertResult, FailedLogMessages } from "../interface.js";
 
-export class ExecutionRecorder implements IAssertResult {
+class LogRecorder {
+  #currentTestLogMessages: string[] = [];
+  #isTestFailed: boolean = false;
+
+  addLog(msg: string): void {
+    this.#currentTestLogMessages.push(msg);
+  }
+  markTestFailed(): void {
+    this.#isTestFailed = true;
+  }
+
+  onStartTest(): void {
+    this.#currentTestLogMessages = [];
+    this.#isTestFailed = false;
+  }
+  onFinishTest(): string[] | null {
+    if (this.#currentTestLogMessages.length === 0) {
+      return null;
+    }
+    if (this.#isTestFailed === false) {
+      return null;
+    }
+    return this.#currentTestLogMessages;
+  }
+}
+
+// TODO: split execution environment and recorder
+export class ExecutionRecorder implements IAssertResult, UnitTestFramework {
   total: number = 0;
   fail: number = 0;
   failed_info: AssertFailMessage = {};
+  failedLogMessages: FailedLogMessages = {};
+
   registerFunctions: [string, number][] = [];
-  _currentTestDescriptions: string[] = [];
+  #currentTestDescriptions: string[] = [];
+  #logRecorder = new LogRecorder();
+
+  get #currentTestDescription(): string {
+    return this.#currentTestDescriptions.join(" - ");
+  }
 
   _addDescription(description: string): void {
-    this._currentTestDescriptions.push(description);
+    this.#currentTestDescriptions.push(description);
   }
   _removeDescription(): void {
-    this._currentTestDescriptions.pop();
+    this.#currentTestDescriptions.pop();
   }
   registerTestFunction(fncIndex: number): void {
-    const testCaseFullName = this._currentTestDescriptions.join(" - ");
-    this.registerFunctions.push([testCaseFullName, fncIndex]);
+    this.registerFunctions.push([this.#currentTestDescription, fncIndex]);
+    this.#logRecorder.onStartTest();
   }
+  _finishTestFunction(): void {
+    let logMessages: string[] | null = this.#logRecorder.onFinishTest();
+    if (logMessages != null) {
+      const testCaseFullName = this.#currentTestDescription;
+      this.failedLogMessages[testCaseFullName] = (this.failedLogMessages[testCaseFullName] || []).concat(logMessages);
+    }
+  }
+
   collectCheckResult(result: boolean, codeInfoIndex: number, actualValue: string, expectValue: string): void {
     this.total++;
     if (!result) {
+      this.#logRecorder.markTestFailed();
       this.fail++;
-      const testCaseFullName = this._currentTestDescriptions.join(" - ");
+      const testCaseFullName = this.#currentTestDescription;
       const assertMessage: AssertMessage = [codeInfoIndex.toString(), actualValue, expectValue];
       this.failed_info[testCaseFullName] = this.failed_info[testCaseFullName] || [];
       this.failed_info[testCaseFullName].push(assertMessage);
     }
+  }
+
+  log(msg: string): void {
+    this.#logRecorder.addLog(msg);
   }
 
   getCollectionFuncSet(arg: ImportsArgument): Record<string, Record<string, unknown>> {
@@ -40,6 +87,9 @@ export class ExecutionRecorder implements IAssertResult {
         },
         registerTestFunction: (index: number): void => {
           this.registerTestFunction(index);
+        },
+        finishTestFunction: () => {
+          this._finishTestFunction();
         },
         collectCheckResult: (result: number, codeInfoIndex: number, actualValue: number, expectValue: number): void => {
           this.collectCheckResult(

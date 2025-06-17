@@ -1,5 +1,5 @@
-import { describe, test, expect, mock, endTest, unmock, remock } from "../assembly";
-
+import { describe, test, expect, mock } from "../assembly";
+import { log } from "./env";
 import { add, Test } from "./source";
 
 describe("example 1", () => {
@@ -16,6 +16,7 @@ describe("example 1", () => {
     expect(add(2, 2)).equal(3);
   });
   test("out of mock range, this test should be failed", () => {
+    log("2 + 2 should be 4");
     expect(add(2, 2)).equal(3);
   });
 });
@@ -36,5 +37,3 @@ describe("example 2", () => {
     expect(fn.calls).equal(1);
   });
 });
-
-endTest();

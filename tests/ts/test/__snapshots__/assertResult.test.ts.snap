@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`print 1`] = `
+"
+test case: [91m27[39m/28 (success/total)
+
+[31mError Message: [39m
+	A: 
+		[33mtests/as/comparison.test.ts:10:20	value: 100	expect: = 200[39m
+[90mlog message 1[39m
+[90mlog message 2[39m
+[90mlog message 3[39m"
+`;

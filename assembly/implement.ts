@@ -13,6 +13,7 @@ export function testImpl(description: string, testFunction: () => void): void {
   assertResult.addDescription(description);
   assertResult.registerTestFunction(testFunction.index);
   testFunction();
+  assertResult.finishTestFunction();
   assertResult.removeDescription();
   mockFunctionStatus.clear();
 }

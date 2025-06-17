@@ -11,7 +11,13 @@ module.exports = {
    * @returns
    */
   imports(runtime) {
-    return {};
+    return {
+      env: {
+        log: (msg) => {
+          runtime.framework.log(runtime.exports.__getString(msg));
+        },
+      },
+    };
   },
 
   /** template file path, default "coverage" */
