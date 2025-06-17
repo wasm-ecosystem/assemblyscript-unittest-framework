@@ -2,6 +2,7 @@ import { join } from "node:path";
 import { fileURLToPath, URL } from "node:url";
 import { FailedInfoMap, IAssertResult } from "../../../src/interface.js";
 import { AssertResult } from "../../../src/assertResult.js";
+import chalk from "chalk";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
@@ -71,8 +72,16 @@ test("print", async () => {
   const expectInfoFIlePath = join(__dirname, "..", "fixture", "assertResultTest.expectInfo.json");
   await assertResult.merge(testcaseA, expectInfoFIlePath);
 
-  const outputs: string[] = [];
-  assertResult.print((msg) => outputs.push(msg));
-
-  expect(outputs.join("\n")).toMatchSnapshot();
+  {
+    const outputs: string[] = [];
+    chalk.level = 0; // disable color
+    assertResult.print((msg) => outputs.push(msg));
+    expect(outputs.join("\n")).toMatchSnapshot();
+  }
+  {
+    const outputs: string[] = [];
+    chalk.level = 1; // force enable color
+    assertResult.print((msg) => outputs.push(msg));
+    expect(outputs.join("\n")).toMatchSnapshot();
+  }
 });

@@ -2,6 +2,18 @@
 
 exports[`print 1`] = `
 "
+test case: 27/28 (success/total)
+
+Error Message: 
+	A: 
+		tests/as/comparison.test.ts:10:20	value: 100	expect: = 200
+log message 1
+log message 2
+log message 3"
+`;
+
+exports[`print 2`] = `
+"
 test case: [91m27[39m/28 (success/total)
 
 [31mError Message: [39m
