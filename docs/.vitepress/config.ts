@@ -18,13 +18,18 @@ export default defineConfig({
           { text: "Quick Start", link: "/quick-start.md" },
           {
             text: "API documents",
-            link: "/api-documents/index",
+            link: "/api-documents",
             items: [
               { text: "Configuration", link: "/api-documents/configuration" },
               { text: "Matchers", link: "/api-documents/matchers" },
               { text: "Mock Function", link: "/api-documents/mock-function" },
               { text: "Report", link: "/api-documents/coverage-report" },
             ],
+          },
+          {
+            text: "Examples",
+            link: "/examples",
+            items: [{ text: "Mock Method", link: "/examples/mock-method" }],
           },
           {
             text: "Technical Details",
