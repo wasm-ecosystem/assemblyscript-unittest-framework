@@ -6,7 +6,7 @@ test("listFunction transform", async () => {
     [],
     undefined,
     undefined,
-    false,
+    true,
     ""
   );
   expect(unittestPackages.testCodePaths).toEqual([]);
