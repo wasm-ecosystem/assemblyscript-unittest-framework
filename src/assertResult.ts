@@ -1,13 +1,14 @@
 import { promises } from "node:fs";
 import { json2map } from "./utils/index.js";
-import { AssertErrorMessages, AssertMessage, ErrorMessages, ExpectInfo, IAssertResult } from "./interface.js";
+import { FailedInfoMap, AssertMessage, ExpectInfo, IAssertResult } from "./interface.js";
+import chalk from "chalk";
 
 const readFile = promises.readFile;
 
 export class AssertResult {
   fail = 0;
   total = 0;
-  failed_info: AssertErrorMessages = new Map();
+  failedInfos: FailedInfoMap = new Map();
 
   async merge(result: IAssertResult, expectInfoFilePath: string) {
     this.fail += result.fail;
@@ -17,8 +18,8 @@ export class AssertResult {
       try {
         const expectContent = await readFile(expectInfoFilePath, { encoding: "utf8" });
         expectInfo = json2map(JSON.parse(expectContent) as ExpectInfo);
-        for (const [key, value] of json2map<AssertMessage[]>(result.failed_info)) {
-          const errorMsgs: ErrorMessages = [];
+        for (const [testcaseName, value] of json2map<AssertMessage[]>(result.failed_info)) {
+          const errorMsgs: string[] = [];
           for (const msg of value) {
             const [index, actualValue, expectValue] = msg;
             const debugLocation = expectInfo.get(index);
@@ -28,13 +29,36 @@ export class AssertResult {
             }
             errorMsgs.push(errorMsg);
           }
-          this.failed_info.set(key, errorMsgs);
+          this.failedInfos.set(testcaseName, {
+            assertMessages: errorMsgs,
+            logMessages: result.failedLogMessages[testcaseName],
+          });
         }
       } catch (error) {
         if (error instanceof Error) {
           console.error(error.stack);
         }
-        throw new Error(`maybe forget call "endTest()" at the end of "*.test.ts" or Job abort before output`);
+        throw error;
+      }
+    }
+  }
+
+  print(log: (msg: string) => void): void {
+    const rate =
+      (this.fail === 0 ? chalk.greenBright(this.total) : chalk.redBright(this.total - this.fail)) +
+      "/" +
+      this.total.toString();
+    log(`\ntest case: ${rate} (success/total)\n`);
+    if (this.fail !== 0) {
+      log(chalk.red("Error Message: "));
+      for (const [testcaseName, { assertMessages, logMessages }] of this.failedInfos.entries()) {
+        log(`\t${testcaseName}: `);
+        for (const assertMessage of assertMessages) {
+          log("\t\t" + chalk.yellow(assertMessage));
+        }
+        for (const logMessage of logMessages ?? []) {
+          log(chalk.gray(logMessage));
+        }
       }
     }
   }

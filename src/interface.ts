@@ -69,8 +69,9 @@ export type AssertActualValue = string;
 export type AssertMessage = [ExpectInfoIndex, AssertActualValue, AssertExpectValue];
 export type AssertFailMessage = Record<TestCaseName, AssertMessage[]>;
 
-export type ErrorMessages = string[];
-export type AssertErrorMessages = Map<TestCaseName, ErrorMessages>;
+export type FailedLogMessages = Record<TestCaseName, string[]>;
+
+export type FailedInfoMap = Map<TestCaseName, { assertMessages: string[]; logMessages: string[] | undefined }>;
 
 export type ExpectInfoDebugLocation = string;
 export type ExpectInfo = Record<ExpectInfoIndex, ExpectInfoDebugLocation>;
@@ -79,6 +80,7 @@ export interface IAssertResult {
   fail: number;
   total: number;
   failed_info: AssertFailMessage;
+  failedLogMessages: FailedLogMessages;
 }
 
 export interface ImportFunctionInfo {
