@@ -11,6 +11,7 @@ export function describeImpl(
 }
 export function testImpl(description: string, testFunction: () => void): void {
   assertResult.addDescription(description);
+  assertResult.registerTestFunction(testFunction.index);
   testFunction();
   assertResult.removeDescription();
   mockFunctionStatus.clear();
