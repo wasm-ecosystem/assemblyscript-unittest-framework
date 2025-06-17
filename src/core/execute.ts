@@ -45,6 +45,14 @@ async function nodeExecutor(wasm: string, outFolder: string, imports?: Imports):
   importsArg.exports = ins.exports;
   try {
     wasi.start(ins);
+    const execTestFunction = ins.exports["executeTestFunction"];
+    if (typeof execTestFunction === "function") {
+      for (const fncs of executionRecorder.registerFunctions) {
+        const functions = fncs[1];
+        (execTestFunction as (a: number) => void)(functions);
+        mockInstrumentFunc["mockFunctionStatus.clear"]();
+      }
+    }
   } catch (error) {
     if (error instanceof Error) {
       console.error(error.stack);

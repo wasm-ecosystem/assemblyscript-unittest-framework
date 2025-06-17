@@ -131,6 +131,11 @@ public:
   bool mockFunctionDuplicateImportedCheck() const noexcept;
 
   ///
+  /// @brief Add export function executeTestFunction()
+  ///
+  void addExecuteTestFunction() noexcept;
+
+  ///
   /// @brief Main API for mock instrumentation
   ///
   uint32_t mockWalk() noexcept;
