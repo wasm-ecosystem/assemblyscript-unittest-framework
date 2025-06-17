@@ -55,6 +55,7 @@ export interface FileOption {
   includes: string[];
   excludes: string[];
   testcases: string[] | undefined;
+  testNamePattern: string | undefined;
 }
 export interface TestOption {
   flags: string;
@@ -75,7 +76,7 @@ export type OutputMode = "html" | "json" | "table";
 export async function start_unit_test(fo: FileOption, to: TestOption, oo: OutputOption): Promise<boolean> {
   emptydirSync(oo.outputFolder);
   emptydirSync(oo.tempFolder);
-  const unittestPackage = await precompile(fo.includes, fo.excludes, fo.testcases, to.flags);
+  const unittestPackage = await precompile(fo.includes, fo.excludes, fo.testcases, fo.testNamePattern, to.flags);
   console.log(chalk.blueBright("code analysis: ") + chalk.bold.greenBright("OK"));
   const wasmPaths = await compile(unittestPackage.testCodePaths, oo.tempFolder, to.flags);
   console.log(chalk.blueBright("compile testcases: ") + chalk.bold.greenBright("OK"));

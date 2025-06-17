@@ -165,12 +165,18 @@ export class CodeCoverage {
 
 export interface UnittestPackage {
   readonly testCodePaths: string[];
+  readonly matchedTestNames: string[];
   readonly sourceFunctions: Map<string, SourceFunctionInfo[]>;
 }
 
 export interface SourceFunctionInfo {
   name: string;
   range: [number, number];
+}
+
+export interface TestNameInfo {
+  testName: string;
+  testFilePath: string;
 }
 
 export const OrganizationName = "wasm-ecosystem";

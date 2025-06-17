@@ -8,6 +8,10 @@ export namespace assertResult {
   export declare function removeDescription(): void;
 
 
+  @external("__unittest_framework_env","registerTestFunction")
+  export declare function registerTestFunction(index: u32): void;
+
+
   @external("__unittest_framework_env","collectCheckResult")
   export declare function collectCheckResult(
     result: bool,

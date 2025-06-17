@@ -9,32 +9,71 @@ import { getIncludeFiles } from "../utils/pathResolver.js";
 import { SourceFunctionInfo, UnittestPackage } from "../interface.js";
 import { projectRoot } from "../utils/projectRoot.js";
 
-const sourceFunctions = new Map<string, SourceFunctionInfo[]>();
 export async function precompile(
   includes: string[],
   excludes: string[],
   testcases: string[] | undefined,
-  flags: string,
-  transformFunction = join(projectRoot, "transform", "listFunctions.mjs")
+  testNamePattern: string | undefined,
+  flags: string
 ): Promise<UnittestPackage> {
   // if specify testcases, use testcases for unittest
   // otherwise, get testcases(*.test.ts) in includes directory
   const testCodePaths = testcases ?? getRelatedFiles(includes, excludes, (path: string) => path.endsWith(".test.ts"));
 
-  const sourceCodePaths = getRelatedFiles(includes, excludes, (path: string) => !path.endsWith(".test.ts"));
+  const matchedTestNames: string[] = [];
+  if (testNamePattern) {
+    const testNameInfos = new Map<string, string[]>();
+    const testNameTransformFunction = join(projectRoot, "transform", "listTestNames.mjs");
+    for (const testCodePath of testCodePaths) {
+      await transform(testNameTransformFunction, testCodePath, flags, () => {
+        testNameInfos.set(testCodePath, testNames);
+      });
+    }
+    const regexPattern = new RegExp(testNamePattern);
+    for (const testNames of testNameInfos.values()) {
+      for (const testName of testNames) {
+        if (regexPattern.test(testName)) {
+          matchedTestNames.push(testName);
+        }
+      }
+    }
+  }
 
+  const sourceCodePaths = getRelatedFiles(includes, excludes, (path: string) => !path.endsWith(".test.ts"));
+  const sourceFunctions = new Map<string, SourceFunctionInfo[]>();
+  const sourceTransformFunction = join(projectRoot, "transform", "listFunctions.mjs");
   // The batchSize = 2 is empirical data after benchmarking
   const batchSize = 2;
   for (let i = 0; i < sourceCodePaths.length; i += batchSize) {
     await Promise.all(
-      sourceCodePaths.slice(i, i + batchSize).map((sourcePath) => transform(sourcePath, transformFunction, flags))
+      sourceCodePaths.slice(i, i + batchSize).map((sourcePath) =>
+        transform(sourceTransformFunction, sourcePath, flags, () => {
+          sourceFunctions.set(sourcePath, functionInfos);
+        })
+      )
     );
   }
 
   return {
     testCodePaths,
+    matchedTestNames,
     sourceFunctions,
   };
+}
+
+async function transform(transformFunction: string, codePath: string, flags: string, collectCallback: () => void) {
+  let ascArgv = [codePath, "--noEmit", "--disableWarning", "--transform", transformFunction, "-O0"];
+  if (flags) {
+    const argv = flags.split(" ");
+    ascArgv = ascArgv.concat(argv);
+  }
+  const { error, stderr } = await main(ascArgv);
+  if (error) {
+    // eslint-disable-next-line @typescript-eslint/no-base-to-string
+    console.error(stderr.toString());
+    throw error;
+  }
+  collectCallback();
 }
 
 // a. include in config
@@ -57,19 +96,4 @@ export function getRelatedFiles(includes: string[], excludes: string[], filter: 
     }
   }
   return result;
-}
-
-async function transform(sourceCodePath: string, transformFunction: string, flags: string) {
-  let ascArgv = [sourceCodePath, "--noEmit", "--disableWarning", "--transform", transformFunction, "-O0"];
-  if (flags) {
-    const argv = flags.split(" ");
-    ascArgv = ascArgv.concat(argv);
-  }
-  const { error, stderr } = await main(ascArgv);
-  if (error) {
-    // eslint-disable-next-line @typescript-eslint/no-base-to-string
-    console.error(stderr.toString());
-    throw error;
-  }
-  sourceFunctions.set(sourceCodePath, functionInfos);
 }

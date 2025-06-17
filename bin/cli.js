@@ -16,7 +16,8 @@ program
   .option("--temp <path>", "test template file folder")
   .option("--output <path>", "coverage report output folder")
   .option("--mode <output mode>", "test result output format")
-  .option("--coverageLimit [error warning...]", "set warn(yellow) and error(red) upper limit in coverage report");
+  .option("--coverageLimit [error warning...]", "set warn(yellow) and error(red) upper limit in coverage report")
+  .option("--testNamePattern <test name pattern>", "run only tests with a name that matches the regex pattern");
 
 program.parse(process.argv);
 const options = program.opts();
@@ -53,9 +54,11 @@ let outputFolder = options.output || config.output || "coverage";
 let errorLimit = options.coverageLimit?.at(0);
 let warnLimit = options.coverageLimit?.at(1);
 
+let testNamePattern = options.testNamePattern;
+
 validatArgument(includes, excludes);
 start_unit_test(
-  { includes, excludes, testcases },
+  { includes, excludes, testcases, testNamePattern },
   { flags, imports },
   { tempFolder, outputFolder, mode, warnLimit, errorLimit }
 )
