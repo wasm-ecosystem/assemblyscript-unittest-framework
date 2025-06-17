@@ -30,7 +30,7 @@ export async function precompile(
       });
     }
     const regexPattern = new RegExp(testNamePattern);
-    for (const [fileName, testNames] of testNameInfos) {
+    for (const testNames of testNameInfos.values()) {
       for (const testName of testNames) {
         if (regexPattern.test(testName)) {
           matchedTestNames.push(testName);
