@@ -1,4 +1,5 @@
 #include "MockInstrumentationWalker.hpp"
+#include <asmjs/shared-constants.h>
 #include <binaryen-c.h>
 #include <string_view>
 #include <support/index.h>
@@ -90,6 +91,10 @@ bool MockInstrumentationWalker::mockFunctionDuplicateImportedCheck() const noexc
 
 void MockInstrumentationWalker::addExecuteTestFunction() noexcept {
   std::vector<BinaryenExpressionRef> operands{};
+  if (module->tables.empty()) {
+    auto * table = module->addTable(wasm::Builder::makeTable(wasm::Name::fromInt(0)));
+    table->base = "__indirect_function_table";
+  }
   BinaryenExpressionRef body = moduleBuilder.makeCallIndirect(
     module->tables[0]->name, 
     BinaryenLocalGet(module, 0, wasm::Type::i32), 
