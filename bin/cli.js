@@ -64,10 +64,10 @@ start_unit_test(testOption)
   .then((success) => {
     if (!success) {
       console.error(chalk.redBright("Test Failed") + "\n");
-      exit(-1);
+      exit(255);
     }
   })
   .catch((e) => {
     console.error(chalk.redBright(" Test crash, error message: ") + chalk.yellowBright(`${e.stack}`) + "\n");
-    exit(-1);
+    exit(255);
   });
