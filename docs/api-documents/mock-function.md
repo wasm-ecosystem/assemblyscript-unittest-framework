@@ -31,7 +31,6 @@ test("getTime error handle", () => {
   expect(getTime()).equal(false); // success
   expect(fn.calls).equal(1);      // success
 });
-endTest();
 ```
 
 mock API can temporary change the behavior of function, effective scope is each test.

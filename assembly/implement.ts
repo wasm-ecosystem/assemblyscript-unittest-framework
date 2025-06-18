@@ -9,8 +9,8 @@ export function describeImpl(
   testsFunction();
   assertResult.removeDescription();
 }
-export function testImpl(description: string, testFunction: () => void): void {
-  assertResult.addDescription(description);
+export function testImpl(name: string, testFunction: () => void): void {
+  assertResult.addDescription(name);
   assertResult.registerTestFunction(testFunction.index);
   assertResult.removeDescription();
 }

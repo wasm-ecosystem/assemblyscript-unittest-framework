@@ -1,4 +1,4 @@
-import { describe, endTest, expect, test } from "../../assembly";
+import { describe, expect, test } from "../../assembly";
 
 describe("expect", () => {
   test("< = >", () => {
@@ -14,5 +14,3 @@ describe("expect", () => {
     expect<string | null>("test").notNull();
   });
 });
-
-endTest();

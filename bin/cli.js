@@ -12,11 +12,11 @@ import { validatArgument, start_unit_test } from "../dist/index.js";
 const program = new Command();
 program
   .option("--config <config file>", "path of config file", "as-test.config.js")
-  .option("--testcase <testcases...>", "run only specified test cases")
   .option("--temp <path>", "test template file folder")
   .option("--output <path>", "coverage report output folder")
   .option("--mode <output mode>", "coverage report output format")
   .option("--coverageLimit [error warning...]", "set warn(yellow) and error(red) upper limit in coverage report")
+  .option("--testcase <testcases...>", "run only specified test cases")
   .option("--testNamePattern <test name pattern>", "run only tests with a name that matches the regex pattern")
   .option("--collectCoverage <boolean>", "whether to collect coverage information and report");
 

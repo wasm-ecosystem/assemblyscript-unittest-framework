@@ -2,4 +2,4 @@ A comprehensive AssemblyScript testing solution, offering developers a robust su
 
 - Function Mocking
 - Coverage statistics
-- Expectations
+- Matchers
