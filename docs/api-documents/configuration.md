@@ -20,13 +20,17 @@ module.exports = {
     return {
       env: {
         logInfo(ptr, len) {
-          if (runtime.exports) {
-            let arrbuf = runtime.exports.__getArrayBuffer(ptr);
-            let str = Buffer.from(arrbuf).toString("utf8");
-            console.log(str);
-          }
+          let buf = runtime.exports!.__getArrayBuffer(ptr);
+          let str = Buffer.from(buf).toString("utf8");
+          runtime.framework.log(str); // log to unittest framework
+          console.log(str); // log to console
         },
       },
+      console: {
+        log(ptr) {
+          runtime.framework.log(runtime.exports!.__getString(msg));
+        }
+      }
       builtin: {
         getU8FromLinkedMemory(a) {
           return 1;
@@ -44,5 +48,4 @@ module.exports = {
   /** optional: test result output format, default "table" */
   // mode: ["html", "json", "table"],
 };
-
 ```
