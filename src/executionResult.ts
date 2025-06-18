@@ -23,9 +23,9 @@ export class ExecutionResult {
           for (const msg of value) {
             const [index, actualValue, expectValue] = msg;
             const debugLocation = expectInfo.get(index);
-            let errorMsg = `${debugLocation ?? ""}\tvalue: ${actualValue}\texpect: ${expectValue}`;
+            let errorMsg = `${debugLocation ?? ""}  value: ${actualValue}  expect: ${expectValue}`;
             if (errorMsg.length > 160) {
-              errorMsg = `${debugLocation ?? ""}\nvalue: \n\t${actualValue}\nexpect: \n\t${expectValue}`;
+              errorMsg = `${debugLocation ?? ""}\nvalue: \n  ${actualValue}\nexpect: \n  ${expectValue}`;
             }
             errorMsgs.push(errorMsg);
           }
@@ -52,9 +52,9 @@ export class ExecutionResult {
     if (this.fail !== 0) {
       log(chalk.red("Error Message: "));
       for (const [testcaseName, { assertMessages, logMessages }] of this.failedInfos.entries()) {
-        log(`\t${testcaseName}: `);
+        log(`  ${testcaseName}: `);
         for (const assertMessage of assertMessages) {
-          log("\t\t" + chalk.yellow(assertMessage));
+          log("    " + chalk.yellow(assertMessage));
         }
         for (const logMessage of logMessages ?? []) {
           log(chalk.gray(logMessage));
