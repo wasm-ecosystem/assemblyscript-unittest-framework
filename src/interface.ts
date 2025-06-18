@@ -186,6 +186,7 @@ export class ImportsArgument {
   module: WebAssembly.Module | null = null;
   instance: WebAssembly.Instance | null = null;
   exports: (ASUtil & Record<string, unknown>) | null = null;
+  constructor(public framework: UnitTestFramework) {}
 }
 
 export type Imports = ((arg: ImportsArgument) => Record<string, unknown>) | null;

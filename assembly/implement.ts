@@ -12,7 +12,6 @@ export function describeImpl(
 export function testImpl(description: string, testFunction: () => void): void {
   assertResult.addDescription(description);
   assertResult.registerTestFunction(testFunction.index);
-  assertResult.finishTestFunction();
   assertResult.removeDescription();
 }
 

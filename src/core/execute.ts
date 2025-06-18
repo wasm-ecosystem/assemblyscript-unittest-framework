@@ -31,7 +31,7 @@ async function nodeExecutor(
   const executionRecorder = new ExecutionRecorder();
   const coverageRecorder = new CoverageRecorder();
 
-  const importsArg = new ImportsArgument();
+  const importsArg = new ImportsArgument(executionRecorder);
   const userDefinedImportsObject = imports === undefined ? {} : imports!(importsArg);
   const importObject: ASImports = {
     wasi_snapshot_preview1: wasi.wasiImport,
@@ -53,18 +53,21 @@ async function nodeExecutor(
     const execTestFunction = ins.exports["executeTestFunction"];
     assert(typeof execTestFunction === "function");
     if (matchedTestNames === undefined) {
-      // means execute all testFunctions
+      // By default, all testcases are executed
       for (const functionInfo of executionRecorder.registerFunctions) {
-        const functionIndex = functionInfo[1];
+        const [testCaseName, functionIndex] = functionInfo;
+        executionRecorder.startTestFunction(testCaseName);
         (execTestFunction as (a: number) => void)(functionIndex);
+        executionRecorder.finishTestFunction();
         mockInstrumentFunc["mockFunctionStatus.clear"]();
       }
     } else {
       for (const functionInfo of executionRecorder.registerFunctions) {
-        const [testName, functionIndex] = functionInfo;
-        if (matchedTestNames.includes(testName)) {
-          console.log(testName);
+        const [testCaseName, functionIndex] = functionInfo;
+        if (matchedTestNames.includes(testCaseName)) {
+          executionRecorder.startTestFunction(testCaseName);
           (execTestFunction as (a: number) => void)(functionIndex);
+          executionRecorder.finishTestFunction();
           mockInstrumentFunc["mockFunctionStatus.clear"]();
         }
       }

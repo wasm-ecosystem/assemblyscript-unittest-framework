@@ -46,10 +46,11 @@ export class ExecutionRecorder implements UnitTestFramework {
 
   registerFunctions: [string, number][] = [];
   #currentTestDescriptions: string[] = [];
-  #logRecorder = new LogRecorder();
+  #testCaseFullName: string = "";
+  logRecorder = new LogRecorder();
 
-  get #currentTestDescription(): string {
-    return this.#currentTestDescriptions.join(" ");
+  set testCaseFullName(testCaseFullName: string) {
+    this.#testCaseFullName = testCaseFullName;
   }
 
   _addDescription(description: string): void {
@@ -58,26 +59,29 @@ export class ExecutionRecorder implements UnitTestFramework {
   _removeDescription(): void {
     this.#currentTestDescriptions.pop();
   }
-  registerTestFunction(fncIndex: number): void {
-    this.registerFunctions.push([this.#currentTestDescription, fncIndex]);
-    this.#logRecorder.onStartTest();
+  _registerTestFunction(fncIndex: number): void {
+    const testCaseFullName = this.#currentTestDescriptions.join(" ");
+    this.registerFunctions.push([testCaseFullName, fncIndex]);
   }
-  _finishTestFunction(): void {
-    const logMessages: string[] | null = this.#logRecorder.onFinishTest();
+  startTestFunction(testCaseFullName: string): void {
+    this.#testCaseFullName = testCaseFullName;
+    this.logRecorder.onStartTest();
+  }
+  finishTestFunction(): void {
+    const logMessages: string[] | null = this.logRecorder.onFinishTest();
     if (logMessages !== null) {
-      const testCaseFullName = this.#currentTestDescription;
-      this.result.failedLogMessages[testCaseFullName] = (this.result.failedLogMessages[testCaseFullName] || []).concat(
-        logMessages
-      );
+      this.result.failedLogMessages[this.#testCaseFullName] = (
+        this.result.failedLogMessages[this.#testCaseFullName] || []
+      ).concat(logMessages);
     }
   }
 
   collectCheckResult(result: boolean, codeInfoIndex: number, actualValue: string, expectValue: string): void {
     this.result.total++;
     if (!result) {
-      this.#logRecorder.markTestFailed();
+      this.logRecorder.markTestFailed();
       this.result.fail++;
-      const testCaseFullName = this.#currentTestDescription;
+      const testCaseFullName = this.#testCaseFullName;
       const assertMessage: AssertMessage = [codeInfoIndex.toString(), actualValue, expectValue];
       this.result.failedInfo[testCaseFullName] = this.result.failedInfo[testCaseFullName] || [];
       this.result.failedInfo[testCaseFullName].push(assertMessage);
@@ -85,7 +89,7 @@ export class ExecutionRecorder implements UnitTestFramework {
   }
 
   log(msg: string): void {
-    this.#logRecorder.addLog(msg);
+    this.logRecorder.addLog(msg);
   }
 
   getCollectionFuncSet(arg: ImportsArgument): Record<string, Record<string, unknown>> {
@@ -98,10 +102,7 @@ export class ExecutionRecorder implements UnitTestFramework {
           this._removeDescription();
         },
         registerTestFunction: (index: number): void => {
-          this.registerTestFunction(index);
-        },
-        finishTestFunction: () => {
-          this._finishTestFunction();
+          this._registerTestFunction(index);
         },
         collectCheckResult: (result: number, codeInfoIndex: number, actualValue: number, expectValue: number): void => {
           this.collectCheckResult(
