@@ -13,7 +13,7 @@ test("Instrument", async () => {
   const base = join(outputDir, "constructor");
   const wasmPath = join(outputDir, "constructor.wasm");
   const sourceCodePath = "tests/ts/fixture/constructor.ts";
-  const results = await instrument([wasmPath], [sourceCodePath]);
+  const results = await instrument([wasmPath], [sourceCodePath], true);
   expect(results.length).toEqual(1);
   const result = results[0]!;
   const instrumentedWasm = join(outputDir, "constructor.instrumented.wasm");
