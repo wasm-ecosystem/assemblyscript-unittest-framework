@@ -14,18 +14,16 @@ export async function instrument(
   const instrumenter = await initInstrumenter();
   for (const sourceFile of sourceWasms) {
     const baseName = sourceFile.slice(0, -5);
-    const outputFile = baseName.concat(".instrumented.wasm");
+    const result = new InstrumentResult(baseName);
+
     const reportFunction = "covInstrument/traceExpression";
-    const sourceMapFile = baseName.concat(".wasm.map");
-    const debugInfoFile = baseName.concat(".debugInfo.json");
-    const expectInfoFile = baseName.concat(".expectInfo.json");
 
     const source = instrumenter.allocateUTF8(sourceFile);
-    const output = instrumenter.allocateUTF8(outputFile);
+    const output = instrumenter.allocateUTF8(result.instrumentedWasm);
     const report = instrumenter.allocateUTF8(reportFunction);
-    const sourceMap = instrumenter.allocateUTF8(sourceMapFile);
-    const debugInfo = instrumenter.allocateUTF8(debugInfoFile);
-    const expectInfo = instrumenter.allocateUTF8(expectInfoFile);
+    const sourceMap = instrumenter.allocateUTF8(result.sourceMap);
+    const debugInfo = instrumenter.allocateUTF8(result.debugInfo);
+    const expectInfo = instrumenter.allocateUTF8(result.expectInfo);
     const include = instrumenter.allocateUTF8(includeFilter);
 
     instrumenter._wasm_instrument(
@@ -40,12 +38,6 @@ export async function instrument(
       true,
       collectCoverage
     );
-    const result: InstrumentResult = {
-      sourceWasm: sourceFile,
-      instrumentedWasm: outputFile,
-      debugInfo: debugInfoFile,
-      expectInfo: expectInfoFile,
-    };
     for (const ptr of [source, output, report, sourceMap, debugInfo, expectInfo, include]) {
       instrumenter._free(ptr);
     }

@@ -1,4 +1,3 @@
-import assert from "node:assert";
 import { writeFileSync } from "node:fs";
 
 export class CoverageRecorder {
@@ -25,9 +24,7 @@ export class CoverageRecorder {
     };
   }
 
-  outputTrace(wasm: string) {
-    assert(wasm.endsWith("instrumented.wasm"));
-    const traceOutputFile = wasm.slice(0, -17).concat("trace");
-    writeFileSync(traceOutputFile, JSON.stringify(this._runtimeTrace));
+  outputTrace(traceFile: string) {
+    writeFileSync(traceFile, JSON.stringify(this._runtimeTrace));
   }
 }

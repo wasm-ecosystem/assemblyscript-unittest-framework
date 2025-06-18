@@ -7,11 +7,26 @@ import { Type } from "wasmparser";
 import { ASUtil } from "@assemblyscript/loader";
 
 // instrumented file information
-export interface InstrumentResult {
-  sourceWasm: string;
-  instrumentedWasm: string;
-  debugInfo: string;
-  expectInfo: string;
+export class InstrumentResult {
+  constructor(public baseName: string) {}
+  get sourceWasm() {
+    return this.baseName.concat(".wasm");
+  }
+  get instrumentedWasm(): string {
+    return this.baseName.concat(".instrumented.wasm");
+  }
+  get sourceMap(): string {
+    return this.baseName.concat(".wasm.map");
+  }
+  get debugInfo(): string {
+    return this.baseName.concat(".debugInfo.json");
+  }
+  get expectInfo(): string {
+    return this.baseName.concat(".expectInfo.json");
+  }
+  get traceFile(): string {
+    return this.baseName.concat(".trace");
+  }
 }
 
 export type CodeSnippetIndex = number;
@@ -55,8 +70,9 @@ export type AssertActualValue = string;
 export type AssertMessage = [ExpectInfoIndex, AssertActualValue, AssertExpectValue];
 export type AssertFailMessage = Record<TestCaseName, AssertMessage[]>;
 
-export type ErrorMessages = string[];
-export type AssertErrorMessages = Map<TestCaseName, ErrorMessages>;
+export type FailedLogMessages = Record<TestCaseName, string[]>;
+
+export type FailedInfoMap = Map<TestCaseName, { assertMessages: string[]; logMessages: string[] | undefined }>;
 
 export type ExpectInfoDebugLocation = string;
 export type ExpectInfo = Record<ExpectInfoIndex, ExpectInfoDebugLocation>;
@@ -64,7 +80,8 @@ export type ExpectInfo = Record<ExpectInfoIndex, ExpectInfoDebugLocation>;
 export interface IAssertResult {
   fail: number;
   total: number;
-  failed_info: AssertFailMessage;
+  failedInfo: AssertFailMessage;
+  failedLogMessages: FailedLogMessages;
 }
 
 export interface ImportFunctionInfo {
@@ -191,6 +208,14 @@ export interface TestOption {
 }
 
 export type OutputMode = "html" | "json" | "table";
+
+export abstract class UnitTestFramework {
+  /**
+   * function to redirect log message to unittest framework
+   * @param msg: message to log
+   */
+  abstract log(msg: string): void;
+}
 
 export const OrganizationName = "wasm-ecosystem";
 export const Repository = "https://github.com/wasm-ecosystem/assemblyscript-unittest-framework";

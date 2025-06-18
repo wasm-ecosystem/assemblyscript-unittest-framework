@@ -1,27 +1,26 @@
 import { WASI } from "node:wasi";
 import { promises } from "node:fs";
 import { ensureDirSync } from "fs-extra";
-import { basename } from "node:path";
 import { instantiate, Imports as ASImports } from "@assemblyscript/loader";
-import { AssertResult } from "../assertResult.js";
+import { ExecutionResult } from "../executionResult.js";
 import { Imports, ImportsArgument, InstrumentResult } from "../interface.js";
 import { mockInstrumentFunc } from "../utils/import.js";
 import { supplyDefaultFunction } from "../utils/index.js";
 import { parseImportFunctionInfo } from "../utils/wasmparser.js";
-import { ExecutionRecorder } from "./executionRecorder.js";
+import { ExecutionRecorder, SingleExecutionResult } from "./executionRecorder.js";
 import { CoverageRecorder } from "./covRecorder.js";
 import assert from "node:assert";
 
 const readFile = promises.readFile;
 
 async function nodeExecutor(
-  wasm: string,
+  instrumentResult: InstrumentResult,
   outFolder: string,
   matchedTestNames?: string[],
   imports?: Imports
-): Promise<ExecutionRecorder> {
+): Promise<SingleExecutionResult> {
   const wasi = new WASI({
-    args: ["node", basename(wasm)],
+    args: ["node", instrumentResult.baseName],
     env: process.env,
     preopens: {
       "/": outFolder,
@@ -41,7 +40,7 @@ async function nodeExecutor(
     ...coverageRecorder.getCollectionFuncSet(),
     ...userDefinedImportsObject,
   } as ASImports;
-  const binaryBuffer = await readFile(wasm);
+  const binaryBuffer = await readFile(instrumentResult.instrumentedWasm);
   const binary = binaryBuffer.buffer.slice(binaryBuffer.byteOffset, binaryBuffer.byteOffset + binaryBuffer.byteLength);
   const importFuncList = parseImportFunctionInfo(binary as ArrayBuffer);
   supplyDefaultFunction(importFuncList, importObject);
@@ -76,23 +75,22 @@ async function nodeExecutor(
     }
     throw new Error("node executor abort.");
   }
-  coverageRecorder.outputTrace(wasm);
-  return executionRecorder;
+  coverageRecorder.outputTrace(instrumentResult.traceFile);
+  return executionRecorder.result;
 }
 
-export async function execWasmBinarys(
+export async function execWasmBinaries(
   outFolder: string,
-  instrumentResult: InstrumentResult[],
+  instrumentResults: InstrumentResult[],
   matchedTestNames?: string[],
   imports?: Imports
-): Promise<AssertResult> {
-  const assertRes = new AssertResult();
+): Promise<ExecutionResult> {
+  const assertRes = new ExecutionResult();
   ensureDirSync(outFolder);
   await Promise.all<void>(
-    instrumentResult.map(async (res): Promise<void> => {
-      const { instrumentedWasm, expectInfo } = res;
-      const recorder: ExecutionRecorder = await nodeExecutor(instrumentedWasm, outFolder, matchedTestNames, imports);
-      await assertRes.merge(recorder, expectInfo);
+    instrumentResults.map(async (instrumentResult): Promise<void> => {
+      const result: SingleExecutionResult = await nodeExecutor(instrumentResult, outFolder, matchedTestNames, imports);
+      await assertRes.merge(result, instrumentResult.expectInfo);
     })
   );
   return assertRes;

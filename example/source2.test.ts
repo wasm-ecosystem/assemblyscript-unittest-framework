@@ -1,4 +1,4 @@
-import { describe, test, expect, mock, endTest } from "../assembly";
+import { describe, test, expect } from "../assembly";
 import { quick_sort } from "./source2";
 
 describe("quick_sork", () => {
@@ -14,5 +14,3 @@ describe("quick_sork", () => {
     expect(d).equal([1, 2, 3, 4, 5]);
   });
 });
-
-endTest();
