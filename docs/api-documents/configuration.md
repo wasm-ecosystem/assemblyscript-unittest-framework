@@ -49,3 +49,52 @@ module.exports = {
   // mode: ["html", "json", "table"],
 };
 ```
+
+### Imports
+
+```typescript
+export interface ImportsArgument {
+  module: WebAssembly.Module;
+  instance: WebAssembly.Instance;
+  exports: (ASUtil & Record<string, unknown>);
+  framework: UnitTestFramework;
+}
+export abstract class UnitTestFramework {
+  /**
+   * function to redirect log message to unittest framework
+   * @param msg: message to log
+   */
+  abstract log(msg: string): void;
+}
+```
+
+There are 2 useful fields.
+
+- `exports`: contains exported function from test cases and [AS help API](https://github.com/AssemblyScript/assemblyscript/blob/3defefd5b09248d697a2e6bd1e7201c0cf98def1/lib/loader/index.d.ts#L23).
+- `framework`: contains runtime provided function.
+
+  - `log`: redirect log message from test cases to unittest framework. It will be showed in failed info.
+    ::: details
+
+    ```typescript
+    test("failed test", () => {
+      log("This is a log message for the failed test."); // log to be redirect
+      expect(1 + 1).equal(3);
+    });
+
+    test("succeed test", () => {
+      log("This is a log message for the succeed test.");  // log to be redirect
+      expect(1 + 1).equal(2);
+    });
+    ```
+
+    will output
+
+    ```
+    Error Message:
+      failed test:
+        *.test.ts:6:2 value: 2 expect: = 3
+    This is a log message for the failed test.  <- only log in failed test will be showed here
+    ```
+
+    :::

@@ -45,10 +45,10 @@ test("equal failed", async () => {
   const expectFailedInfo: FailedInfoMap = new Map();
   expectFailedInfo.set("A", {
     assertMessages: [
-      "tests/as/comparison.test.ts:10:20\tvalue: 100\texpect: = 200",
-      "tests/as/comparison.test.ts:15:27\tvalue: [10]\texpect: = [1]",
-      "tests/as/comparison.test.ts:59:22\tvalue: { 1 : 1.5, 2 : 2.5 }\texpect: = { 1: 1.5, 2 : 2.0 }",
-      `tests/as/comparison.test.ts:48:47\nvalue: \n\t${actualString}\nexpect: \n\t${expectString}`,
+      "tests/as/comparison.test.ts:10:20  value: 100  expect: = 200",
+      "tests/as/comparison.test.ts:15:27  value: [10]  expect: = [1]",
+      "tests/as/comparison.test.ts:59:22  value: { 1 : 1.5, 2 : 2.5 }  expect: = { 1: 1.5, 2 : 2.0 }",
+      `tests/as/comparison.test.ts:48:47\nvalue: \n  ${actualString}\nexpect: \n  ${expectString}`,
     ],
     logMessages: ["log message 1", "log message 2", "log message 3"],
   });
