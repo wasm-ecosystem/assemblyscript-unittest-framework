@@ -14,14 +14,14 @@ export class ExecutionRecorder implements IAssertResult {
     this._currentTestDescriptions.pop();
   }
   registerTestFunction(fncIndex: number): void {
-    const testCaseFullName = this._currentTestDescriptions.join(" - ");
+    const testCaseFullName = this._currentTestDescriptions.join(" ");
     this.registerFunctions.push([testCaseFullName, fncIndex]);
   }
   collectCheckResult(result: boolean, codeInfoIndex: number, actualValue: string, expectValue: string): void {
     this.total++;
     if (!result) {
       this.fail++;
-      const testCaseFullName = this._currentTestDescriptions.join(" - ");
+      const testCaseFullName = this._currentTestDescriptions.join(" ");
       const assertMessage: AssertMessage = [codeInfoIndex.toString(), actualValue, expectValue];
       this.failed_info[testCaseFullName] = this.failed_info[testCaseFullName] || [];
       this.failed_info[testCaseFullName].push(assertMessage);

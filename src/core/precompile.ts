@@ -8,6 +8,7 @@ import { join, relative, resolve } from "node:path";
 import { getIncludeFiles } from "../utils/pathResolver.js";
 import { SourceFunctionInfo, UnittestPackage } from "../interface.js";
 import { projectRoot } from "../utils/projectRoot.js";
+import assert from "node:assert";
 
 export async function precompile(
   includes: string[],
@@ -40,6 +41,8 @@ export async function precompile(
         }
       }
     }
+
+    assert(matchedTestFiles.size > 0, `No matched testname using ${testNamePattern}`);
     return {
       testCodePaths: Array.from(matchedTestFiles),
       matchedTestNames: matchedTestNames,

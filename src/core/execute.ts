@@ -10,10 +10,16 @@ import { supplyDefaultFunction } from "../utils/index.js";
 import { parseImportFunctionInfo } from "../utils/wasmparser.js";
 import { ExecutionRecorder } from "./executionRecorder.js";
 import { CoverageRecorder } from "./covRecorder.js";
+import assert from "node:assert";
 
 const readFile = promises.readFile;
 
-async function nodeExecutor(wasm: string, outFolder: string, imports?: Imports): Promise<ExecutionRecorder> {
+async function nodeExecutor(
+  wasm: string,
+  outFolder: string,
+  matchedTestNames?: string[],
+  imports?: Imports
+): Promise<ExecutionRecorder> {
   const wasi = new WASI({
     args: ["node", basename(wasm)],
     env: process.env,
@@ -46,11 +52,22 @@ async function nodeExecutor(wasm: string, outFolder: string, imports?: Imports):
   try {
     wasi.start(ins);
     const execTestFunction = ins.exports["executeTestFunction"];
-    if (typeof execTestFunction === "function") {
-      for (const fncs of executionRecorder.registerFunctions) {
-        const functions = fncs[1];
-        (execTestFunction as (a: number) => void)(functions);
+    assert(typeof execTestFunction === "function");
+    if (matchedTestNames === undefined) {
+      // means execute all testFunctions
+      for (const functionInfo of executionRecorder.registerFunctions) {
+        const functionIndex = functionInfo[1];
+        (execTestFunction as (a: number) => void)(functionIndex);
         mockInstrumentFunc["mockFunctionStatus.clear"]();
+      }
+    } else {
+      for (const functionInfo of executionRecorder.registerFunctions) {
+        const [testName, functionIndex] = functionInfo;
+        if (matchedTestNames.includes(testName)) {
+          console.log(testName);
+          (execTestFunction as (a: number) => void)(functionIndex);
+          mockInstrumentFunc["mockFunctionStatus.clear"]();
+        }
       }
     }
   } catch (error) {
@@ -66,6 +83,7 @@ async function nodeExecutor(wasm: string, outFolder: string, imports?: Imports):
 export async function execWasmBinarys(
   outFolder: string,
   instrumentResult: InstrumentResult[],
+  matchedTestNames?: string[],
   imports?: Imports
 ): Promise<AssertResult> {
   const assertRes = new AssertResult();
@@ -73,7 +91,7 @@ export async function execWasmBinarys(
   await Promise.all<void>(
     instrumentResult.map(async (res): Promise<void> => {
       const { instrumentedWasm, expectInfo } = res;
-      const recorder: ExecutionRecorder = await nodeExecutor(instrumentedWasm, outFolder, imports);
+      const recorder: ExecutionRecorder = await nodeExecutor(instrumentedWasm, outFolder, matchedTestNames, imports);
       await assertRes.merge(recorder, expectInfo);
     })
   );

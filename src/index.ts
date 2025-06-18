@@ -66,7 +66,12 @@ export async function start_unit_test(options: TestOption): Promise<boolean> {
   const instrumentResult = await instrument(wasmPaths, sourcePaths, options.collectCoverage);
   console.log(chalk.blueBright("instrument: ") + chalk.bold.greenBright("OK"));
 
-  const executedResult = await execWasmBinarys(options.tempFolder, instrumentResult, options.imports);
+  const executedResult = await execWasmBinarys(
+    options.tempFolder,
+    instrumentResult,
+    unittestPackage.matchedTestNames,
+    options.imports
+  );
   console.log(chalk.blueBright("execute testcases: ") + chalk.bold.greenBright("OK"));
 
   logAssertResult(executedResult);
