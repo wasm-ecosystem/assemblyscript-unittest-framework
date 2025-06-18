@@ -87,7 +87,7 @@ describe("groupB", () => {
 });
 ```
 
-run `as-test --testNamePattern "groupA case_\d"` will run `case_1`, `case_2`, `case_3`. 
+run `as-test --testNamePattern "groupA case_\d"` will run `case_1`, `case_2`, `case_3`.
 
 ::: tip
 The framework join `DescriptionName` and `TestName` with `" "` by default, e.g. `groupA case_1` is the fullTestCaseName of `case_1`.

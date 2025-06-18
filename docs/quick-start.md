@@ -71,14 +71,14 @@ execute testcases: OK
 
 test case: 1/2 (success/total)
 
-Error Message: 
-  sum: 
+Error Message:
+  sum:
     tests/sum.test.ts:6:2  value: 2  expect: = 3
 ---------|---------|----------|---------|--------
 File     | % Stmts | % Branch | % Funcs | % Lines
 ---------|---------|----------|---------|--------
-source   | 100     | 100      | 100     | 100    
-  sum.ts | 100     | 100      | 100     | 100    
+source   | 100     | 100      | 100     | 100
+  sum.ts | 100     | 100      | 100     | 100
 ---------|---------|----------|---------|--------
 
 Test Failed
