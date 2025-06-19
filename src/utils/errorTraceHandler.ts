@@ -3,6 +3,7 @@
 import { readFile } from "node:fs/promises";
 import { parseSourceMapPath } from "./wasmparser.js";
 import { BasicSourceMapConsumer, IndexedSourceMapConsumer, SourceMapConsumer } from "source-map";
+import chalk from "chalk";
 
 export interface WebAssemblyCallSite {
   functionName: string;
@@ -47,7 +48,7 @@ function getOriginLocationWithSourceMap(
 }
 
 function getWebAssemblyFunctionName(callSite: NodeJS.CallSite): string {
-  return callSite.getFunctionName() ?? `wasm-function[${callSite.getFunction()}]`;
+  return callSite.getFunctionName() ?? `wasm-function[${callSite.getFunction()?.toString() ?? "unknown"}]`;
 }
 
 function createWebAssemblyCallSite(
@@ -87,15 +88,24 @@ export interface ExecutionError {
   stacks: WebAssemblyCallSite[];
 }
 
-async function getSourceMapConsumer(sourceMapPath: string): Promise<BasicSourceMapConsumer | IndexedSourceMapConsumer> {
-  return new Promise<BasicSourceMapConsumer | IndexedSourceMapConsumer>(async (resolve, reject) => {
-    let sourceMapContent: string | null = null;
+async function getSourceMapConsumer(sourceMapPath: string | null): Promise<SourceMapHandler | null> {
+  if (sourceMapPath === null) {
+    return null;
+  }
+  const sourceMapContent: string | null = await (async () => {
     try {
-      sourceMapContent = await readFile(sourceMapPath, "utf8");
+      return await readFile(sourceMapPath, "utf8");
     } catch (error) {
-      reject(error);
-      return;
+      if (error instanceof Error) {
+        console.log(chalk.yellow(`Failed to read source map file: ${sourceMapPath} due to ${error}`));
+      }
+      return null;
     }
+  })();
+  if (sourceMapContent === null) {
+    return null;
+  }
+  return new Promise<SourceMapHandler>((resolve) => {
     SourceMapConsumer.with(sourceMapContent, null, (consumer) => {
       resolve(consumer);
     });
@@ -108,7 +118,7 @@ export async function handleWebAssemblyError(
 ): Promise<ExecutionError> {
   const wasmBuffer = await readFile(wasmPath);
   const sourceMapPath = parseSourceMapPath(wasmBuffer.buffer as ArrayBuffer);
-  const sourceMapConsumer = sourceMapPath ? await getSourceMapConsumer(sourceMapPath) : null;
+  const sourceMapConsumer: SourceMapHandler | null = await getSourceMapConsumer(sourceMapPath);
   let stacks: NodeJS.CallSite[] = [];
   const originalPrepareStackTrace = Error.prepareStackTrace;
   Error.prepareStackTrace = (_: Error, structuredStackTrace: NodeJS.CallSite[]) => {
@@ -120,6 +130,6 @@ export async function handleWebAssemblyError(
     message: error.message,
     stacks: stacks
       .map((callSite) => createWebAssemblyCallSite(callSite, { wasmPath, sourceMapConsumer }))
-      .filter((callSite) => callSite != null),
+      .filter((callSite) => callSite !== null),
   };
 }

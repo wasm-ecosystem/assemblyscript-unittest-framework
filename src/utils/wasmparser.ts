@@ -89,7 +89,7 @@ export function parseSourceMapPath(buf: ArrayBuffer): string | null {
       if (sectionInfo.id !== SectionCode.Custom) {
         reader.skipSection();
       }
-    } else if (reader.state == BinaryReaderState.SOURCE_MAPPING_URL) {
+    } else if (reader.state === BinaryReaderState.SOURCE_MAPPING_URL) {
       const sectionInfo = reader.result as ISourceMappingURL;
       return new TextDecoder("utf8").decode(sectionInfo.url);
     }

@@ -96,24 +96,28 @@ export class ExecutionResultSummary {
       this.total.toString();
     log(`\ntest case: ${rate} (success/total)\n`);
     if (this.fail !== 0) {
-      log(chalk.red("Error Message: "));
-      // sort failedInfos by testcaseName to keep stability for e2e testing
-      const failedInfosArray = Array.from(this.failedInfos.entries()).sort((a, b) => a[0].localeCompare(b[0]));
-      for (const [testcaseName, { hasCrash, assertMessages, logMessages }] of failedInfosArray) {
-        log(`  ${testcaseName}: `);
-        for (const assertMessage of assertMessages) {
-          log("    " + chalk.yellow(assertMessage));
-        }
-        if (hasCrash) {
-          log("    " + chalk.red("Test Crashed!"));
-        }
-        for (const logMessage of logMessages ?? []) {
-          log(chalk.gray(logMessage));
-        }
-        if (logMessages.length > 0) {
-          // empty line to separate test
-          log("");
-        }
+      this.#printErrorMessage(log);
+    }
+  }
+
+  #printErrorMessage(log: (msg: string) => void): void {
+    log(chalk.red("Error Message: "));
+    // sort failedInfos by testcaseName to keep stability for e2e testing
+    const failedInfosArray = Array.from(this.failedInfos.entries()).sort((a, b) => a[0].localeCompare(b[0]));
+    for (const [testcaseName, { hasCrash, assertMessages, logMessages }] of failedInfosArray) {
+      log(`  ${testcaseName}: `);
+      for (const assertMessage of assertMessages) {
+        log("    " + chalk.yellow(assertMessage));
+      }
+      if (hasCrash) {
+        log("    " + chalk.red("Test Crashed!"));
+      }
+      for (const logMessage of logMessages ?? []) {
+        log(chalk.gray(logMessage));
+      }
+      if (logMessages.length > 0) {
+        // empty line to separate test
+        log("");
       }
     }
   }

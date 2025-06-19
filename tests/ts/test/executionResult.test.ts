@@ -62,8 +62,6 @@ test("equal assert failed", async () => {
 
 test("equal crash", async () => {
   const executionResult = new ExecutionResultSummary();
-  const actualString = "A long sentence for testing errorMsg.length > 160 in executionResult.ts merge function";
-  const expectString = "= A long sentence for testing errorMsg.length > 160 in executionResult.ts merge function ";
   const testcaseA: IExecutionResult = {
     fail: 1,
     total: 1,
