@@ -123,7 +123,9 @@ export async function handleWebAssemblyError(
   Error.prepareStackTrace = originalPrepareStackTrace;
 
   const wasmBuffer = await readFile(wasmPath);
-  const sourceMapPath = parseSourceMapPath(wasmBuffer.buffer as ArrayBuffer);
+  const sourceMapPath = parseSourceMapPath(
+    wasmBuffer.buffer.slice(wasmBuffer.byteOffset, wasmBuffer.byteLength) as ArrayBuffer
+  );
   const sourceMapConsumer: SourceMapHandler | null = await getSourceMapConsumer(sourceMapPath);
   const stacks = stackTrace
     .map((callSite) => createWebAssemblyCallSite(callSite, { wasmPath, sourceMapConsumer }))
