@@ -15,3 +15,5 @@
 
 /docs/.vitepress/dist
 /docs/.vitepress/cache
+
+/tests/e2e/*/tmp

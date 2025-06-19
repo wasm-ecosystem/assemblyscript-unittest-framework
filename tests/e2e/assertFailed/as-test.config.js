@@ -1,8 +1,5 @@
-import os from "node:os";
 import path from "node:path";
-import { URL } from "node:url";
 
-const tmpFolder = path.join(os.tmpdir(), "as-test-e2e");
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
 export default {
