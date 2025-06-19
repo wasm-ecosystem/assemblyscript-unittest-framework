@@ -84,27 +84,14 @@ export function parseSourceMapPath(buf: ArrayBuffer): string | null {
     if (!reader.read()) {
       return null;
     }
-    switch (reader.state) {
-      case BinaryReaderState.BEGIN_SECTION: {
-        const sectionInfo = reader.result as ISectionInformation;
-        switch (sectionInfo.id) {
-          case SectionCode.Custom: {
-            break;
-          }
-          default: {
-            reader.skipSection();
-            break;
-          }
-        }
-        break;
+    if (reader.state === BinaryReaderState.BEGIN_SECTION) {
+      const sectionInfo = reader.result as ISectionInformation;
+      if (sectionInfo.id !== SectionCode.Custom) {
+        reader.skipSection();
       }
-      case BinaryReaderState.SOURCE_MAPPING_URL: {
-        const sectionInfo = reader.result as ISourceMappingURL;
-        return new TextDecoder("utf-8").decode(sectionInfo.url);
-      }
-      default: {
-        break;
-      }
+    } else if (reader.state == BinaryReaderState.SOURCE_MAPPING_URL) {
+      const sectionInfo = reader.result as ISourceMappingURL;
+      return new TextDecoder("utf8").decode(sectionInfo.url);
     }
   }
 }

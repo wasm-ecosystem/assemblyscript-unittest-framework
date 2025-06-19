@@ -85,8 +85,8 @@ export type ExpectInfo = Record<ExpectInfoIndex, ExpectInfoDebugLocation>;
 export interface IExecutionResult {
   fail: number;
   total: number;
-  failedInfo: AssertFailMessage;
   crashInfo: CrashInfo;
+  failedInfo: AssertFailMessage;
   failedLogMessages: FailedLogMessages;
 }
 

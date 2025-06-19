@@ -59,7 +59,7 @@ export class ExecutionResultSummary {
    * It should be called after other error processed to append log messages.
    */
   #processLogMessages(failedLogMessages: FailedLogMessages) {
-    for (let [testcaseName, failedInfo] of this.failedInfos) {
+    for (const [testcaseName, failedInfo] of this.failedInfos) {
       if (failedLogMessages[testcaseName] !== undefined) {
         failedInfo.logMessages = failedInfo.logMessages.concat(failedLogMessages[testcaseName]);
       }
