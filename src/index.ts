@@ -1,5 +1,5 @@
 import chalk from "chalk";
-import { emptydirSync } from "fs-extra";
+import pkg from "fs-extra";
 import { Parser } from "./parser/index.js";
 import { compile } from "./core/compile.js";
 import { precompile } from "./core/precompile.js";
@@ -7,6 +7,10 @@ import { instrument } from "./core/instrument.js";
 import { execWasmBinaries } from "./core/execute.js";
 import { generateReport, reportConfig } from "./generator/index.js";
 import { TestOption } from "./interface.js";
+import { join } from "node:path";
+import assert from "node:assert";
+
+const { readFileSync, emptydirSync } = pkg;
 
 export function validatArgument(includes: unknown, excludes: unknown) {
   if (!Array.isArray(includes)) {
@@ -31,6 +35,13 @@ export function validatArgument(includes: unknown, excludes: unknown) {
  * main function of unit-test, will throw Exception in most condition except job carsh
  */
 export async function start_unit_test(options: TestOption): Promise<boolean> {
+  const failurePath = join(options.outputFolder, "failures.json");
+  let failedTestCases: string[] = [];
+  if (options.onlyFailures) {
+    failedTestCases = JSON.parse(readFileSync(failurePath, "utf8")) as string[];
+    assert(failedTestCases.length > 0, "No failed test cases found");
+  }
+
   emptydirSync(options.outputFolder);
   emptydirSync(options.tempFolder);
   const unittestPackage = await precompile(
@@ -38,6 +49,7 @@ export async function start_unit_test(options: TestOption): Promise<boolean> {
     options.excludes,
     options.testcases,
     options.testNamePattern,
+    failedTestCases,
     options.collectCoverage,
     options.flags
   );
@@ -58,6 +70,7 @@ export async function start_unit_test(options: TestOption): Promise<boolean> {
   );
   console.log(chalk.blueBright("execute testcases: ") + chalk.bold.greenBright("OK"));
 
+  await executedResult.writeFailures(failurePath);
   executedResult.print(console.log);
   if (options.collectCoverage) {
     const parser = new Parser();
