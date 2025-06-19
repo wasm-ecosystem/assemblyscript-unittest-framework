@@ -2,41 +2,58 @@ import assert from "node:assert";
 import { exec } from "node:child_process";
 import { diffChars } from "diff";
 import chalk from "chalk";
+import { argv } from "node:process";
+import { readFileSync } from "node:fs";
 
-function assertStringEq(s1, s2) {
-  const parts = diffChars(s1, s2);
-  const diffs = [];
-  let hasDiff = false;
-  for (const part of parts) {
-    if (part.added) {
-      hasDiff = true;
-      diffs.push(chalk.bgGreen(part.value));
-    } else if (part.removed) {
-      hasDiff = true;
-      diffs.push(chalk.bgRed(part.value));
-    } else {
-      diffs.push(part.value);
-    }
-  }
-  assert(!hasDiff, diffs.join(""));
+function getDiff(s1, s2) {
+  const handleEscape = (c) => {
+    if (c === "\n") return "\n'\\n'";
+    return c;
+  };
+  return diffChars(s1, s2)
+    .map((part) => {
+      if (part.added) {
+        return chalk.bgGreen(handleEscape(part.value));
+      } else if (part.removed) {
+        return chalk.bgRed(handleEscape(part.value));
+      } else {
+        return part.value;
+      }
+    })
+    .join("");
 }
 
-console.log("Running e2e test: printLogInFailedInfo");
-exec("node ./bin/as-test.js --config tests/e2e/printLogInFailedInfo/as-test.config.js", (error, stdout, stderr) => {
+function isEnabled(name) {
+  const enabledTests = argv.slice(2);
+  if (enabledTests.length === 0) {
+    return true; // Run all tests by default
+  }
+  return enabledTests.includes(name);
+}
+
+function runEndToEndTest(name, handle) {
+  if (isEnabled(name)) {
+    console.log(`Running e2e test: ${name}`);
+    exec(`node ./bin/as-test.js --config tests/e2e/${name}/as-test.config.js`, (error, stdout, stderr) => {
+      // standard check
+      const expectStdOut = readFileSync(`tests/e2e/${name}/stdout.txt`, "utf-8");
+      if (expectStdOut !== stdout) {
+        console.log(`=========STDOUT ${name}=========`);
+        console.log(getDiff(expectStdOut, stdout));
+        console.log(`=========STDERR ${name}=========`);
+        console.log(stderr);
+        process.exit(1);
+      }
+      // customize check
+      handle(error, stdout, stderr);
+    });
+  }
+}
+
+runEndToEndTest("printLogInFailedInfo", (error, stdout, stderr) => {
   assert(error.code === 255);
-  const expectStdOut = `
-code analysis: OK
-compile testcases: OK
-instrument: OK
-execute testcases: OK
+});
 
-test case: 1/2 (success/total)
-
-Error Message: 
-  failed test: 
-    tests/e2e/printLogInFailedInfo/source.test.ts:6:2  value: 2  expect: = 3
-This is a log message for the failed test.
-`.trimStart();
-
-  assertStringEq(expectStdOut, stdout);
+runEndToEndTest("assertFailed", (error, stdout, stderr) => {
+  assert(error.code === 255);
 });
