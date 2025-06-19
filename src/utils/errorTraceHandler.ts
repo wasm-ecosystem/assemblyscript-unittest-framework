@@ -109,14 +109,17 @@ export async function handleWebAssemblyError(
   const wasmBuffer = await readFile(wasmPath);
   const sourceMapPath = parseSourceMapPath(wasmBuffer.buffer as ArrayBuffer);
   const sourceMapConsumer = sourceMapPath ? await getSourceMapConsumer(sourceMapPath) : null;
+  let stacks: NodeJS.CallSite[] = [];
   const originalPrepareStackTrace = Error.prepareStackTrace;
-  let stacks: WebAssemblyCallSite[] = [];
   Error.prepareStackTrace = (_: Error, structuredStackTrace: NodeJS.CallSite[]) => {
-    stacks = structuredStackTrace
-      .map((callSite) => createWebAssemblyCallSite(callSite, { wasmPath, sourceMapConsumer }))
-      .filter((callSite) => callSite != null);
+    stacks = structuredStackTrace;
   };
   error.stack; // trigger prepareStackTrace
   Error.prepareStackTrace = originalPrepareStackTrace;
-  return { message: error.message, stacks };
+  return {
+    message: error.message,
+    stacks: stacks
+      .map((callSite) => createWebAssemblyCallSite(callSite, { wasmPath, sourceMapConsumer }))
+      .filter((callSite) => callSite != null),
+  };
 }
