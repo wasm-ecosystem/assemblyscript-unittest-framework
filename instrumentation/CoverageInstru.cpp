@@ -1,4 +1,5 @@
 #include "CoverageInstru.hpp"
+#include <binaryen-c.h>
 #include <fstream>
 #include <ostream>
 namespace wasmInstrumentation {
@@ -128,6 +129,7 @@ InstrumentationResponse CoverageInstru::instrument() const noexcept {
   mockWalker.mockWalk();
 
   const std::string targetSourceMapPath = std::string{this->config->targetName} + ".map";
+  BinaryenSetDebugInfo(true);
   const BinaryenModuleAllocateAndWriteResult result =
       BinaryenModuleAllocateAndWrite(&module, targetSourceMapPath.c_str());
   std::ofstream wasmFileStream(this->config->targetName.data(), std::ios::trunc | std::ios::binary);

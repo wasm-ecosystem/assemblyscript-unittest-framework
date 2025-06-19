@@ -49,52 +49,51 @@ async function nodeExecutor(
   importsArg.module = ins.module;
   importsArg.instance = ins.instance;
   importsArg.exports = ins.exports;
+
   let isCrashed = false; // we don't want to crash any code after crash. AS' heap may be broken.
-  try {
-    executionRecorder.startTestFunction(`${instrumentResult.baseName} - init`);
-    wasi.start(ins);
-  } catch (error) {
+
+  const exceptionHandler = async (error: unknown) => {
     if (error instanceof WebAssembly.RuntimeError) {
       isCrashed = true;
       const errorMessage: ExecutionError = await handleWebAssemblyError(error, instrumentResult.instrumentedWasm);
       executionRecorder.notifyTestCrash(errorMessage);
-    } else {
-      // unrecoverable error, rethrow
-      if (error instanceof Error) {
-        console.error(error.stack);
-      }
-      throw new Error("node executor abort");
+      return;
     }
+    // unrecoverable error, rethrow
+    if (error instanceof Error) {
+      console.error(error.stack);
+    }
+    throw new Error("node executor abort");
+  };
+
+  try {
+    executionRecorder.startTestFunction(`${instrumentResult.baseName} - init`);
+    wasi.start(ins);
+  } catch (error) {
+    exceptionHandler(error);
   }
   executionRecorder.finishTestFunction();
-  // try {
-  //   const execTestFunction = ins.exports["executeTestFunction"];
-  //   assert(typeof execTestFunction === "function");
-  //   if (matchedTestNames === undefined) {
-  //     // By default, all testcases are executed
-  //     for (const functionInfo of executionRecorder.registerFunctions) {
-  //       const [testCaseName, functionIndex] = functionInfo;
-  //       executionRecorder.startTestFunction(testCaseName);
-  //       (execTestFunction as (a: number) => void)(functionIndex);
-  //       executionRecorder.finishTestFunction();
-  //       mockInstrumentFunc["mockFunctionStatus.clear"]();
-  //     }
-  //   } else {
-  //     for (const functionInfo of executionRecorder.registerFunctions) {
-  //       const [testCaseName, functionIndex] = functionInfo;
-  //       if (matchedTestNames.includes(testCaseName)) {
-  //         executionRecorder.startTestFunction(testCaseName);
-  //         (execTestFunction as (a: number) => void)(functionIndex);
-  //         executionRecorder.finishTestFunction();
-  //         mockInstrumentFunc["mockFunctionStatus.clear"]();
-  //       }
-  //     }
-  //   }
-  // } catch (error) {
-  //   if (error instanceof Error) {
-  //     console.error(error.stack);
-  //   }
-  // }
+
+  const execTestFunction = ins.exports["executeTestFunction"];
+  assert(typeof execTestFunction === "function");
+
+  for (const functionInfo of executionRecorder.registerFunctions) {
+    if (isCrashed) {
+      break;
+    }
+    const [testCaseName, functionIndex] = functionInfo;
+    if (matchedTestNames === undefined || matchedTestNames.includes(testCaseName)) {
+      executionRecorder.startTestFunction(testCaseName);
+      try {
+        (execTestFunction as (a: number) => void)(functionIndex);
+      } catch (error) {
+        exceptionHandler(error);
+      }
+      executionRecorder.finishTestFunction();
+      mockInstrumentFunc["mockFunctionStatus.clear"]();
+    }
+  }
+
   coverageRecorder.outputTrace(instrumentResult.traceFile);
   return executionRecorder.result;
 }

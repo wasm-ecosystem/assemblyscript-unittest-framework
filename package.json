@@ -37,6 +37,7 @@
     "glob": "^11.0.0",
     "ignore": "^7.0.3",
     "semver": "^7.5.3",
+    "source-map": "^0.7.4",
     "wasmparser": "5.11.1"
   },
   "peerDependencies": {
