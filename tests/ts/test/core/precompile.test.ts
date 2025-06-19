@@ -6,6 +6,7 @@ test("listFunction transform", async () => {
     [],
     undefined,
     undefined,
+    [],
     true,
     ""
   );

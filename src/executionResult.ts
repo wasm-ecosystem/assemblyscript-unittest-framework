@@ -3,7 +3,7 @@ import { json2map } from "./utils/index.js";
 import { FailedInfoMap, AssertMessage, ExpectInfo, IAssertResult } from "./interface.js";
 import chalk from "chalk";
 
-const readFile = promises.readFile;
+const { readFile, writeFile } = promises;
 
 export class ExecutionResult {
   fail = 0;
@@ -41,6 +41,10 @@ export class ExecutionResult {
         throw error;
       }
     }
+  }
+
+  async writeFailures(failuresPath: string) {
+    await writeFile(failuresPath, JSON.stringify(Array.from(this.failedInfos.keys())));
   }
 
   print(log: (msg: string) => void): void {

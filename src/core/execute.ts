@@ -16,7 +16,7 @@ const readFile = promises.readFile;
 async function nodeExecutor(
   instrumentResult: InstrumentResult,
   outFolder: string,
-  matchedTestNames?: string[],
+  matchedTestNames: string[],
   imports?: Imports
 ): Promise<SingleExecutionResult> {
   const wasi = new WASI({
@@ -52,7 +52,7 @@ async function nodeExecutor(
     wasi.start(ins);
     const execTestFunction = ins.exports["executeTestFunction"];
     assert(typeof execTestFunction === "function");
-    if (matchedTestNames === undefined) {
+    if (matchedTestNames.length === 0) {
       // By default, all testcases are executed
       for (const functionInfo of executionRecorder.registerFunctions) {
         const [testCaseName, functionIndex] = functionInfo;
@@ -85,7 +85,7 @@ async function nodeExecutor(
 export async function execWasmBinaries(
   outFolder: string,
   instrumentResults: InstrumentResult[],
-  matchedTestNames?: string[],
+  matchedTestNames: string[],
   imports?: Imports
 ): Promise<ExecutionResult> {
   const assertRes = new ExecutionResult();

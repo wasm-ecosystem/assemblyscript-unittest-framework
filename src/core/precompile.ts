@@ -10,21 +10,24 @@ import { SourceFunctionInfo, UnittestPackage } from "../interface.js";
 import { projectRoot } from "../utils/projectRoot.js";
 import assert from "node:assert";
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export async function precompile(
   includes: string[],
   excludes: string[],
-  testcases: string[] | undefined,
+  testcases: string[] | undefined, // this field specifed test file names
   testNamePattern: string | undefined,
+  failedTestNames: string[],
   collectCoverage: boolean,
   flags: string
 ): Promise<UnittestPackage> {
   // if specify testcases, use testcases for unittest
   // otherwise, get testcases(*.test.ts) in includes directory
   const testCodePaths = testcases ?? getRelatedFiles(includes, excludes, (path: string) => path.endsWith(".test.ts"));
+  const matchedTestFiles = new Set<string>();
+  let matchedTestNames: string[] = [];
 
-  if (testNamePattern) {
-    const matchedTestNames: string[] = [];
-    const matchedTestFiles = new Set<string>();
+  if (testNamePattern || failedTestNames.length > 0) {
+    // if enabled testNamePattern or enabled onlyFailures, need listTestName transform
     const testNameInfos = new Map<string, string[]>();
     const testNameTransformFunction = join(projectRoot, "transform", "listTestNames.mjs");
     for (const testCodePath of testCodePaths) {
@@ -32,25 +35,34 @@ export async function precompile(
         testNameInfos.set(testCodePath, testNames);
       });
     }
-    const regexPattern = new RegExp(testNamePattern);
-    for (const [fileName, testNames] of testNameInfos) {
-      for (const testName of testNames) {
-        if (regexPattern.test(testName)) {
-          matchedTestNames.push(testName);
-          matchedTestFiles.add(fileName);
+    if (testNamePattern) {
+      const regexPattern = new RegExp(testNamePattern);
+      for (const [fileName, testNames] of testNameInfos) {
+        for (const testName of testNames) {
+          if (regexPattern.test(testName)) {
+            matchedTestNames.push(testName);
+            matchedTestFiles.add(fileName);
+          }
         }
       }
     }
 
-    assert(matchedTestFiles.size > 0, `No matched testname using ${testNamePattern}`);
-    return {
-      testCodePaths: Array.from(matchedTestFiles),
-      matchedTestNames: matchedTestNames,
-    };
+    if (failedTestNames.length > 0) {
+      matchedTestNames = failedTestNames;
+      for (const [fileName, testNames] of testNameInfos) {
+        for (const testName of testNames) {
+          if (matchedTestNames.includes(testName)) {
+            matchedTestFiles.add(fileName);
+          }
+        }
+      }
+    }
+
+    assert(matchedTestFiles.size > 0, "No matched testname");
   }
 
+  const sourceFunctions = new Map<string, SourceFunctionInfo[]>();
   if (collectCoverage) {
-    const sourceFunctions = new Map<string, SourceFunctionInfo[]>();
     const sourceCodePaths = getRelatedFiles(includes, excludes, (path: string) => !path.endsWith(".test.ts"));
     const sourceTransformFunction = join(projectRoot, "transform", "listFunctions.mjs");
     // The batchSize = 2 is empirical data after benchmarking
@@ -64,13 +76,13 @@ export async function precompile(
         )
       );
     }
-    return {
-      testCodePaths,
-      sourceFunctions,
-    };
   }
 
-  return { testCodePaths };
+  return {
+    testCodePaths: matchedTestFiles.size > 0 ? Array.from(matchedTestFiles) : testCodePaths,
+    matchedTestNames,
+    sourceFunctions,
+  };
 }
 
 async function transform(transformFunction: string, codePath: string, flags: string, collectCallback: () => void) {

@@ -14,7 +14,7 @@ if (lt(version, "12.16.0")) {
   exit(-1);
 }
 const argv = [];
-argv.push("--experimental-wasi-unstable-preview1");
+argv.push("--no-warnings");
 if (lt(version, "15.0.0")) {
   argv.push("--experimental-wasm-bigint");
 }
