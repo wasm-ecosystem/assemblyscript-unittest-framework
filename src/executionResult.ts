@@ -93,7 +93,9 @@ export class ExecutionResultSummary {
     log(`\ntest case: ${rate} (success/total)\n`);
     if (this.fail !== 0) {
       log(chalk.red("Error Message: "));
-      for (const [testcaseName, { hasCrash, assertMessages, logMessages }] of this.failedInfos.entries()) {
+      // sort failedInfos by testcaseName to keep stability for e2e testing
+      const failedInfosArray = Array.from(this.failedInfos.entries()).sort((a, b) => a[0].localeCompare(b[0]));
+      for (const [testcaseName, { hasCrash, assertMessages, logMessages }] of failedInfosArray) {
         log(`  ${testcaseName}: `);
         for (const assertMessage of assertMessages) {
           log("    " + chalk.yellow(assertMessage));
