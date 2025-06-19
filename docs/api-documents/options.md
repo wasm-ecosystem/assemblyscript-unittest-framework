@@ -97,7 +97,7 @@ The framework join `DescriptionName` and `TestName` with `" "` by default, e.g. 
 
 #### Run only failures
 
-Provides the ability to run only the test cases that failed in the previous test.
+Provides `--onlyFailures` command line option to run the test cases that failed in the previous test only.
 
 ### Whether collect coverage information
 
