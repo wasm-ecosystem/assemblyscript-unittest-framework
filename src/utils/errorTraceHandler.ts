@@ -113,10 +113,12 @@ export async function handleWebAssemblyError(
   wasmPath: string
 ): Promise<ExecutionError> {
   let stackTrace: NodeJS.CallSite[] = [];
+  // eslint-disable-next-line @typescript-eslint/unbound-method
   const originalPrepareStackTrace = Error.prepareStackTrace;
   Error.prepareStackTrace = (_: Error, structuredStackTrace: NodeJS.CallSite[]) => {
     stackTrace = structuredStackTrace;
   };
+  // eslint-disable-next-line @typescript-eslint/no-unused-expressions
   error.stack; // trigger prepareStackTrace
   Error.prepareStackTrace = originalPrepareStackTrace;
 
