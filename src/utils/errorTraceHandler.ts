@@ -105,31 +105,30 @@ async function getSourceMapConsumer(sourceMapPath: string | null): Promise<Sourc
   if (sourceMapContent === null) {
     return null;
   }
-  return new Promise<SourceMapHandler>((resolve) => {
-    SourceMapConsumer.with(sourceMapContent, null, (consumer) => {
-      resolve(consumer);
-    });
-  });
+  return await new SourceMapConsumer(sourceMapContent, undefined);
 }
 
 export async function handleWebAssemblyError(
   error: WebAssembly.RuntimeError,
   wasmPath: string
 ): Promise<ExecutionError> {
-  const wasmBuffer = await readFile(wasmPath);
-  const sourceMapPath = parseSourceMapPath(wasmBuffer.buffer as ArrayBuffer);
-  const sourceMapConsumer: SourceMapHandler | null = await getSourceMapConsumer(sourceMapPath);
-  let stacks: NodeJS.CallSite[] = [];
+  let stackTrace: NodeJS.CallSite[] = [];
   const originalPrepareStackTrace = Error.prepareStackTrace;
   Error.prepareStackTrace = (_: Error, structuredStackTrace: NodeJS.CallSite[]) => {
-    stacks = structuredStackTrace;
+    stackTrace = structuredStackTrace;
   };
   error.stack; // trigger prepareStackTrace
   Error.prepareStackTrace = originalPrepareStackTrace;
+
+  const wasmBuffer = await readFile(wasmPath);
+  const sourceMapPath = parseSourceMapPath(wasmBuffer.buffer as ArrayBuffer);
+  const sourceMapConsumer: SourceMapHandler | null = await getSourceMapConsumer(sourceMapPath);
+  const stacks = stackTrace
+    .map((callSite) => createWebAssemblyCallSite(callSite, { wasmPath, sourceMapConsumer }))
+    .filter((callSite) => callSite !== null);
+  sourceMapConsumer?.destroy(); // clean up the source map consumer
   return {
     message: error.message,
-    stacks: stacks
-      .map((callSite) => createWebAssemblyCallSite(callSite, { wasmPath, sourceMapConsumer }))
-      .filter((callSite) => callSite !== null),
+    stacks,
   };
 }
