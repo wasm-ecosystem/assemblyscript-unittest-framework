@@ -1,4 +1,4 @@
-import { describe, endTest, expect, mock, remock, test, unmock } from "../../assembly";
+import { describe, expect, mock, remock, test, unmock } from "../../assembly";
 import { add, callee, caller, incr, MockClass, call_incr } from "./mockBaseFunc";
 
 const mockReturnValue: i32 = 123;
@@ -71,5 +71,3 @@ describe("mock test", () => {
     expect(call_incr(incr)).equal(180);
   });
 });
-
-endTest();

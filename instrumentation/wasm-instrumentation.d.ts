@@ -11,7 +11,8 @@ interface Instrumenter {
     debugInfoOutputFilePath: number,
     includes: number,
     excludes: number,
-    skipLib: boolean
+    skipLib: boolean,
+    collectCoverage: boolean
   ): void;
   _free(ptr: number): void;
 }

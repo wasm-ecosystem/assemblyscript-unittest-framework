@@ -44,6 +44,7 @@ public:
   std::string_view excludes;                 ///< function exclude filter
   std::string_view expectInfoOutputFilePath; ///< exception info output file name
   bool skipLib = true;                       ///< if skip lib functions
+  bool collectCoverage = true;               ///< whether collect coverage information
 
   ///
   ///@brief Print information of InstrumentationConfig to output stream
@@ -57,7 +58,8 @@ public:
         << ", sourceMap: " << instance.sourceMap << ", reportFunction:" << instance.reportFunction
         << ", includes: " << instance.includes << ", excludes: " << instance.excludes
         << ", expectInfoOutputFilePath: " << instance.expectInfoOutputFilePath
-        << ", skipLib: " << std::boolalpha << instance.skipLib << std::endl;
+        << ", skipLib: " << std::boolalpha << instance.skipLib
+        << ", collectCoverage: " << std::boolalpha << instance.collectCoverage << std::endl;
     return out;
   }
 };
@@ -119,6 +121,6 @@ wasm_instrument(char const *const fileName, char const *const targetName,
                 char const *const reportFunction, char const *const sourceMap,
                 char const *const expectInfoOutputFilePath,
                 char const *const debugInfoOutputFilePath, char const *const includes = NULL,
-                char const *const excludes = NULL, bool skipLib = true) noexcept;
+                char const *const excludes = NULL, bool skipLib = true, bool collectCoverage = true) noexcept;
 #endif
 #endif

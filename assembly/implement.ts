@@ -9,13 +9,10 @@ export function describeImpl(
   testsFunction();
   assertResult.removeDescription();
 }
-export function testImpl(description: string, testFunction: () => void): void {
-  assertResult.addDescription(description);
+export function testImpl(name: string, testFunction: () => void): void {
+  assertResult.addDescription(name);
   assertResult.registerTestFunction(testFunction.index);
-  testFunction();
-  assertResult.finishTestFunction();
   assertResult.removeDescription();
-  mockFunctionStatus.clear();
 }
 
 export function mockImpl<T extends Function>(

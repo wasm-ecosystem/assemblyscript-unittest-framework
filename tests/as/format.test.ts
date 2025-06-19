@@ -1,4 +1,4 @@
-import { describe, endTest, expect, test } from "../../assembly";
+import { describe, expect, test } from "../../assembly";
 import { toJson } from "../../assembly/formatPrint";
 
 class A {}
@@ -57,5 +57,3 @@ describe("print", () => {
     expect(toJson(new A())).equal("[Object A]");
   });
 });
-
-endTest();

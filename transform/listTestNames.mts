@@ -309,7 +309,7 @@ class SourceFunctionTransform extends Transform {
         const testName = (node.args[0] as StringLiteralExpression).value;
         this.currentTestDescriptions.push(testName);
         if (fncName === "test") {
-          this.testNames.push(this.currentTestDescriptions.join(""));
+          this.testNames.push(this.currentTestDescriptions.join(" "));
         }
         this.visitNode(node.expression);
         for (const arg of node.args) {

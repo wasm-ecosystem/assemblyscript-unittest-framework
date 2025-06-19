@@ -1,4 +1,4 @@
-import { describe, endTest, expect, test } from "../../assembly";
+import { describe, expect, test } from "../../assembly";
 
 describe("base type equal", () => {
   test("i32", () => {
@@ -177,7 +177,6 @@ describe("single level container type equal", () => {
     });
     test("nullable equal normal", () => {});
   });
-  // end test
 });
 
 describe("mutli-level container type equal", () => {
@@ -209,5 +208,3 @@ describe("mutli-level container type equal", () => {
     expect(arr).equal(arr2);
   });
 });
-
-endTest();

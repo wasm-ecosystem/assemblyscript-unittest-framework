@@ -1,6 +1,9 @@
 #include "MockInstrumentationWalker.hpp"
+#include <asmjs/shared-constants.h>
+#include <binaryen-c.h>
 #include <string_view>
 #include <support/index.h>
+#include <wasm-type.h>
 #include <wasm.h>
 // mock test will be tested with wasm-testing-framework project, escape this class
 // LCOV_EXCL_START
@@ -86,6 +89,24 @@ bool MockInstrumentationWalker::mockFunctionDuplicateImportedCheck() const noexc
   return checkRepeat;
 }
 
+void MockInstrumentationWalker::addExecuteTestFunction() noexcept {
+  std::vector<BinaryenExpressionRef> operands{};
+  if (module->tables.empty()) {
+    auto * table = module->addTable(wasm::Builder::makeTable(wasm::Name::fromInt(0)));
+    table->base = "__indirect_function_table";
+  }
+  BinaryenExpressionRef body = moduleBuilder.makeCallIndirect(
+    module->tables[0]->name, 
+    BinaryenLocalGet(module, 0, wasm::Type::i32), 
+    operands,
+    wasm::Signature(wasm::Type::none, wasm::Type::none)
+  );
+
+  body->finalize();
+  BinaryenAddFunction(module, "executeTestFunction", BinaryenTypeInt32(), BinaryenTypeNone(), {}, 0, body);
+  BinaryenAddFunctionExport(module, "executeTestFunction", "executeTestFunction");
+}
+
 uint32_t MockInstrumentationWalker::mockWalk() noexcept {
   if (mockFunctionDuplicateImportedCheck()) {
     return 1U; // failed
@@ -93,6 +114,7 @@ uint32_t MockInstrumentationWalker::mockWalk() noexcept {
     wasm::ModuleUtils::iterDefinedFunctions(*module, [this](wasm::Function *const func) noexcept {
       walkFunctionInModule(func, this->module);
     });
+    addExecuteTestFunction();
     return 0U;
   }
 }

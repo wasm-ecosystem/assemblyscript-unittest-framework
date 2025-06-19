@@ -33,7 +33,7 @@ There are several ways to run partial test cases:
 
 #### Partial Test Files
 
-Providing file path to `--testcase`. it can specify a certain group of files for testing.
+Providing file path to `--testcase`, it can specify a certain group of files for testing.
 
 ::: tip
 `--testcase` can accept multiple file paths.
@@ -57,20 +57,49 @@ run `as-test --testcase a.test.ts b.test.ts` will match all tests in `a.test.ts`
 
 #### Partial Tests
 
-Providing regex which can match targeted test name to `--testNamePattern`. it can specify a certain group of tests for testing.
+Providing regex which can match targeted test name to `--testNamePattern`, it can specify a certain group of tests for testing.
 
 ::: details
 
 ```
-- a.test.ts
-|- case_1
-|- case_2
-- b.test.ts
-|- case_A
-- c.test.ts
-|- case_4
+describe("groupA", () => {
+  test("case_1", () => {
+    ...
+  });
+  test("case_2", () => {
+    ...
+  });
+  test("case_3", () => {
+    ...
+  });
+});
+
+describe("groupB", () => {
+  test("case_A", () => {
+    ...
+  });
+  test("case_B", () => {
+    ...
+  });
+  test("case_C", () => {
+    ...
+  });
+});
 ```
 
-run `as-test --testNamePattern "case_\d"` will match `case 1`, `case 2`, `case 4`
+run `as-test --testNamePattern "groupA case_\d"` will run `case_1`, `case_2`, `case_3`.
+
+::: tip
+The framework join `DescriptionName` and `TestName` with `" "` by default, e.g. `groupA case_1` is the fullTestCaseName of `case_1`.
 
 :::
+
+### Whether collect coverage information
+
+```
+  --collectCoverage <boolean>            whether to collect coverage information and report
+```
+
+The framework collects coverage and generates reports by default, but it will be disablea while running partial test cases by `--testcase` or `--testNamePattern`.
+
+You can control the coverage collection manually with `--collectCoverage` option.

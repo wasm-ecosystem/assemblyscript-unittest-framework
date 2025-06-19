@@ -20,11 +20,11 @@ export function describe(description: string, testsFunction: () => void): void {
 
 /**
  *  run a test
- * @param description test description
+ * @param name test name
  * @param testFunction main function of test
  */
-export function test(description: string, testFunction: () => void): void {
-  testImpl(description, testFunction);
+export function test(name: string, testFunction: () => void): void {
+  testImpl(name, testFunction);
 }
 
 /**
