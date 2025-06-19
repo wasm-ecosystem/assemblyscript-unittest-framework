@@ -17,10 +17,10 @@ const { precompile } = await import("../../../../src/core/precompile.js");
 const { compile } = await import("../../../../src/core/compile.js");
 
 test("transform error", async () => {
-  const transformFunction = join(projectRoot, "transform", "listFunctions.mjs");
+  // const transformFunction = join(projectRoot, "transform", "listFunctions.mjs");
   expect(jest.isMockFunction(main)).toBeTruthy();
   await expect(async () => {
-    await precompile(["tests/ts/fixture/transformFunction.ts"], [], [], "", transformFunction);
+    await precompile(["tests/ts/fixture/transformFunction.ts"], [], undefined, undefined, [], true, "");
   }).rejects.toThrow("mock asc.main() error");
 });
 
