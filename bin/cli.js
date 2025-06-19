@@ -44,7 +44,9 @@ const onlyFailures = options.onlyFailures || false;
 
 // if enabled testcase or testNamePattern or onlyFailures, disable collectCoverage by default
 const collectCoverage =
-  Boolean(options.collectCoverage) || config.collectCoverage || (!options.testcase && !options.testNamePattern && !onlyFailures);
+  Boolean(options.collectCoverage) ||
+  config.collectCoverage ||
+  (!options.testcase && !options.testNamePattern && !onlyFailures);
 
 const testOption = {
   includes,
