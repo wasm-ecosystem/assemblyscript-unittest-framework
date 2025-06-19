@@ -1,39 +1,81 @@
 import { promises } from "node:fs";
 import { json2map } from "./utils/index.js";
-import { FailedInfoMap, AssertMessage, ExpectInfo, IAssertResult } from "./interface.js";
+import {
+  FailedInfoMap,
+  AssertMessage,
+  ExpectInfo,
+  IExecutionResult,
+  AssertFailMessage,
+  TestCaseName,
+  FailedInfo,
+  FailedLogMessages,
+} from "./interface.js";
 import chalk from "chalk";
 
 const readFile = promises.readFile;
 
-export class ExecutionResult {
+export class ExecutionResultSummary {
   fail = 0;
   total = 0;
   failedInfos: FailedInfoMap = new Map();
 
-  async merge(result: IAssertResult, expectInfoFilePath: string) {
+  #prepareFailedInfos(testcaseName: TestCaseName): FailedInfo {
+    if (this.failedInfos.has(testcaseName)) {
+      return this.failedInfos.get(testcaseName)!;
+    }
+    const failedInfo: FailedInfo = {
+      hasCrash: false,
+      assertMessages: [],
+      logMessages: [],
+    };
+    this.failedInfos.set(testcaseName, failedInfo);
+    return failedInfo;
+  }
+
+  #processAssertInfo(failedInfo: AssertFailMessage, expectInfo: ExpectInfo) {
+    for (const [testcaseName, value] of json2map<AssertMessage[]>(failedInfo)) {
+      const errorMsgs: string[] = [];
+      for (const msg of value) {
+        const [index, actualValue, expectValue] = msg;
+        const debugLocation = expectInfo[index];
+        let errorMsg = `${debugLocation ?? ""}  value: ${actualValue}  expect: ${expectValue}`;
+        if (errorMsg.length > 160) {
+          errorMsg = `${debugLocation ?? ""}\nvalue: \n  ${actualValue}\nexpect: \n  ${expectValue}`;
+        }
+        errorMsgs.push(errorMsg);
+      }
+      this.#prepareFailedInfos(testcaseName).assertMessages =
+        this.#prepareFailedInfos(testcaseName).assertMessages.concat(errorMsgs);
+    }
+  }
+
+  #processCrashInfo(crashInfo: Set<TestCaseName>) {
+    for (const testcaseName of crashInfo) {
+      this.#prepareFailedInfos(testcaseName).hasCrash = true;
+    }
+  }
+
+  /**
+   * It should be called after other error processed to append log messages.
+   */
+  #processLogMessages(failedLogMessages: FailedLogMessages) {
+    for (let [testcaseName, failedInfo] of this.failedInfos) {
+      if (failedLogMessages[testcaseName] !== undefined) {
+        failedInfo.logMessages = failedInfo.logMessages.concat(failedLogMessages[testcaseName]);
+      }
+    }
+  }
+
+  async merge(result: IExecutionResult, expectInfoFilePath: string) {
     this.fail += result.fail;
     this.total += result.total;
     if (result.fail > 0) {
-      let expectInfo;
       try {
         const expectContent = await readFile(expectInfoFilePath, { encoding: "utf8" });
-        expectInfo = json2map(JSON.parse(expectContent) as ExpectInfo);
-        for (const [testcaseName, value] of json2map<AssertMessage[]>(result.failedInfo)) {
-          const errorMsgs: string[] = [];
-          for (const msg of value) {
-            const [index, actualValue, expectValue] = msg;
-            const debugLocation = expectInfo.get(index);
-            let errorMsg = `${debugLocation ?? ""}  value: ${actualValue}  expect: ${expectValue}`;
-            if (errorMsg.length > 160) {
-              errorMsg = `${debugLocation ?? ""}\nvalue: \n  ${actualValue}\nexpect: \n  ${expectValue}`;
-            }
-            errorMsgs.push(errorMsg);
-          }
-          this.failedInfos.set(testcaseName, {
-            assertMessages: errorMsgs,
-            logMessages: result.failedLogMessages[testcaseName],
-          });
-        }
+        const expectInfo = JSON.parse(expectContent) as ExpectInfo;
+        this.#processAssertInfo(result.failedInfo, expectInfo);
+        this.#processCrashInfo(result.crashInfo);
+        this.#processLogMessages(result.failedLogMessages);
       } catch (error) {
         if (error instanceof Error) {
           console.error(error.stack);
@@ -51,10 +93,13 @@ export class ExecutionResult {
     log(`\ntest case: ${rate} (success/total)\n`);
     if (this.fail !== 0) {
       log(chalk.red("Error Message: "));
-      for (const [testcaseName, { assertMessages, logMessages }] of this.failedInfos.entries()) {
+      for (const [testcaseName, { hasCrash, assertMessages, logMessages }] of this.failedInfos.entries()) {
         log(`  ${testcaseName}: `);
         for (const assertMessage of assertMessages) {
           log("    " + chalk.yellow(assertMessage));
+        }
+        if (hasCrash) {
+          log("    " + chalk.red("Test case crashed!"));
         }
         for (const logMessage of logMessages ?? []) {
           log(chalk.gray(logMessage));

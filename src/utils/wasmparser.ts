@@ -6,6 +6,7 @@ import {
   ISectionInformation,
   SectionCode,
   ITypeEntry,
+  ISourceMappingURL,
 } from "wasmparser";
 import { ImportFunctionInfo } from "../interface.js";
 import assert from "node:assert";
@@ -68,6 +69,38 @@ export function parseImportFunctionInfo(buf: ArrayBuffer) {
           });
         }
         break;
+      }
+      default: {
+        break;
+      }
+    }
+  }
+}
+
+export function parseSourceMapPath(buf: ArrayBuffer): string | null {
+  const reader = new BinaryReader();
+  reader.setData(buf, 0, buf.byteLength);
+  while (true) {
+    if (!reader.read()) {
+      return null;
+    }
+    switch (reader.state) {
+      case BinaryReaderState.BEGIN_SECTION: {
+        const sectionInfo = reader.result as ISectionInformation;
+        switch (sectionInfo.id) {
+          case SectionCode.Custom: {
+            break;
+          }
+          default: {
+            reader.skipSection();
+            break;
+          }
+        }
+        break;
+      }
+      case BinaryReaderState.SOURCE_MAPPING_URL: {
+        const sectionInfo = reader.result as ISourceMappingURL;
+        return new TextDecoder("utf-8").decode(sectionInfo.url);
       }
       default: {
         break;

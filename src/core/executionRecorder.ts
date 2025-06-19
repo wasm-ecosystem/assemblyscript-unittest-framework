@@ -3,9 +3,11 @@ import {
   ImportsArgument,
   AssertFailMessage,
   AssertMessage,
-  IAssertResult,
+  IExecutionResult,
   FailedLogMessages,
+  CrashInfo,
 } from "../interface.js";
+import { ExecutionError } from "../utils/errorTraceHandler.js";
 
 class LogRecorder {
   #currentTestLogMessages: string[] = [];
@@ -18,7 +20,7 @@ class LogRecorder {
     this.#isTestFailed = true;
   }
 
-  onStartTest(): void {
+  reset(): void {
     this.#currentTestLogMessages = [];
     this.#isTestFailed = false;
   }
@@ -33,16 +35,16 @@ class LogRecorder {
   }
 }
 
-export class SingleExecutionResult implements IAssertResult {
+export class ExecutionResult implements IExecutionResult {
   total: number = 0;
   fail: number = 0;
   failedInfo: AssertFailMessage = {};
+  crashInfo: CrashInfo = new Set();
   failedLogMessages: FailedLogMessages = {};
 }
 
-// to do: split execution environment and recorder
 export class ExecutionRecorder implements UnitTestFramework {
-  result = new SingleExecutionResult();
+  result = new ExecutionResult();
 
   registerFunctions: [string, number][] = [];
   #currentTestDescriptions: string[] = [];
@@ -63,9 +65,10 @@ export class ExecutionRecorder implements UnitTestFramework {
     const testCaseFullName = this.#currentTestDescriptions.join(" ");
     this.registerFunctions.push([testCaseFullName, fncIndex]);
   }
+
   startTestFunction(testCaseFullName: string): void {
     this.#testCaseFullName = testCaseFullName;
-    this.logRecorder.onStartTest();
+    this.logRecorder.reset();
   }
   finishTestFunction(): void {
     const logMessages: string[] | null = this.logRecorder.onFinishTest();
@@ -76,11 +79,22 @@ export class ExecutionRecorder implements UnitTestFramework {
     }
   }
 
+  notifyTestCrash(error: ExecutionError): void {
+    this.logRecorder.addLog(`Reason: ${error.message}`);
+    this.logRecorder.addLog(
+      error.stacks
+        .map((stack) => `  at ${stack.functionName} (${stack.fileName}:${stack.lineNumber}:${stack.columnNumber})`)
+        .join("\n")
+    );
+    this.result.crashInfo.add(this.#testCaseFullName);
+    this.result.total++; // fake test cases
+    this.#increaseFailureCount();
+  }
+
   collectCheckResult(result: boolean, codeInfoIndex: number, actualValue: string, expectValue: string): void {
     this.result.total++;
     if (!result) {
-      this.logRecorder.markTestFailed();
-      this.result.fail++;
+      this.#increaseFailureCount();
       const testCaseFullName = this.#testCaseFullName;
       const assertMessage: AssertMessage = [codeInfoIndex.toString(), actualValue, expectValue];
       this.result.failedInfo[testCaseFullName] = this.result.failedInfo[testCaseFullName] || [];
@@ -114,5 +128,10 @@ export class ExecutionRecorder implements UnitTestFramework {
         },
       },
     };
+  }
+
+  #increaseFailureCount(): void {
+    this.result.fail++;
+    this.logRecorder.markTestFailed();
   }
 }
