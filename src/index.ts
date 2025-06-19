@@ -8,7 +8,6 @@ import { execWasmBinaries } from "./core/execute.js";
 import { generateReport, reportConfig } from "./generator/index.js";
 import { TestOption } from "./interface.js";
 import { join } from "node:path";
-import assert from "node:assert";
 
 const { readFileSync, emptydirSync } = pkg;
 
@@ -39,7 +38,14 @@ export async function start_unit_test(options: TestOption): Promise<boolean> {
   let failedTestCases: string[] = [];
   if (options.onlyFailures) {
     failedTestCases = JSON.parse(readFileSync(failurePath, "utf8")) as string[];
-    assert(failedTestCases.length > 0, "No failed test cases found");
+    if (failedTestCases.length === 0) {
+      options.collectCoverage = true;
+      console.log(
+        chalk.yellowBright(
+          'Warning: no failed test cases found while enabled "onlyFailures", execute all test cases by default'
+        )
+      );
+    }
   }
 
   emptydirSync(options.outputFolder);
