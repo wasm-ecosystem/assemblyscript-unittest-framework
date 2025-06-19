@@ -99,10 +99,14 @@ export class ExecutionResultSummary {
           log("    " + chalk.yellow(assertMessage));
         }
         if (hasCrash) {
-          log("    " + chalk.red("Test case crashed!"));
+          log("    " + chalk.red("Test Crashed!"));
         }
         for (const logMessage of logMessages ?? []) {
           log(chalk.gray(logMessage));
+        }
+        if (logMessages.length > 0) {
+          // empty line to separate test
+          log("");
         }
       }
     }

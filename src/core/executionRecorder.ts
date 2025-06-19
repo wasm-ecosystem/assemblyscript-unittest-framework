@@ -1,3 +1,4 @@
+import chalk from "chalk";
 import {
   UnitTestFramework,
   ImportsArgument,
@@ -80,7 +81,7 @@ export class ExecutionRecorder implements UnitTestFramework {
   }
 
   notifyTestCrash(error: ExecutionError): void {
-    this.logRecorder.addLog(`Reason: ${error.message}`);
+    this.logRecorder.addLog(`Reason: ${chalk.red(error.message)}`);
     this.logRecorder.addLog(
       error.stacks
         .map((stack) => `  at ${stack.functionName} (${stack.fileName}:${stack.lineNumber}:${stack.columnNumber})`)

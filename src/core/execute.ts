@@ -70,7 +70,7 @@ async function nodeExecutor(
     executionRecorder.startTestFunction(`${instrumentResult.baseName} - init`);
     wasi.start(ins);
   } catch (error) {
-    exceptionHandler(error);
+    await exceptionHandler(error);
   }
   executionRecorder.finishTestFunction();
 
@@ -87,7 +87,7 @@ async function nodeExecutor(
       try {
         (execTestFunction as (a: number) => void)(functionIndex);
       } catch (error) {
-        exceptionHandler(error);
+        await exceptionHandler(error);
       }
       executionRecorder.finishTestFunction();
       mockInstrumentFunc["mockFunctionStatus.clear"]();
