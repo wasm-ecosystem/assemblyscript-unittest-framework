@@ -18,7 +18,8 @@ program
   .option("--coverageLimit [error warning...]", "set warn(yellow) and error(red) upper limit in coverage report")
   .option("--testcase <testcases...>", "run only specified test cases")
   .option("--testNamePattern <test name pattern>", "run only tests with a name that matches the regex pattern")
-  .option("--collectCoverage <boolean>", "whether to collect coverage information and report");
+  .option("--collectCoverage <boolean>", "whether to collect coverage information and report")
+  .option("--onlyFailures", "Run tests that failed in the previous");
 
 program.parse(process.argv);
 const options = program.opts();
@@ -39,9 +40,13 @@ if (includes === undefined) {
 const excludes = config.exclude || [];
 validatArgument(includes, excludes);
 
-// if enabled testcase or testNamePattern, disable collectCoverage by default
+const onlyFailures = options.onlyFailures || false;
+
+// if enabled testcase or testNamePattern or onlyFailures, disable collectCoverage by default
 const collectCoverage =
-  Boolean(options.collectCoverage) || config.collectCoverage || (!options.testcase && !options.testNamePattern);
+  Boolean(options.collectCoverage) ||
+  config.collectCoverage ||
+  (!options.testcase && !options.testNamePattern && !onlyFailures);
 
 const testOption = {
   includes,
@@ -49,6 +54,7 @@ const testOption = {
   testcases: options.testcase,
   testNamePattern: options.testNamePattern,
   collectCoverage,
+  onlyFailures,
 
   flags: config.flags || "",
   imports: config.imports || undefined,

@@ -12,7 +12,7 @@ import {
 } from "./interface.js";
 import chalk from "chalk";
 
-const readFile = promises.readFile;
+const { readFile, writeFile } = promises;
 
 export class ExecutionResultSummary {
   fail = 0;
@@ -83,6 +83,10 @@ export class ExecutionResultSummary {
         throw error;
       }
     }
+  }
+
+  async writeFailures(failuresPath: string) {
+    await writeFile(failuresPath, JSON.stringify(Array.from(this.failedInfos.keys())));
   }
 
   print(log: (msg: string) => void): void {
