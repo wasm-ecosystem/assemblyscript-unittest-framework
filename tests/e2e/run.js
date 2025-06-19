@@ -6,7 +6,11 @@ import { argv } from "node:process";
 import { readFileSync } from "node:fs";
 
 function getDiff(s1, s2) {
-  const handleEscape = (c) => c.split("\n").map(l => l.length === 0 ? "\xB6" : l).join("\n")
+  const handleEscape = (c) =>
+    c
+      .split("\n")
+      .map((l) => (l.length === 0 ? "\xB6" : l))
+      .join("\n");
   return diffLines(s1, s2)
     .map((part) => {
       if (part.added) {
