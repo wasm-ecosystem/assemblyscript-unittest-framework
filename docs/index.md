@@ -9,9 +9,12 @@ hero:
     - theme: brand
       text: Quick Start
       link: /quick-start
-    - theme: alt
+    - theme: brand
       text: API documents
       link: /api-documents
+    - theme: alt
+      text: Release Note
+      link: /release-note
 ---
 
 <script setup>
