@@ -14,15 +14,15 @@ import assert from "node:assert";
 export async function precompile(
   includes: string[],
   excludes: string[],
-  testcases: string[] | undefined, // this field specifed test file names
+  testFiles: string[] | undefined, // this field specifed test file names
   testNamePattern: string | undefined,
   failedTestNames: string[],
   collectCoverage: boolean,
   flags: string
 ): Promise<UnittestPackage> {
-  // if specify testcases, use testcases for unittest
-  // otherwise, get testcases(*.test.ts) in includes directory
-  const testCodePaths = testcases ?? getRelatedFiles(includes, excludes, (path: string) => path.endsWith(".test.ts"));
+  // if specify testFiles, use testFiles for unittest
+  // otherwise, get testFiles(*.test.ts) in includes directory
+  const testCodePaths = testFiles ?? getRelatedFiles(includes, excludes, (path: string) => path.endsWith(".test.ts"));
   const matchedTestFiles = new Set<string>();
   let matchedTestNames: string[] = [];
 

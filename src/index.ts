@@ -11,7 +11,7 @@ import { join } from "node:path";
 
 const { readFileSync, emptydirSync } = pkg;
 
-export function validatArgument(includes: unknown, excludes: unknown) {
+export function validateArgument(includes: unknown, excludes: unknown) {
   if (!Array.isArray(includes)) {
     throw new TypeError("include section illegal");
   }
@@ -53,7 +53,7 @@ export async function start_unit_test(options: TestOption): Promise<boolean> {
   const unittestPackage = await precompile(
     options.includes,
     options.excludes,
-    options.testcases,
+    options.testFiles,
     options.testNamePattern,
     failedTestCases,
     options.collectCoverage,
@@ -62,7 +62,7 @@ export async function start_unit_test(options: TestOption): Promise<boolean> {
   console.log(chalk.blueBright("code analysis: ") + chalk.bold.greenBright("OK"));
 
   const wasmPaths = await compile(unittestPackage.testCodePaths, options.tempFolder, options.flags);
-  console.log(chalk.blueBright("compile testcases: ") + chalk.bold.greenBright("OK"));
+  console.log(chalk.blueBright("compile test files: ") + chalk.bold.greenBright("OK"));
 
   const sourcePaths = unittestPackage.sourceFunctions ? Array.from(unittestPackage.sourceFunctions.keys()) : [];
   const instrumentResult = await instrument(wasmPaths, sourcePaths, options.collectCoverage);
@@ -74,7 +74,7 @@ export async function start_unit_test(options: TestOption): Promise<boolean> {
     unittestPackage.matchedTestNames,
     options.imports
   );
-  console.log(chalk.blueBright("execute testcases: ") + chalk.bold.greenBright("OK"));
+  console.log(chalk.blueBright("execute test files: ") + chalk.bold.greenBright("OK"));
 
   await executedResult.writeFailures(failurePath);
   executedResult.print(console.log);

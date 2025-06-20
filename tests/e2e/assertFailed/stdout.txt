@@ -1,7 +1,7 @@
 code analysis: OK
-compile testcases: OK
+compile test files: OK
 instrument: OK
-execute testcases: OK
+execute test files: OK
 
 test case: 0/2 (success/total)
 
@@ -11,11 +11,11 @@ Error Message:
 This test will fail due to an assertion error
 Reason: unreachable
   at start:tests/e2e/assertFailed/assertOnTest.test~anonymous|0 (tests/e2e/assertFailed/assertOnTest.test.ts:6:2)
-  at executeTestFunction (tests/e2e/assertFailed/tmp/assertOnTest.test.instrumented.wasm:1:675)
+  at executeTestFunction (tests/e2e/assertFailed/tmp/assertOnTest.test.instrumented.wasm:1:637)
 
   tests/e2e/assertFailed/tmp/assertOnInit.test - init: 
     Test Crashed!
 Reason: unreachable
   at start:tests/e2e/assertFailed/assertOnInit.test (tests/e2e/assertFailed/assertOnInit.test.ts:1:0)
-  at ~start (tests/e2e/assertFailed/tmp/assertOnInit.test.instrumented.wasm:1:244)
+  at ~start (tests/e2e/assertFailed/tmp/assertOnInit.test.instrumented.wasm:1:206)
 
