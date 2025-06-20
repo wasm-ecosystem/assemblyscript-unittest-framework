@@ -200,7 +200,7 @@ export type Imports = ((arg: ImportsArgument) => Record<string, unknown>) | null
 export interface TestOption {
   includes: string[];
   excludes: string[];
-  testcases?: string[];
+  testFiles?: string[];
   testNamePattern?: string;
   collectCoverage: boolean;
   onlyFailures: boolean;

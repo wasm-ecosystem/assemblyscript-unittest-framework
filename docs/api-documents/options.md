@@ -25,7 +25,7 @@ There are command line options which can override the configuration in `as-test.
 ### Run partial test cases
 
 ```
-  --testcase <testcases...>              only run specified test cases
+  --testFiles <test files...>              only run specified test cases
   --testNamePattern <test name pattern>  run only tests with a name that matches the regex pattern
   --onlyFailures                         Run tests that failed in the previous
 ```
@@ -34,10 +34,10 @@ There are several ways to run partial test cases:
 
 #### Run specified test files
 
-Providing file path to `--testcase`, it can specify a certain group of files for testing.
+Providing file path to `--testFiles`, it can specify a certain group of files for testing.
 
 ::: tip
-`--testcase` can accept multiple file paths.
+`--testFiles` can accept multiple file paths.
 :::
 
 ::: details
@@ -52,7 +52,7 @@ Providing file path to `--testcase`, it can specify a certain group of files for
 |- case_4
 ```
 
-run `as-test --testcase a.test.ts b.test.ts` will match all tests in `a.test.ts` and `b.test.ts`
+run `as-test --testFiles a.test.ts b.test.ts` will match all tests in `a.test.ts` and `b.test.ts`
 
 :::
 
@@ -91,7 +91,7 @@ describe("groupB", () => {
 run `as-test --testNamePattern "groupA case_\d"` will run `case_1`, `case_2`, `case_3`.
 
 ::: tip
-The framework join `DescriptionName` and `TestName` with `" "` by default, e.g. `groupA case_1` is the fullTestCaseName of `case_1`.
+The framework join `DescriptionName` and `TestName` with `" "` by default, e.g. `groupA case_1` is the full test case name of `case_1`.
 
 :::
 
@@ -105,6 +105,6 @@ Provides `--onlyFailures` command line option to run the test cases that failed 
   --collectCoverage <boolean>            whether to collect coverage information and report
 ```
 
-The framework collects coverage and generates reports by default, but it will be disablea while running partial test cases by `--testcase` or `--testNamePattern`.
+The framework collects coverage and generates reports by default, but it will be disablea while running partial test cases by `--testFiles` or `--testNamePattern`.
 
 You can control the coverage collection manually with `--collectCoverage` option.

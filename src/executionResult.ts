@@ -94,8 +94,9 @@ export class ExecutionResultSummary {
       (this.fail === 0 ? chalk.greenBright(this.total) : chalk.redBright(this.total - this.fail)) +
       "/" +
       this.total.toString();
-    log(`\ntest case: ${rate} (success/total)\n`);
+    log(`\ntest case: ${rate} (success/total)`);
     if (this.fail !== 0) {
+      log("");
       this.#printErrorMessage(log);
     }
   }

@@ -7,18 +7,22 @@ import { resolve } from "node:path";
 import { Command } from "commander";
 import { pathToFileURL } from "node:url";
 
-import { validatArgument, start_unit_test } from "../dist/index.js";
+import { validateArgument, start_unit_test } from "../dist/index.js";
 
 const program = new Command();
 program
   .option("--config <config file>", "path of config file", "as-test.config.js")
+
   .option("--temp <path>", "test template file folder")
   .option("--output <path>", "coverage report output folder")
   .option("--mode <output mode>", "coverage report output format")
+
   .option("--coverageLimit [error warning...]", "set warn(yellow) and error(red) upper limit in coverage report")
-  .option("--testcase <testcases...>", "run only specified test cases")
-  .option("--testNamePattern <test name pattern>", "run only tests with a name that matches the regex pattern")
   .option("--collectCoverage <boolean>", "whether to collect coverage information and report")
+
+  .option("--testcase <testcases...>", "run only specified test cases deprecated, use --testFiles instead")
+  .option("--testFiles <testFiles...>", "run only specified test files")
+  .option("--testNamePattern <test name pattern>", "run only tests with a name that matches the regex pattern")
   .option("--onlyFailures", "Run tests that failed in the previous");
 
 program.parse(process.argv);
@@ -38,7 +42,16 @@ if (includes === undefined) {
   exit(-1);
 }
 const excludes = config.exclude || [];
-validatArgument(includes, excludes);
+validateArgument(includes, excludes);
+
+if (options.testcase !== undefined) {
+  console.log(
+    chalk.yellowBright(
+      "Warning: --testcase is deprecated, please use --testFiles instead, --testcase will be removed in next versions"
+    )
+  );
+}
+const testFiles = options.testFiles || options.testcase;
 
 const onlyFailures = options.onlyFailures || false;
 
@@ -46,12 +59,12 @@ const onlyFailures = options.onlyFailures || false;
 const collectCoverage =
   Boolean(options.collectCoverage) ||
   config.collectCoverage ||
-  (!options.testcase && !options.testNamePattern && !onlyFailures);
+  (testFiles !== undefined && options.testNamePattern !== undefined && !onlyFailures);
 
 const testOption = {
   includes,
   excludes,
-  testcases: options.testcase,
+  testFiles,
   testNamePattern: options.testNamePattern,
   collectCoverage,
   onlyFailures,
@@ -74,6 +87,9 @@ start_unit_test(testOption)
     }
   })
   .catch((e) => {
-    console.error(chalk.redBright(" Test crash, error message: ") + chalk.yellowBright(`${e.stack}`) + "\n");
+    console.error(chalk.redBright("framework crash, error message: ") + chalk.yellowBright(`${e.stack}`) + "\n");
+    console.error(
+      "please submit an issue at https://github.com/wasm-ecosystem/assemblyscript-unittest-framework/issues"
+    );
     exit(255);
   });

@@ -6,11 +6,7 @@ import { argv } from "node:process";
 import { readFileSync } from "node:fs";
 
 function getDiff(s1, s2) {
-  const handleEscape = (c) =>
-    c
-      .split("\n")
-      .map((l) => (l.length === 0 ? "\xB6" : l))
-      .join("\n");
+  const handleEscape = (c) => (/^\n*$/.test(c) ? c.replaceAll("\n", "\xB6\n") : c);
   return diffLines(s1, s2)
     .map((part) => {
       if (part.added) {
@@ -32,10 +28,10 @@ function isEnabled(name) {
   return enabledTests.includes(name);
 }
 
-function runEndToEndTest(name, handle) {
+function runEndToEndTest(name, flags, handle) {
   if (isEnabled(name)) {
     console.log(`Running e2e test: ${name}`);
-    exec(`node ./bin/as-test.js --config tests/e2e/${name}/as-test.config.js`, (error, stdout, stderr) => {
+    exec(`node ./bin/as-test.js --config tests/e2e/${name}/as-test.config.js ${flags}`, (error, stdout, stderr) => {
       // standard check
       const expectStdOut = readFileSync(`tests/e2e/${name}/stdout.txt`, "utf-8");
       if (expectStdOut !== stdout) {
@@ -51,10 +47,18 @@ function runEndToEndTest(name, handle) {
   }
 }
 
-runEndToEndTest("printLogInFailedInfo", (error, stdout, stderr) => {
+runEndToEndTest("printLogInFailedInfo", "", (error, stdout, stderr) => {
   assert(error.code === 255);
 });
 
-runEndToEndTest("assertFailed", (error, stdout, stderr) => {
+runEndToEndTest("assertFailed", "", (error, stdout, stderr) => {
   assert(error.code === 255);
 });
+
+runEndToEndTest(
+  "testFiles",
+  "--testFiles tests/e2e/testFiles/succeed_0.test.ts tests/e2e/testFiles/succeed_1.test.ts",
+  (error, stdout, stderr) => {
+    assert(error === null);
+  }
+);
