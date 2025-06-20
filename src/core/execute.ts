@@ -2,14 +2,15 @@ import { WASI } from "node:wasi";
 import { promises } from "node:fs";
 import { ensureDirSync } from "fs-extra";
 import { instantiate, Imports as ASImports } from "@assemblyscript/loader";
-import { ExecutionResult } from "../executionResult.js";
+import { ExecutionResultSummary } from "../executionResult.js";
 import { Imports, ImportsArgument, InstrumentResult } from "../interface.js";
 import { mockInstrumentFunc } from "../utils/import.js";
 import { supplyDefaultFunction } from "../utils/index.js";
 import { parseImportFunctionInfo } from "../utils/wasmparser.js";
-import { ExecutionRecorder, SingleExecutionResult } from "./executionRecorder.js";
+import { ExecutionRecorder, ExecutionResult } from "./executionRecorder.js";
 import { CoverageRecorder } from "./covRecorder.js";
 import assert from "node:assert";
+import { ExecutionError, handleWebAssemblyError } from "../utils/errorTraceHandler.js";
 
 const readFile = promises.readFile;
 
@@ -18,7 +19,7 @@ async function nodeExecutor(
   outFolder: string,
   matchedTestNames: string[],
   imports?: Imports
-): Promise<SingleExecutionResult> {
+): Promise<ExecutionResult> {
   const wasi = new WASI({
     args: ["node", instrumentResult.baseName],
     env: process.env,
@@ -48,36 +49,51 @@ async function nodeExecutor(
   importsArg.module = ins.module;
   importsArg.instance = ins.instance;
   importsArg.exports = ins.exports;
-  try {
-    wasi.start(ins);
-    const execTestFunction = ins.exports["executeTestFunction"];
-    assert(typeof execTestFunction === "function");
-    if (matchedTestNames.length === 0) {
-      // By default, all testcases are executed
-      for (const functionInfo of executionRecorder.registerFunctions) {
-        const [testCaseName, functionIndex] = functionInfo;
-        executionRecorder.startTestFunction(testCaseName);
-        (execTestFunction as (a: number) => void)(functionIndex);
-        executionRecorder.finishTestFunction();
-        mockInstrumentFunc["mockFunctionStatus.clear"]();
-      }
-    } else {
-      for (const functionInfo of executionRecorder.registerFunctions) {
-        const [testCaseName, functionIndex] = functionInfo;
-        if (matchedTestNames.includes(testCaseName)) {
-          executionRecorder.startTestFunction(testCaseName);
-          (execTestFunction as (a: number) => void)(functionIndex);
-          executionRecorder.finishTestFunction();
-          mockInstrumentFunc["mockFunctionStatus.clear"]();
-        }
-      }
+
+  let isCrashed = false; // we don't want to crash any code after crash. AS' heap may be broken.
+
+  const exceptionHandler = async (error: unknown) => {
+    if (error instanceof WebAssembly.RuntimeError) {
+      isCrashed = true;
+      const errorMessage: ExecutionError = await handleWebAssemblyError(error, instrumentResult.instrumentedWasm);
+      executionRecorder.notifyTestCrash(errorMessage);
+      return;
     }
-  } catch (error) {
+    // unrecoverable error, rethrow
     if (error instanceof Error) {
       console.error(error.stack);
     }
-    throw new Error("node executor abort.");
+    throw new Error("node executor abort");
+  };
+
+  try {
+    executionRecorder.startTestFunction(`${instrumentResult.baseName} - init`);
+    wasi.start(ins);
+  } catch (error) {
+    await exceptionHandler(error);
   }
+  executionRecorder.finishTestFunction();
+
+  const execTestFunction = ins.exports["executeTestFunction"];
+  assert(typeof execTestFunction === "function");
+
+  for (const functionInfo of executionRecorder.registerFunctions) {
+    if (isCrashed) {
+      break;
+    }
+    const [testCaseName, functionIndex] = functionInfo;
+    if (matchedTestNames.length === 0 || matchedTestNames.includes(testCaseName)) {
+      executionRecorder.startTestFunction(testCaseName);
+      try {
+        (execTestFunction as (a: number) => void)(functionIndex);
+      } catch (error) {
+        await exceptionHandler(error);
+      }
+      executionRecorder.finishTestFunction();
+      mockInstrumentFunc["mockFunctionStatus.clear"]();
+    }
+  }
+
   coverageRecorder.outputTrace(instrumentResult.traceFile);
   return executionRecorder.result;
 }
@@ -87,12 +103,12 @@ export async function execWasmBinaries(
   instrumentResults: InstrumentResult[],
   matchedTestNames: string[],
   imports?: Imports
-): Promise<ExecutionResult> {
-  const assertRes = new ExecutionResult();
+): Promise<ExecutionResultSummary> {
+  const assertRes = new ExecutionResultSummary();
   ensureDirSync(outFolder);
   await Promise.all<void>(
     instrumentResults.map(async (instrumentResult): Promise<void> => {
-      const result: SingleExecutionResult = await nodeExecutor(instrumentResult, outFolder, matchedTestNames, imports);
+      const result: ExecutionResult = await nodeExecutor(instrumentResult, outFolder, matchedTestNames, imports);
       await assertRes.merge(result, instrumentResult.expectInfo);
     })
   );

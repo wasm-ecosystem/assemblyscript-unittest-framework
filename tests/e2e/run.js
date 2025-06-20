@@ -1,16 +1,17 @@
 import assert from "node:assert";
 import { exec } from "node:child_process";
-import { diffChars } from "diff";
+import { diffLines } from "diff";
 import chalk from "chalk";
 import { argv } from "node:process";
 import { readFileSync } from "node:fs";
 
 function getDiff(s1, s2) {
-  const handleEscape = (c) => {
-    if (c === "\n") return "\n'\\n'";
-    return c;
-  };
-  return diffChars(s1, s2)
+  const handleEscape = (c) =>
+    c
+      .split("\n")
+      .map((l) => (l.length === 0 ? "\xB6" : l))
+      .join("\n");
+  return diffLines(s1, s2)
     .map((part) => {
       if (part.added) {
         return chalk.bgGreen(handleEscape(part.value));

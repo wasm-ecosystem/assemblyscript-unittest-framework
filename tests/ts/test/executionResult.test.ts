@@ -1,16 +1,17 @@
 import { join } from "node:path";
 import { fileURLToPath, URL } from "node:url";
-import { FailedInfoMap, IAssertResult } from "../../../src/interface.js";
-import { ExecutionResult } from "../../../src/executionResult.js";
+import { FailedInfoMap, IExecutionResult } from "../../../src/interface.js";
+import { ExecutionResultSummary } from "../../../src/executionResult.js";
 import chalk from "chalk";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
 test("no failedInfo merge", async () => {
-  const executionResult = new ExecutionResult();
-  const testcaseA: IAssertResult = {
+  const executionResult = new ExecutionResultSummary();
+  const testcaseA: IExecutionResult = {
     fail: 0,
     total: 28,
+    crashInfo: new Set<string>(),
     failedInfo: {},
     failedLogMessages: {},
   };
@@ -21,13 +22,14 @@ test("no failedInfo merge", async () => {
   expect(executionResult.failedInfos).toEqual(new Map<string, string[]>());
 });
 
-test("equal failed", async () => {
-  const executionResult = new ExecutionResult();
+test("equal assert failed", async () => {
+  const executionResult = new ExecutionResultSummary();
   const actualString = "A long sentence for testing errorMsg.length > 160 in executionResult.ts merge function";
   const expectString = "= A long sentence for testing errorMsg.length > 160 in executionResult.ts merge function ";
-  const testcaseA: IAssertResult = {
+  const testcaseA: IExecutionResult = {
     fail: 1,
     total: 28,
+    crashInfo: new Set<string>(),
     failedInfo: {
       A: [
         ["1", "100", "= 200"],
@@ -44,6 +46,7 @@ test("equal failed", async () => {
   await executionResult.merge(testcaseA, expectInfoFIlePath);
   const expectFailedInfo: FailedInfoMap = new Map();
   expectFailedInfo.set("A", {
+    hasCrash: false,
     assertMessages: [
       "tests/as/comparison.test.ts:10:20  value: 100  expect: = 200",
       "tests/as/comparison.test.ts:15:27  value: [10]  expect: = [1]",
@@ -57,31 +60,88 @@ test("equal failed", async () => {
   expect(executionResult.failedInfos).toEqual(expectFailedInfo);
 });
 
-test("print", async () => {
-  const executionResult = new ExecutionResult();
-  const testcaseA: IAssertResult = {
+test("equal crash", async () => {
+  const executionResult = new ExecutionResultSummary();
+  const testcaseA: IExecutionResult = {
     fail: 1,
-    total: 28,
-    failedInfo: {
-      A: [["1", "100", "= 200"]],
-    },
+    total: 1,
+    crashInfo: new Set<string>(),
+    failedInfo: {},
     failedLogMessages: {
       A: ["log message 1", "log message 2", "log message 3"],
     },
   };
+  testcaseA.crashInfo.add("A");
   const expectInfoFIlePath = join(__dirname, "..", "fixture", "assertResultTest.expectInfo.json");
   await executionResult.merge(testcaseA, expectInfoFIlePath);
+  const expectFailedInfo: FailedInfoMap = new Map();
+  expectFailedInfo.set("A", {
+    hasCrash: true,
+    assertMessages: [],
+    logMessages: ["log message 1", "log message 2", "log message 3"],
+  });
+  expect(executionResult.fail).toEqual(1);
+  expect(executionResult.total).toEqual(1);
+  expect(executionResult.failedInfos).toEqual(expectFailedInfo);
+});
 
-  {
-    const outputs: string[] = [];
-    chalk.level = 0; // disable color
-    executionResult.print((msg) => outputs.push(msg));
-    expect(outputs.join("\n")).toMatchSnapshot();
-  }
-  {
-    const outputs: string[] = [];
-    chalk.level = 1; // force enable color
-    executionResult.print((msg) => outputs.push(msg));
-    expect(outputs.join("\n")).toMatchSnapshot();
-  }
+describe("print", () => {
+  test("assert failed", async () => {
+    const executionResult = new ExecutionResultSummary();
+    const testcaseA: IExecutionResult = {
+      fail: 1,
+      total: 28,
+      crashInfo: new Set<string>(),
+      failedInfo: {
+        A: [["1", "100", "= 200"]],
+      },
+      failedLogMessages: {
+        A: ["log message 1", "log message 2", "log message 3"],
+      },
+    };
+    const expectInfoFIlePath = join(__dirname, "..", "fixture", "assertResultTest.expectInfo.json");
+    await executionResult.merge(testcaseA, expectInfoFIlePath);
+
+    {
+      const outputs: string[] = [];
+      chalk.level = 0; // disable color
+      executionResult.print((msg) => outputs.push(msg));
+      expect(outputs.join("\n")).toMatchSnapshot();
+    }
+    {
+      const outputs: string[] = [];
+      chalk.level = 1; // force enable color
+      executionResult.print((msg) => outputs.push(msg));
+      expect(outputs.join("\n")).toMatchSnapshot();
+    }
+  });
+
+  test("crash", async () => {
+    const executionResult = new ExecutionResultSummary();
+    const testcaseA: IExecutionResult = {
+      fail: 1,
+      total: 28,
+      crashInfo: new Set<string>(),
+      failedInfo: {},
+      failedLogMessages: {
+        A: ["log message 1", "log message 2", "log message 3"],
+      },
+    };
+    testcaseA.crashInfo.add("A");
+    const expectInfoFIlePath = join(__dirname, "..", "fixture", "assertResultTest.expectInfo.json");
+    await executionResult.merge(testcaseA, expectInfoFIlePath);
+
+    {
+      const outputs: string[] = [];
+      chalk.level = 0; // disable color
+      executionResult.print((msg) => outputs.push(msg));
+      expect(outputs.join("\n")).toMatchSnapshot();
+    }
+    {
+      const outputs: string[] = [];
+      chalk.level = 1; // force enable color
+      executionResult.print((msg) => outputs.push(msg));
+      expect(outputs.join("\n")).toMatchSnapshot();
+    }
+  });
 });

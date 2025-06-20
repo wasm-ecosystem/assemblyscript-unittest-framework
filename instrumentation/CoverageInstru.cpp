@@ -1,4 +1,7 @@
 #include "CoverageInstru.hpp"
+#include <binaryen-c.h>
+#include <fstream>
+#include <ostream>
 namespace wasmInstrumentation {
 
 void CoverageInstru::innerAnalysis(BasicBlockAnalysis &basicBlockAnalysis) const noexcept {
@@ -30,16 +33,14 @@ void CoverageInstru::innerAnalysis(BasicBlockAnalysis &basicBlockAnalysis) const
 
 InstrumentationResponse CoverageInstru::instrument() const noexcept {
   if (config->fileName.empty() || config->reportFunction.empty() || config->sourceMap.empty() ||
-      config->targetName.empty() || config->expectInfoOutputFilePath.empty()
-      ) {
+      config->targetName.empty() || config->expectInfoOutputFilePath.empty()) {
     std::cout << *config << std::endl;
     return InstrumentationResponse::CONFIG_ERROR; // config error
   }
-  std::filesystem::path filePath(config->fileName);
-  std::filesystem::path targetFilePath(config->targetName);
-  std::filesystem::path sourceMapPath(config->sourceMap);
-  if ((!std::filesystem::exists(filePath)) ||
-      (!std::filesystem::exists(sourceMapPath)) ||
+  const std::filesystem::path filePath(config->fileName);
+  const std::filesystem::path targetFilePath(config->targetName);
+  const std::filesystem::path sourceMapPath(config->sourceMap);
+  if ((!std::filesystem::exists(filePath)) || (!std::filesystem::exists(sourceMapPath)) ||
       (!std::filesystem::exists(targetFilePath.parent_path()))) {
     std::cout << *config << std::endl;
     return InstrumentationResponse::CONFIG_FILEPATH_ERROR; // config file path error
@@ -127,12 +128,15 @@ InstrumentationResponse CoverageInstru::instrument() const noexcept {
   MockInstrumentationWalker mockWalker(&module);
   mockWalker.mockWalk();
 
+  const std::string targetSourceMapPath = std::string{this->config->targetName} + ".map";
+  BinaryenSetDebugInfo(true);
   const BinaryenModuleAllocateAndWriteResult result =
-      BinaryenModuleAllocateAndWrite(&module, nullptr);
+      BinaryenModuleAllocateAndWrite(&module, targetSourceMapPath.c_str());
   std::ofstream wasmFileStream(this->config->targetName.data(), std::ios::trunc | std::ios::binary);
   wasmFileStream.write(static_cast<char *>(result.binary),
                        static_cast<std::streamsize>(result.binaryBytes));
-  wasmFileStream.close();
+  std::ofstream sourceMapFileStream(targetSourceMapPath, std::ios::trunc | std::ios::binary);
+  sourceMapFileStream << result.sourceMap << std::flush;
   free(result.binary);
   free(result.sourceMap);
   if (wasmFileStream.fail() || wasmFileStream.bad()) {

@@ -5,10 +5,14 @@
 
 import { Type } from "wasmparser";
 import { ASUtil } from "@assemblyscript/loader";
+import path from "node:path";
 
 // instrumented file information
 export class InstrumentResult {
-  constructor(public baseName: string) {}
+  baseName: string;
+  constructor(baseName: string) {
+    this.baseName = path.relative(process.cwd(), baseName);
+  }
   get sourceWasm() {
     return this.baseName.concat(".wasm");
   }
@@ -69,17 +73,19 @@ export type AssertExpectValue = string;
 export type AssertActualValue = string;
 export type AssertMessage = [ExpectInfoIndex, AssertActualValue, AssertExpectValue];
 export type AssertFailMessage = Record<TestCaseName, AssertMessage[]>;
-
+export type CrashInfo = Set<TestCaseName>;
 export type FailedLogMessages = Record<TestCaseName, string[]>;
 
-export type FailedInfoMap = Map<TestCaseName, { assertMessages: string[]; logMessages: string[] | undefined }>;
+export type FailedInfo = { hasCrash: boolean; assertMessages: string[]; logMessages: string[] };
+export type FailedInfoMap = Map<TestCaseName, FailedInfo>;
 
 export type ExpectInfoDebugLocation = string;
 export type ExpectInfo = Record<ExpectInfoIndex, ExpectInfoDebugLocation>;
 
-export interface IAssertResult {
+export interface IExecutionResult {
   fail: number;
   total: number;
+  crashInfo: CrashInfo;
   failedInfo: AssertFailMessage;
   failedLogMessages: FailedLogMessages;
 }

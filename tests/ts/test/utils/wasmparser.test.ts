@@ -1,4 +1,4 @@
-import { parseImportFunctionInfo } from "../../../../src/utils/wasmparser.js";
+import { parseImportFunctionInfo, parseSourceMapPath } from "../../../../src/utils/wasmparser.js";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath, URL } from "node:url";
@@ -50,4 +50,13 @@ test("parseImportFunctionInfo", () => {
   ];
 
   expect(parseImportFunctionInfo(arrayBuffer)).toEqual(expectedInfo); // Pass ArrayBuffer
+});
+
+test("parseSourceMapURL", () => {
+  const fp = join(__dirname, "..", "..", "fixture", "withSourceMapURL.wasm");
+  const buf = readFileSync(fp);
+  const arrayBuffer = buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength); // Convert Buffer to ArrayBuffer
+  console.log(arrayBuffer);
+
+  expect(parseSourceMapPath(arrayBuffer)).toBe("./release.wasm.map");
 });
