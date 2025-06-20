@@ -5,6 +5,7 @@ export default defineConfig({
   title: "assemblyscript unittest framework",
   description: "documents of assemblyscript unittest framework",
   base: "/assemblyscript-unittest-framework/",
+  head: [["meta", { name: "google-site-verification", content: "762vxla4bLoGKFlH_iYkk7TVUhrwwpMFS2r7idty0_Y" }]],
   sitemap: {
     hostname: "https://wasm-ecosystem.github.io/assemblyscript-unittest-framework/",
   },
