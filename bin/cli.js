@@ -59,7 +59,7 @@ const onlyFailures = options.onlyFailures || false;
 const collectCoverage =
   Boolean(options.collectCoverage) ||
   config.collectCoverage ||
-  (testFiles !== undefined && options.testNamePattern !== undefined && !onlyFailures);
+  (testFiles === undefined && options.testNamePattern === undefined && !onlyFailures);
 
 const testOption = {
   includes,
