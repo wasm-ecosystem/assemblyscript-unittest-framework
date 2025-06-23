@@ -494,15 +494,11 @@ class SourceFunctionTransform extends Transform {
           startLine = LineRange.source.lineAt(LineRange.start);
           endLine = LineRange.source.lineAt(LineRange.end);
         }
-      } else {
-        const LineRange = node.range;
-        startLine = LineRange.source.lineAt(LineRange.start);
-        endLine = LineRange.source.lineAt(LineRange.end);
+        this.functionInfos.push({
+          name: this.#elementsByDeclaration.get(node)?.internalName ?? node.name.text,
+          range: [startLine, endLine],
+        });
       }
-      this.functionInfos.push({
-        name: this.#elementsByDeclaration.get(node)?.internalName ?? node.name.text,
-        range: [startLine, endLine],
-      });
     }
     if (node.body) {
       this.visitNode(node.body);
