@@ -20,7 +20,7 @@ void BasicBlockWalker::basicBlockWalk() noexcept {
 }
 
 void BasicBlockWalker::visitExpression(wasm::Expression *curr) noexcept {
-  if (currBasicBlock == nullptr) {
+  if (currBasicBlock == nullptr || curr->is<wasm::Block>()) {
     return;
   }
   // push information
@@ -30,6 +30,14 @@ void BasicBlockWalker::visitExpression(wasm::Expression *curr) noexcept {
   if (debugLocationIterator != currFun->debugLocations.cend()) {
     const auto &debugLocation = debugLocationIterator->second;
     currBasicBlock->contents.debugLocations.insert(debugLocation);
+  }
+}
+
+void BasicBlockWalker::doEndBlock(BasicBlockWalker *self, wasm::Expression **currp) {
+  wasm::CFGWalker<BasicBlockWalker, wasm::UnifiedExpressionVisitor<BasicBlockWalker>,
+  BasicBlockInfo>::doEndBlock(self, currp);
+  if (self->currBasicBlock != nullptr) {
+    self->currBasicBlock->contents.exprs.push_back(*currp);
   }
 }
 
