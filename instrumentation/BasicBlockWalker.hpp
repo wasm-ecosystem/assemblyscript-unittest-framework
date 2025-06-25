@@ -120,6 +120,8 @@ public:
   ///@param curr Current expression
   void visitExpression(wasm::Expression *const curr) noexcept;
 
+  static void doEndBlock(BasicBlockWalker* self, wasm::Expression** currp);
+
   ///
   ///@brief Inherit from CFGWalker for function visitor
   ///
