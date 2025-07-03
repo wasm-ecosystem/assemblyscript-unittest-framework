@@ -76,7 +76,25 @@ There are 2 useful fields.
   - `log`: redirect log message from test cases to unittest framework. It will be showed in failed info.
     ::: details
 
+    as-test.config.js:
+    ```javascript
+    module.exports = {
+      imports(runtime) {
+        return {
+          env: {
+            log: (msg) => {
+              runtime.framework.log(runtime.exports.__getString(msg));
+            },
+          },
+        };
+      },
+    }
+    ```
+
+    unit test: 
     ```typescript
+    import { log } from "./env";
+
     test("failed test", () => {
       log("This is a log message for the failed test."); // log to be redirect
       expect(1 + 1).equal(3);
