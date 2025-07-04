@@ -8,6 +8,7 @@
   - Deprecate `--testcase`, replace with `--testFiles`.
   - Add `--testNamePattern <name pattern regex>`.
   - Add `--onlyFailures` flag to re-run last failed test cases.
+  - Deprecate `endTest()`.
 - Provides clearer log for user.
   - Expose the framework's `log` function in the configuration file, and the logs redirected to this function will be appended to the final test report.
   - Support test crashes and provide good call stack information.
