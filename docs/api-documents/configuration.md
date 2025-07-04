@@ -77,6 +77,7 @@ There are 2 useful fields.
     ::: details
 
     as-test.config.js:
+
     ```javascript
     module.exports = {
       imports(runtime) {
@@ -91,7 +92,8 @@ There are 2 useful fields.
     }
     ```
 
-    unit test: 
+    unit test:
+
     ```typescript
     import { log } from "./env";
 
