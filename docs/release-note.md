@@ -12,6 +12,13 @@
   - Expose the framework's `log` function in the configuration file, and the logs redirected to this function will be appended to the final test report.
   - Support test crashes and provide good call stack information.
 
+Improvements
+
+- Code coverage calculation.
+  - Skip type definitions.
+  - Treat switch case correctly.
+- Reduced test execution time and memory overhead.
+
 🔄 Arch Changes
 
 - During testing, the framework will execute all `test` functions once, but will not trigger callbacks, thereby collecting all test cases and then executing the test cases in sequence.
