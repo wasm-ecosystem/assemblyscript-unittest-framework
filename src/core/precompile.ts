@@ -94,8 +94,8 @@ async function transform(transformFunction: string, codePath: string, flags: str
   const { error, stderr } = await main(ascArgv);
   if (error) {
     // eslint-disable-next-line @typescript-eslint/no-base-to-string
-    console.error(stderr.toString());
-    throw error;
+    console.log(stderr.toString());
+    process.exit(2);
   }
   collectCallback();
 }

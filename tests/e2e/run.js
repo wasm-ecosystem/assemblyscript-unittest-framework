@@ -47,12 +47,16 @@ function runEndToEndTest(name, flags, handle) {
   }
 }
 
-runEndToEndTest("printLogInFailedInfo", "", (error, stdout, stderr) => {
-  assert(error.code === 255);
+runEndToEndTest("assertFailed", "", (error, stdout, stderr) => {
+  assert(error.code === 1);
 });
 
-runEndToEndTest("assertFailed", "", (error, stdout, stderr) => {
-  assert(error.code === 255);
+runEndToEndTest("compilationFailed", "", (error, stdout, stderr) => {
+  assert(error.code === 2);
+});
+
+runEndToEndTest("printLogInFailedInfo", "", (error, stdout, stderr) => {
+  assert(error.code === 1);
 });
 
 runEndToEndTest(

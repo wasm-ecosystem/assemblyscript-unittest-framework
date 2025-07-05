@@ -1,5 +1,19 @@
 # Release Note
 
+## 1.3.1
+
+🚀 Highlight Features
+
+- Defined the meanings of the return values in different situations.
+  - `0` means success.
+  - `1` means test failed.
+  - `2` means invalid AS file.
+  - `>2` means configuration error.
+
+🚀 Improvements
+
+- Proper handling of situations where AS files are not invalid.
+
 ## 1.3.0
 
 🚀 Highlight Features
@@ -13,7 +27,7 @@
   - Expose the framework's `log` function in the configuration file, and the logs redirected to this function will be appended to the final test report.
   - Support test crashes and provide good call stack information.
 
-Improvements
+🚀 Improvements
 
 - Code coverage calculation.
   - Skip type definitions.

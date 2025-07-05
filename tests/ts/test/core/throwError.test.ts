@@ -10,19 +10,31 @@ jest.unstable_mockModule("assemblyscript/asc", () => ({
   }),
 }));
 
-const { main } = await import("assemblyscript/asc");
 const { precompile } = await import("../../../../src/core/precompile.js");
 const { compile } = await import("../../../../src/core/compile.js");
 
+let exitSpy: any | null = null;
+
+beforeEach(() => {
+  exitSpy = jest.spyOn(process, "exit").mockImplementation(() => {
+    throw new Error("process.exit");
+  });
+});
+
+afterEach(() => {
+  exitSpy!.mockRestore();
+});
+
 test("transform error", async () => {
-  expect(jest.isMockFunction(main)).toBeTruthy();
   await expect(async () => {
-    await precompile(["tests/ts/fixture/transformFunction.ts"], [], undefined, undefined, [], true, "");
-  }).rejects.toThrow("mock asc.main() error");
+    await precompile(["tests/ts/fixture/transformFunction.ts"], [], ["non-exist.ts"], undefined, [], true, "");
+  }).rejects.toThrow("process.exit");
+  expect(exitSpy).toHaveBeenCalled();
 });
 
 test("compile error", async () => {
   await expect(async () => {
     await compile(["non-exist.ts"], "mockFolder", "");
-  }).rejects.toThrow("mock asc.main() error");
+  }).rejects.toThrow("process.exit");
+  expect(exitSpy).toHaveBeenCalled();
 });

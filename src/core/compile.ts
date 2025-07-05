@@ -28,8 +28,8 @@ export async function compile(testCodePaths: string[], outputFolder: string, com
     const { error, stderr } = await main(ascArgv);
     if (error) {
       // eslint-disable-next-line @typescript-eslint/no-base-to-string
-      console.error(stderr.toString());
-      throw error;
+      console.log(stderr.toString());
+      process.exit(2);
     }
   };
 
