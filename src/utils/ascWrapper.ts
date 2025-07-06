@@ -13,7 +13,7 @@ export class CompilationError extends Error {
 
 export async function ascMain(ascArgv: string[]) {
   const stderr = createMemoryStream();
-  const { error } = await compiler.compile(ascArgv, { stderr });
+  const { error } = await compiler.compile(ascArgv.concat(...["--noColors"]), { stderr });
   if (error) {
     throw new CompilationError(stderr.toString());
   }
