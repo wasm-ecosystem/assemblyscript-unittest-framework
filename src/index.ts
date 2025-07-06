@@ -8,6 +8,7 @@ import { execWasmBinaries } from "./core/execute.js";
 import { generateReport, reportConfig } from "./generator/index.js";
 import { TestOption } from "./interface.js";
 import { join } from "node:path";
+import { CompilationError } from "./utils/ascWrapper.js";
 
 const { readFileSync, emptydirSync } = pkg;
 
@@ -30,10 +31,7 @@ export function validateArgument(includes: unknown, excludes: unknown) {
   }
 }
 
-/**
- * main function of unit-test, will throw Exception in most condition except job carsh
- */
-export async function start_unit_test(options: TestOption): Promise<boolean> {
+async function startUniTestImpl(options: TestOption): Promise<number> {
   const failurePath = join(options.outputFolder, "failures.json");
   let failedTestCases: string[] = [];
   if (options.onlyFailures) {
@@ -85,6 +83,18 @@ export async function start_unit_test(options: TestOption): Promise<boolean> {
     reportConfig.errorLimit = options.errorLimit || reportConfig.errorLimit;
     generateReport(options.mode, options.outputFolder, fileCoverageInfo);
   }
+  return executedResult.fail === 0 ? 0 : 1;
+}
 
-  return executedResult.fail === 0;
+export async function start_unit_test(options: TestOption): Promise<number> {
+  try {
+    return await startUniTestImpl(options);
+  } catch (error) {
+    if (error instanceof CompilationError) {
+      console.log(error.message);
+      return 2;
+    }
+    // unknown exception.
+    throw error;
+  }
 }

@@ -1,6 +1,6 @@
-import { main } from "assemblyscript/asc";
 import { join, relative } from "node:path";
 import { findRoot } from "../utils/pathResolver.js";
+import { ascMain } from "../utils/ascWrapper.js";
 
 export async function compile(testCodePaths: string[], outputFolder: string, compileFlags: string): Promise<string[]> {
   const wasm: string[] = [];
@@ -25,12 +25,7 @@ export async function compile(testCodePaths: string[], outputFolder: string, com
       const argv = compileFlags.split(" ");
       ascArgv = ascArgv.concat(argv);
     }
-    const { error, stderr } = await main(ascArgv);
-    if (error) {
-      // eslint-disable-next-line @typescript-eslint/no-base-to-string
-      console.log(stderr.toString());
-      process.exit(2);
-    }
+    await ascMain(ascArgv);
   };
 
   // Here, for-await is more efficient and less memory cost than Promise.all()

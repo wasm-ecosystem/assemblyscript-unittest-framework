@@ -80,10 +80,10 @@ const testOption = {
 };
 
 start_unit_test(testOption)
-  .then((success) => {
-    if (!success) {
+  .then((returnCode) => {
+    if (returnCode !== 0) {
       console.error(chalk.redBright("Test Failed") + "\n");
-      exit(1);
+      exit(returnCode);
     }
   })
   .catch((e) => {
