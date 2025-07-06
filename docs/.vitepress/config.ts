@@ -34,6 +34,7 @@ export default defineConfig({
               { text: "Matchers", link: "/api-documents/matchers" },
               { text: "Mock Function", link: "/api-documents/mock-function" },
               { text: "Report", link: "/api-documents/coverage-report" },
+              { text: "Return Code", link: "/api-documents/return-code.md" },
             ],
           },
           {

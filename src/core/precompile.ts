@@ -3,12 +3,12 @@
  */
 
 import ignore from "ignore";
-import { main } from "assemblyscript/asc";
 import { join, relative, resolve } from "node:path";
 import { getIncludeFiles } from "../utils/pathResolver.js";
 import { SourceFunctionInfo, UnittestPackage } from "../interface.js";
 import { projectRoot } from "../utils/projectRoot.js";
 import assert from "node:assert";
+import { ascMain } from "../utils/ascWrapper.js";
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 export async function precompile(
@@ -91,12 +91,7 @@ async function transform(transformFunction: string, codePath: string, flags: str
     const argv = flags.split(" ");
     ascArgv = ascArgv.concat(argv);
   }
-  const { error, stderr } = await main(ascArgv);
-  if (error) {
-    // eslint-disable-next-line @typescript-eslint/no-base-to-string
-    console.error(stderr.toString());
-    throw error;
-  }
+  await ascMain(ascArgv);
   collectCallback();
 }
 

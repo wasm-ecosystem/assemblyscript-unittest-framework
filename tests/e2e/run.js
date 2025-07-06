@@ -10,9 +10,9 @@ function getDiff(s1, s2) {
   return diffLines(s1, s2)
     .map((part) => {
       if (part.added) {
-        return chalk.bgGreen(handleEscape(part.value));
+        return chalk.bgGreen("+" + handleEscape(part.value));
       } else if (part.removed) {
-        return chalk.bgRed(handleEscape(part.value));
+        return "-" + chalk.bgRed(handleEscape(part.value));
       } else {
         return part.value;
       }
@@ -47,12 +47,16 @@ function runEndToEndTest(name, flags, handle) {
   }
 }
 
-runEndToEndTest("printLogInFailedInfo", "", (error, stdout, stderr) => {
-  assert(error.code === 255);
+runEndToEndTest("assertFailed", "", (error, stdout, stderr) => {
+  assert(error.code === 1);
 });
 
-runEndToEndTest("assertFailed", "", (error, stdout, stderr) => {
-  assert(error.code === 255);
+runEndToEndTest("compilationFailed", "", (error, stdout, stderr) => {
+  assert(error.code === 2);
+});
+
+runEndToEndTest("printLogInFailedInfo", "", (error, stdout, stderr) => {
+  assert(error.code === 1);
 });
 
 runEndToEndTest(
