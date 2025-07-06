@@ -12,7 +12,7 @@ export class CompilationError extends Error {
 }
 
 export async function ascMain(ascArgv: string[]) {
-  let stderr = createMemoryStream();
+  const stderr = createMemoryStream();
   const { error } = await compiler.compile(ascArgv, { stderr });
   if (error) {
     throw new CompilationError(stderr.toString());

@@ -5,7 +5,7 @@ import { compile } from "../../../../src/core/compile.js";
 import { compiler } from "../../../../src/utils/ascWrapper.js";
 
 beforeEach(() => {
-  jest.spyOn(compiler, "compile").mockImplementation(async () => {
+  jest.spyOn(compiler, "compile").mockImplementation(() => {
     throw new Error("mock asc.main() error");
   });
 });
