@@ -10,9 +10,9 @@ function getDiff(s1, s2) {
   return diffLines(s1, s2)
     .map((part) => {
       if (part.added) {
-        return chalk.bgGreen(handleEscape(part.value));
+        return chalk.bgGreen("+" + handleEscape(part.value));
       } else if (part.removed) {
-        return chalk.bgRed(handleEscape(part.value));
+        return "-" + chalk.bgRed(handleEscape(part.value));
       } else {
         return part.value;
       }
