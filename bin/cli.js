@@ -32,14 +32,14 @@ const configPath = resolve(".", options.config);
 if (!fs.pathExistsSync(configPath)) {
   console.error(chalk.redBright("Miss config file") + "\n");
   console.error(program.helpInformation());
-  exit(-1);
+  exit(3);
 }
 const config = (await import(pathToFileURL(configPath))).default;
 
 const includes = config.include;
 if (includes === undefined) {
   console.error(chalk.redBright("Miss include in config file") + "\n");
-  exit(-1);
+  exit(3);
 }
 const excludes = config.exclude || [];
 validateArgument(includes, excludes);
@@ -80,10 +80,10 @@ const testOption = {
 };
 
 start_unit_test(testOption)
-  .then((success) => {
-    if (!success) {
+  .then((returnCode) => {
+    if (returnCode !== 0) {
       console.error(chalk.redBright("Test Failed") + "\n");
-      exit(255);
+      exit(returnCode);
     }
   })
   .catch((e) => {

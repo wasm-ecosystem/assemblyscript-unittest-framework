@@ -1,0 +1,9 @@
+code analysis: OK
+ERROR TS2304: Cannot find name 'f'.
+   :
+ 4 │ f = 1;
+   │ ~
+   └─ in tests/e2e/compilationFailed/incorrect.test.ts(4,3)
+
+FAILURE 1 compile error(s)
+
