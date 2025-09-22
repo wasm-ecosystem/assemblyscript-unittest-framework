@@ -23,7 +23,10 @@ export function mockImpl<T extends Function>(
     ERROR("mock paramemter receive a function");
   }
   const mockFn = new MockFn(originalFunction.index, mockFunction.index);
-  mockFunctionStatus.setMockFunction(originalFunction.index, mockFunction.index);
+  mockFunctionStatus.setMockFunction(
+    originalFunction.index,
+    mockFunction.index,
+  );
   return mockFn;
 }
 export function unmockImpl<T extends Function>(originalFunction: T): void {

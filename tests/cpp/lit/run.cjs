@@ -27,7 +27,7 @@ const mockInstruFunc = {
       calls: 0,
       ignore: false,
       mockFunctionIndex,
-    }
+    };
     this._mockStatus.set(originalFunctionIndex, mockObject);
   },
 
@@ -49,7 +49,7 @@ const mockInstruFunc = {
 
   clear() {
     this._mockStatus.clear();
-  }
+  },
 };
 const imports = {
   __unittest_framework_env: {

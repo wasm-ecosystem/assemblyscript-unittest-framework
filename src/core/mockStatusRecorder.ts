@@ -31,7 +31,7 @@ export class MockStatusRecorder {
       calls: 0,
       ignore: false,
       mockFunctionIndex,
-    }
+    };
     this._mockStatus.set(originalFunctionIndex, mockObject);
   }
 
@@ -57,18 +57,18 @@ export class MockStatusRecorder {
 
   getMockFuncSet(): Record<string, unknown> {
     return {
-        checkMock: (functionIndex: number, isCall: boolean): number => {
-          return this._checkMock(functionIndex, isCall);
-        },
-        setMockFunction: (originalFunctionIndex: number, mockFunctionIndex: number): void => {
-          this._setMockFunction(originalFunctionIndex, mockFunctionIndex);
-        },
-        getMockedFunctionCalls: (originalFunctionIndex: number, mockFunctionIndex: number): number => {
-          return this._getMockedFunctionCalls(originalFunctionIndex, mockFunctionIndex);
-        },
-        setMockedFunctionIgnore: (originalFunctionIndex: number, ignore: boolean): void => {
-          this._setMockedFunctionIgnore(originalFunctionIndex, ignore);
-        },
+      checkMock: (functionIndex: number, isCall: boolean): number => {
+        return this._checkMock(functionIndex, isCall);
+      },
+      setMockFunction: (originalFunctionIndex: number, mockFunctionIndex: number): void => {
+        this._setMockFunction(originalFunctionIndex, mockFunctionIndex);
+      },
+      getMockedFunctionCalls: (originalFunctionIndex: number, mockFunctionIndex: number): number => {
+        return this._getMockedFunctionCalls(originalFunctionIndex, mockFunctionIndex);
+      },
+      setMockedFunctionIgnore: (originalFunctionIndex: number, ignore: boolean): void => {
+        this._setMockedFunctionIgnore(originalFunctionIndex, ignore);
+      },
     };
   }
 }
