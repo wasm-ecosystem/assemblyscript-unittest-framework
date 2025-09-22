@@ -16,19 +16,19 @@ export function testImpl(name: string, testFunction: () => void): void {
 }
 
 export function mockImpl<T extends Function>(
-  oldFunction: T,
-  newFunction: T,
+  originalFunction: T,
+  mockFunction: T,
 ): MockFn {
-  if (!isFunction<T>(oldFunction) || !isFunction<T>(newFunction)) {
+  if (!isFunction<T>(originalFunction) || !isFunction<T>(mockFunction)) {
     ERROR("mock paramemter receive a function");
   }
-  const mockFn = new MockFn(oldFunction.index, newFunction.index);
-  mockFunctionStatus.set(oldFunction.index, newFunction.index);
+  const mockFn = new MockFn(originalFunction.index, mockFunction.index);
+  mockFunctionStatus.setMockFunction(originalFunction.index, mockFunction.index);
   return mockFn;
 }
-export function unmockImpl<T extends Function>(oldFunction: T): void {
-  mockFunctionStatus.setIgnore(oldFunction.index, true);
+export function unmockImpl<T extends Function>(originalFunction: T): void {
+  mockFunctionStatus.setMockedFunctionIgnore(originalFunction.index, true);
 }
-export function remockImpl<T extends Function>(oldFunction: T): void {
-  mockFunctionStatus.setIgnore(oldFunction.index, false);
+export function remockImpl<T extends Function>(originalFunction: T): void {
+  mockFunctionStatus.setMockedFunctionIgnore(originalFunction.index, false);
 }

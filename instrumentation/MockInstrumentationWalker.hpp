@@ -27,7 +27,7 @@ public:
   /// @param _checkMock
   explicit MockInstrumentationWalker(
       wasm::Module *const _module,
-      const std::string _checkMock = "mockInstrument/checkMock") noexcept
+      const std::string _checkMock = "__unittest_framework_env/checkMock") noexcept
       : module(_module), checkMock(_checkMock), moduleBuilder(wasm::Builder(*_module)) {
     for (const auto &elemSegment : _module->elementSegments) {
       if (elemSegment->type.isFunction()) {

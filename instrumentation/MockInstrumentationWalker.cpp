@@ -83,7 +83,7 @@ bool MockInstrumentationWalker::mockFunctionDuplicateImportedCheck() const noexc
     std::array<BinaryenType, 2U> ii_ =
         std::array<BinaryenType, 2U>{BinaryenTypeInt32(), BinaryenTypeInt32()};
     const BinaryenType ii = BinaryenTypeCreate(ii_.data(), ii_.size());
-    BinaryenAddFunctionImport(module, this->checkMock.data(), "mockInstrument", "checkMock", ii,
+    BinaryenAddFunctionImport(module, this->checkMock.data(), "__unittest_framework_env", "checkMock", ii,
                               BinaryenTypeInt32());
   }
   return checkRepeat;

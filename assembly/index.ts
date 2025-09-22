@@ -29,27 +29,27 @@ export function test(name: string, testFunction: () => void): void {
 
 /**
  *  mock some function
- * @param oldFunction function you want to mock
- * @param newFunction the new function.
+ * @param originalFunction function you want to mock
+ * @param mockFunction the new function.
  * @returns Mock Status { callTime : u32}
  */
 export function mock<T extends Function>(
-  oldFunction: T,
-  newFunction: T,
+  originalFunction: T,
+  mockFunction: T,
 ): MockFn {
-  return mockImpl<T>(oldFunction, newFunction);
+  return mockImpl<T>(originalFunction, mockFunction);
 }
 /**
  * unmock this function, can only be used in mocked function
  */
-export function unmock<T extends Function>(oldFunction: T): void {
-  unmockImpl(oldFunction);
+export function unmock<T extends Function>(originalFunction: T): void {
+  unmockImpl(originalFunction);
 }
 /**
  * remock this function, can only be used in mocked function. Pair of {unmock}
  */
-export function remock<T extends Function>(oldFunction: T): void {
-  remockImpl(oldFunction);
+export function remock<T extends Function>(originalFunction: T): void {
+  remockImpl(originalFunction);
 }
 
 export function expect<T>(value: T): Value<T> {

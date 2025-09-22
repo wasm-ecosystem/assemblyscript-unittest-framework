@@ -5,21 +5,19 @@ export class CoverageRecorder {
 
   getCollectionFuncSet(): Record<string, unknown> {
     return {
-      covInstrument: {
-        traceExpression: (functionIndex: number, basicBlockIndex: number, type: number): void => {
-          switch (type) {
-            case 1: // call in
-            case 2: {
-              // call out
-              // do not need for now
-              break;
-            }
-            case 0: {
-              this._runtimeTrace.push([functionIndex, basicBlockIndex]);
-              break;
-            }
+      traceExpression: (functionIndex: number, basicBlockIndex: number, type: number): void => {
+        switch (type) {
+          case 1: // call in
+          case 2: {
+            // call out
+            // do not need for now
+            break;
           }
-        },
+          case 0: {
+            this._runtimeTrace.push([functionIndex, basicBlockIndex]);
+            break;
+          }
+        }
       },
     };
   }

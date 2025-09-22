@@ -26,7 +26,7 @@ void CovInstrumentationWalker::introduceReportFun() noexcept {
     std::array<BinaryenType, 3U> iii_{BinaryenTypeInt32(), BinaryenTypeInt32(),
                                       BinaryenTypeInt32()};
     const BinaryenType iii = BinaryenTypeCreate(iii_.data(), iii_.size());
-    BinaryenAddFunctionImport(module, reportFunName, "covInstrument", "traceExpression", iii,
+    BinaryenAddFunctionImport(module, reportFunName, "__unittest_framework_env", "traceExpression", iii,
                               wasm::Type::none);
   }
 }
