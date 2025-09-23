@@ -16,7 +16,7 @@ export async function instrument(
     const baseName = sourceFile.slice(0, -5);
     const result = new InstrumentResult(baseName);
 
-    const reportFunction = "covInstrument/traceExpression";
+    const reportFunction = "__unittest_framework_env/traceExpression";
 
     const source = instrumenter.allocateUTF8(sourceFile);
     const output = instrumenter.allocateUTF8(result.instrumentedWasm);

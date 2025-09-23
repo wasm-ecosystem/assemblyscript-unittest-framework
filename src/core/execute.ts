@@ -4,10 +4,10 @@ import { ensureDirSync } from "fs-extra";
 import { instantiate, Imports as ASImports } from "@assemblyscript/loader";
 import { ExecutionResultSummary } from "../executionResult.js";
 import { Imports, ImportsArgument, InstrumentResult } from "../interface.js";
-import { mockInstrumentFunc } from "../utils/import.js";
 import { supplyDefaultFunction } from "../utils/index.js";
 import { parseImportFunctionInfo } from "../utils/wasmparser.js";
 import { ExecutionRecorder, ExecutionResult } from "./executionRecorder.js";
+import { MockStatusRecorder } from "./mockStatusRecorder.js";
 import { CoverageRecorder } from "./covRecorder.js";
 import assert from "node:assert";
 import { ExecutionError, handleWebAssemblyError } from "../utils/errorTraceHandler.js";
@@ -31,14 +31,17 @@ async function nodeExecutor(
 
   const executionRecorder = new ExecutionRecorder();
   const coverageRecorder = new CoverageRecorder();
+  const mockStatusRecorder = new MockStatusRecorder();
 
   const importsArg = new ImportsArgument(executionRecorder);
   const userDefinedImportsObject = imports === undefined ? {} : imports!(importsArg);
   const importObject: ASImports = {
     wasi_snapshot_preview1: wasi.wasiImport,
-    ...executionRecorder.getCollectionFuncSet(importsArg),
-    mockInstrument: mockInstrumentFunc,
-    ...coverageRecorder.getCollectionFuncSet(),
+    __unittest_framework_env: {
+      ...executionRecorder.getCollectionFuncSet(importsArg),
+      ...mockStatusRecorder.getMockFuncSet(),
+      ...coverageRecorder.getCollectionFuncSet(),
+    },
     ...userDefinedImportsObject,
   } as ASImports;
   const binaryBuffer = await readFile(instrumentResult.instrumentedWasm);
@@ -90,7 +93,7 @@ async function nodeExecutor(
         await exceptionHandler(error);
       }
       executionRecorder.finishTestFunction();
-      mockInstrumentFunc["mockFunctionStatus.clear"]();
+      mockStatusRecorder.clear();
     }
   }
 

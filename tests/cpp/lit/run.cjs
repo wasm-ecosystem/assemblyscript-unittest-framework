@@ -1,62 +1,59 @@
 const fs = require("fs");
 const wasmBuffer = fs.readFileSync(process.argv[2]);
 const mockInstruFunc = {
-  // isCall = true,  return -1 if not mocked;
-  // isCall = false, return oldIndex if not mocked.
-  checkMock(index, isCall) {
-    if (mockInstruFunc["mockFunctionStatus.has"](index)) {
-      return mockInstruFunc["mockFunctionStatus.get"](index);
-    }
-    return isCall ? -1 : index;
-  },
-  "mockFunctionStatus.last": 0,
-  "mockFunctionStatus.state": new Map(),
-  "mockFunctionStatus.clear": function () {
-    mockInstruFunc["mockFunctionStatus.state"].clear();
-  },
-  "mockFunctionStatus.set": function (k, v) {
-    const value = {
-      calls: 0,
-      ignore: false,
-      newIndex: v,
-    };
-    mockInstruFunc["mockFunctionStatus.state"].set(k, value);
-  },
-  "mockFunctionStatus.get": function (k) {
-    const fn = mockInstruFunc["mockFunctionStatus.state"].get(k);
-    assert(fn);
-    fn.calls++;
-    mockInstruFunc["mockFunctionStatus.last"] = k;
-    return fn.newIndex;
-  },
-  "mockFunctionStatus.lastGet": function () {
-    return mockInstruFunc["mockFunctionStatus.last"];
-  },
-  "mockFunctionStatus.has": function (k) {
-    const fn = mockInstruFunc["mockFunctionStatus.state"].get(k);
-    if (fn === undefined) {
+  _mockStatus: new Map(),
+
+  hasMocked(functionIndex) {
+    const mockObject = this._mockStatus.get(functionIndex);
+    if (mockObject === undefined) {
       return false;
     }
-    return !fn.ignore;
+    return !mockObject.ignore;
   },
-  "mockFunctionStatus.getCalls": function (oldIndex, newIndex) {
-    const fn = mockInstruFunc["mockFunctionStatus.state"].get(oldIndex);
-    if (fn === undefined || fn.newIndex !== newIndex) {
+
+  // isCall = true,  return -1 if not mocked;
+  // isCall = false, return oldIndex if not mocked.
+  checkMock(functionIndex, isCall) {
+    if (this.hasMocked(functionIndex)) {
+      const mockObject = this._mockStatus.get(functionIndex);
+      mockObject.calls++;
+      return mockObject.mockFunctionIndex;
+    }
+    return isCall ? -1 : functionIndex;
+  },
+
+  setMockFunction(originalFunctionIndex, mockFunctionIndex) {
+    const mockObject = {
+      calls: 0,
+      ignore: false,
+      mockFunctionIndex,
+    };
+    this._mockStatus.set(originalFunctionIndex, mockObject);
+  },
+
+  getMockedFunctionCalls(originalFunctionIndex, mockFunctionIndex) {
+    const mockObject = this._mockStatus.get(originalFunctionIndex);
+    if (mockObject === undefined || mockObject.mockFunctionIndex !== mockFunctionIndex) {
       return 0;
     }
-    return fn.calls;
+    return mockObject.calls;
   },
-  "mockFunctionStatus.setIgnore": function (k, v) {
-    const fn = mockInstruFunc["mockFunctionStatus.state"].get(k);
-    if (fn === undefined) {
+
+  setMockedFunctionIgnore(originalFunctionIndex, ignore) {
+    const mockObject = this._mockStatus.get(originalFunctionIndex);
+    if (mockObject === undefined) {
       return;
     }
-    fn.ignore = v;
+    mockObject.ignore = ignore;
+  },
+
+  clear() {
+    this._mockStatus.clear();
   },
 };
 const imports = {
-  mockInstrument: mockInstruFunc,
-  covInstrument: {
+  __unittest_framework_env: {
+    ...mockInstruFunc,
     traceExpression(functionIndex, index, type) {
       // console.log(consumer);
       switch (type) {

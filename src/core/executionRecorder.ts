@@ -107,26 +107,24 @@ export class ExecutionRecorder implements UnitTestFramework {
     this.logRecorder.addLog(msg);
   }
 
-  getCollectionFuncSet(arg: ImportsArgument): Record<string, Record<string, unknown>> {
+  getCollectionFuncSet(arg: ImportsArgument): Record<string, unknown> {
     return {
-      __unittest_framework_env: {
-        addDescription: (description: number): void => {
-          this._addDescription(arg.exports!.__getString(description));
-        },
-        removeDescription: (): void => {
-          this._removeDescription();
-        },
-        registerTestFunction: (index: number): void => {
-          this._registerTestFunction(index);
-        },
-        collectCheckResult: (result: number, codeInfoIndex: number, actualValue: number, expectValue: number): void => {
-          this.collectCheckResult(
-            result !== 0,
-            codeInfoIndex,
-            arg.exports!.__getString(actualValue),
-            arg.exports!.__getString(expectValue)
-          );
-        },
+      addDescription: (description: number): void => {
+        this._addDescription(arg.exports!.__getString(description));
+      },
+      removeDescription: (): void => {
+        this._removeDescription();
+      },
+      registerTestFunction: (index: number): void => {
+        this._registerTestFunction(index);
+      },
+      collectCheckResult: (result: number, codeInfoIndex: number, actualValue: number, expectValue: number): void => {
+        this.collectCheckResult(
+          result !== 0,
+          codeInfoIndex,
+          arg.exports!.__getString(actualValue),
+          arg.exports!.__getString(expectValue)
+        );
       },
     };
   }
