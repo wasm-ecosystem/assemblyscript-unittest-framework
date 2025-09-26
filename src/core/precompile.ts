@@ -61,10 +61,11 @@ export async function precompile(
     assert(matchedTestFiles.size > 0, "No matched testname");
   }
 
-  let sourceFunctions: Map<string, SourceFunctionInfo[]> | null = null;
+  let sourceFunctions: Map<string, SourceFunctionInfo[]> | undefined = undefined;
   if (collectCoverage) {
     const sourceCodePaths = getRelatedFiles(includes, excludes, (path: string) => !path.endsWith(".test.ts"));
     const sourceTransformFunction = join(projectRoot, "transform", "listFunctions.mjs");
+    globalThis.__functionInfos = undefined;
     sourceFunctions = await transform(sourceTransformFunction, sourceCodePaths, flags, () => __functionInfos);
   }
   return {
