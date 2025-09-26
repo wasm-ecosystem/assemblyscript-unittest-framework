@@ -42,11 +42,11 @@ import {
   NamespaceDeclaration,
   VariableDeclaration,
   SwitchCase,
-  Program,
   IdentifierExpression,
   LiteralExpression,
   LiteralKind,
   StringLiteralExpression,
+  Parser,
 } from "assemblyscript";
 import assert from "node:assert";
 
@@ -55,14 +55,15 @@ class SourceFunctionTransform extends Transform {
   currentTestDescriptions: string[] = [];
   testFileName: string;
 
-  afterInitialize(program: Program) {
+  afterParse(parser: Parser) {
     // There will be two sources with SourceKind.UserEntry, ~lib/rt/index-incremental.ts should be filtered
-    const entrySource = program.sources.find(
+    const entrySource = parser.sources.find(
       (source) => source.sourceKind === SourceKind.UserEntry && !source.normalizedPath.startsWith("~lib/")
     );
     this.testFileName = entrySource.normalizedPath;
     this.visitNode(entrySource);
     globalThis.testNames = this.testNames;
+    throw new Error("TransformDone");
   }
 
   visitNode(node: Node) {

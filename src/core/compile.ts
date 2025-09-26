@@ -25,7 +25,7 @@ export async function compile(testCodePaths: string[], outputFolder: string, com
       const argv = compileFlags.split(" ");
       ascArgv = ascArgv.concat(argv);
     }
-    await ascMain(ascArgv);
+    await ascMain(ascArgv, false);
   };
 
   // Here, for-await is more efficient and less memory cost than Promise.all()

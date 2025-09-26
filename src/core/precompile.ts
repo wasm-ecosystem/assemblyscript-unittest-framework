@@ -91,7 +91,7 @@ async function transform(transformFunction: string, codePath: string, flags: str
     const argv = flags.split(" ");
     ascArgv = ascArgv.concat(argv);
   }
-  await ascMain(ascArgv);
+  await ascMain(ascArgv, true);
   collectCallback();
 }
 
