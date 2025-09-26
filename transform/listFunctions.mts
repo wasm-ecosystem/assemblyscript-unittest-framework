@@ -68,6 +68,7 @@ class SourceFunctionTransform extends Transform {
     this.visitNode(entrySource);
     this.functionInfos.reverse();
     globalThis.functionInfos = this.functionInfos;
+    throw new Error("TransformDone");
   }
 
   visitNode(node: Node) {
