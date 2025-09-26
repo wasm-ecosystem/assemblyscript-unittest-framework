@@ -9,6 +9,7 @@ import { generateReport, reportConfig } from "./generator/index.js";
 import { TestOption } from "./interface.js";
 import { join } from "node:path";
 import { CompilationError } from "./utils/ascWrapper.js";
+import assert from "node:assert";
 
 const { readFileSync, emptydirSync } = pkg;
 

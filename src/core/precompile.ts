@@ -61,38 +61,37 @@ export async function precompile(
     assert(matchedTestFiles.size > 0, "No matched testname");
   }
 
-  const sourceFunctions = new Map<string, SourceFunctionInfo[]>();
+  let sourceFunctions: Map<string, SourceFunctionInfo[]> | null = null;
   if (collectCoverage) {
     const sourceCodePaths = getRelatedFiles(includes, excludes, (path: string) => !path.endsWith(".test.ts"));
     const sourceTransformFunction = join(projectRoot, "transform", "listFunctions.mjs");
-    // The batchSize = 2 is empirical data after benchmarking
-    const batchSize = 2;
-    for (let i = 0; i < sourceCodePaths.length; i += batchSize) {
-      await Promise.all(
-        sourceCodePaths.slice(i, i + batchSize).map((sourcePath) =>
-          transform(sourceTransformFunction, sourcePath, flags, () => {
-            sourceFunctions.set(sourcePath, functionInfos);
-          })
-        )
-      );
-    }
+    sourceFunctions = await transform(sourceTransformFunction, sourceCodePaths, flags, () => __functionInfos);
   }
-
   return {
     testCodePaths: matchedTestFiles.size > 0 ? Array.from(matchedTestFiles) : testCodePaths,
     matchedTestNames,
-    sourceFunctions,
+    sourceFunctions: sourceFunctions || new Map<string, SourceFunctionInfo[]>(),
   };
 }
 
-async function transform(transformFunction: string, codePath: string, flags: string, collectCallback: () => void) {
-  let ascArgv = [codePath, "--noEmit", "--disableWarning", "--transform", transformFunction, "-O0"];
+async function transform<T>(
+  transformFunction: string,
+  codePath: string | string[],
+  flags: string,
+  collectCallback: () => T
+) {
+  let ascArgv = ["--noEmit", "--disableWarning", "--transform", transformFunction, "-O0"];
+  if (typeof codePath === "string") {
+    ascArgv.push(codePath);
+  } else {
+    ascArgv.push(...codePath);
+  }
   if (flags) {
     const argv = flags.split(" ");
     ascArgv = ascArgv.concat(argv);
   }
   await ascMain(ascArgv, true);
-  collectCallback();
+  return collectCallback();
 }
 
 // a. include in config

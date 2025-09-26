@@ -13,7 +13,7 @@
   "prettier": "@schleifner/prettier-config",
   "scripts": {
     "watch:ts": "tsc --build ./src/tsconfig.json --watch",
-    "build": "node scripts/build_instrumentation.js -j 2 && tsc --build ./transform/tsconfig.json && tsc --build ./src/tsconfig.json",
+    "build": "tsc --build ./transform/tsconfig.json && tsc --build ./src/tsconfig.json && node scripts/build_instrumentation.js -j 2",
     "test:as": "node bin/as-test.js",
     "test:ts": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
     "test:cpp": "cmake -B build -S . && cmake --build build --parallel 2 --target wasm-instrumentation-test wasm-opt && build/bin/wasm-instrumentation-test",
