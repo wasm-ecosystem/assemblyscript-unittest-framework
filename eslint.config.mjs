@@ -7,4 +7,9 @@ export default [
     ],
   },
   ...baseConfig,
+  {
+    rules: {
+      "unicorn/no-array-for-each": "off",
+    },
+  },
 ];
