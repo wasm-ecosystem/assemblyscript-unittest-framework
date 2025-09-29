@@ -77,7 +77,6 @@ export class Parser {
         this.functionCovTraceMap.set(name, originTraces.concat(traces));
       }
       const lineInfoMap: LineInfoMap = new Map();
-      // eslint-disable-next-line unicorn/no-array-for-each
       info.lineInfo.forEach((ranges: LineRange | null, index: number) => {
         // If instrument return basic block == null, ignore it.
         if (ranges === null) return;

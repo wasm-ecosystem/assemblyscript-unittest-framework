@@ -64,12 +64,14 @@ class SourceFunctionTransform extends Transform {
     // There will be two sources with SourceKind.UserEntry, ~lib/rt/index-incremental.ts should be filtered
     program.sources
       .filter((source) => source.sourceKind === SourceKind.UserEntry && !source.normalizedPath.startsWith("~lib/"))
-      .map((source) => {
+      .forEach((source) => {
         this.functionInfos = [];
         this.visitNode(source);
         this.functionInfos.reverse();
-        globalThis.__functionInfos = globalThis.__functionInfos || new Map<string, SourceFunctionInfo[]>();
-        globalThis.__functionInfos.set(source.normalizedPath, this.functionInfos);
+        const functionInfos =
+          (globalThis.__functionInfos as Map<string, SourceFunctionInfo[]>) || new Map<string, SourceFunctionInfo[]>();
+        functionInfos.set(source.normalizedPath, this.functionInfos);
+        globalThis.__functionInfos = functionInfos;
       });
     throw new Error("TransformDone");
   }
