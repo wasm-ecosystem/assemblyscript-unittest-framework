@@ -56,7 +56,5 @@ test("parseSourceMapURL", () => {
   const fp = join(__dirname, "..", "..", "fixture", "withSourceMapURL.wasm");
   const buf = readFileSync(fp);
   const arrayBuffer = buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength); // Convert Buffer to ArrayBuffer
-  console.log(arrayBuffer);
-
   expect(parseSourceMapPath(arrayBuffer)).toBe("./release.wasm.map");
 });
