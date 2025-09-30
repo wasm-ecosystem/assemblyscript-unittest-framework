@@ -1,4 +1,5 @@
-import fs from "fs-extra";
+import { existsSync, readFileSync, rmdirSync } from "node:fs";
+import { ensureDir } from "fs-extra";
 import { join, relative } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath, URL } from "node:url";
@@ -9,7 +10,9 @@ const fixturePath = join(fileURLToPath(new URL(".", import.meta.url)), "..", "..
 const outputDir = relative(process.cwd(), join(tmpdir(), "assemblyscript-unittest-framework"));
 
 test("Instrument", async () => {
-  await compile([fixturePath], { outputFolder: outputDir, flags: "--memoryBase 16 --exportTable", isolated: false });
+  rmdirSync(outputDir, { recursive: true });
+  await ensureDir(outputDir);
+  await compile([fixturePath], { outputFolder: outputDir, flags: "--memoryBase 16 --exportTable", isolated: true });
   const base = join(outputDir, "constructor");
   const wasmPath = join(outputDir, "constructor.wasm");
   const sourceCodePath = "tests/ts/fixture/constructor.ts";
@@ -24,9 +27,9 @@ test("Instrument", async () => {
   expect(result.instrumentedWasm).toEqual(instrumentedWasm);
   expect(result.debugInfo).toEqual(debugInfo);
   expect(result.expectInfo).toEqual(expectInfo);
-  expect(fs.existsSync(instrumentedWasm)).toEqual(true);
-  expect(fs.existsSync(debugInfo)).toEqual(true);
-  expect(fs.existsSync(expectInfo)).toEqual(true);
-  const debugInfoContent = fs.readFileSync(debugInfo, { encoding: "utf8" });
+  expect(existsSync(instrumentedWasm)).toEqual(true);
+  expect(existsSync(debugInfo)).toEqual(true);
+  expect(existsSync(expectInfo)).toEqual(true);
+  const debugInfoContent = readFileSync(debugInfo, { encoding: "utf8" });
   expect(debugInfoContent).toMatchSnapshot();
 });
