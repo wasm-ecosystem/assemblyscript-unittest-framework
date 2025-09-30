@@ -11,7 +11,7 @@ Error Message:
 This test will fail due to an assertion error
 Reason: unreachable
   at start:tests/e2e/assertFailed/assertOnTest.test~anonymous|0 (tests/e2e/assertFailed/assertOnTest.test.ts:6:2)
-  at executeTestFunction (tests/e2e/assertFailed/tmp/assertOnTest.test.instrumented.wasm:1:696)
+  at executeTestFunction (tests/e2e/assertFailed/tmp/assertOnTest.test.instrumented.wasm:1:649)
 
   tests/e2e/assertFailed/tmp/assertOnInit.test - init: 
     Test Crashed!
