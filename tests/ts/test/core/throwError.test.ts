@@ -22,6 +22,6 @@ test("transform error", async () => {
 
 test("compile error", async () => {
   await expect(async () => {
-    await compile(["non-exist.ts"], "mockFolder", "");
+    await compile(["non-exist.ts"], { outputFolder: "mockFolder", flags: "", isolated: false });
   }).rejects.toThrow("mock asc.main() error");
 });

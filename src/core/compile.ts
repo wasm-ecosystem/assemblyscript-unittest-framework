@@ -3,13 +3,11 @@ import { findRoot } from "../utils/pathResolver.js";
 import { ascMain } from "../utils/ascWrapper.js";
 import { TestOption } from "../interface.js";
 
-export async function compile(testCodePaths: string[], option: TestOption): Promise<string[]> {
+export type CompileOption = Pick<TestOption, "isolated" | "outputFolder" | "flags">;
+
+export async function compile(testCodePaths: string[], option: CompileOption): Promise<string[]> {
   const { isolated } = option;
-  if (!isolated) {
-    return [await unifiedCompile(testCodePaths, option)];
-  } else {
-    return separatedCompile(testCodePaths, option);
-  }
+  return isolated ? await separatedCompile(testCodePaths, option) : [await unifiedCompile(testCodePaths, option)];
 }
 
 function getNewPath(newFolder: string, oldFolder: string, srcPath: string): string {
@@ -36,7 +34,7 @@ function getAscArgs(sources: string[], outputWasm: string, outputWat: string, fl
   return ascArgv;
 }
 
-async function unifiedCompile(testCodePaths: string[], option: TestOption): Promise<string> {
+async function unifiedCompile(testCodePaths: string[], option: CompileOption): Promise<string> {
   const { outputFolder, flags } = option;
   const outputWasm = join(outputFolder, "test.wasm");
   const outputWat = join(outputFolder, "test.wat");
@@ -45,7 +43,7 @@ async function unifiedCompile(testCodePaths: string[], option: TestOption): Prom
   return outputWasm;
 }
 
-async function separatedCompile(testCodePaths: string[], option: TestOption): Promise<string[]> {
+async function separatedCompile(testCodePaths: string[], option: CompileOption): Promise<string[]> {
   const { outputFolder, flags } = option;
   const wasm: string[] = [];
   const root = findRoot(testCodePaths);

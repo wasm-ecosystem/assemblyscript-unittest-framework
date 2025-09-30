@@ -9,7 +9,7 @@ const fixturePath = join(fileURLToPath(new URL(".", import.meta.url)), "..", "..
 const outputDir = relative(process.cwd(), join(tmpdir(), "assemblyscript-unittest-framework"));
 
 test("Instrument", async () => {
-  await compile([fixturePath], outputDir, "--memoryBase 16 --exportTable");
+  await compile([fixturePath], { outputFolder: outputDir, flags: "--memoryBase 16 --exportTable", isolated: false });
   const base = join(outputDir, "constructor");
   const wasmPath = join(outputDir, "constructor.wasm");
   const sourceCodePath = "tests/ts/fixture/constructor.ts";
