@@ -1,5 +1,11 @@
 # Release Note
 
+## latest
+
+🚀 Highlight Features
+
+- improved the performances
+
 ## 1.3.1
 
 🚀 Highlight Features

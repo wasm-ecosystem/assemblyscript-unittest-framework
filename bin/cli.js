@@ -23,7 +23,12 @@ program
   .option("--testcase <testcases...>", "run only specified test cases deprecated, use --testFiles instead")
   .option("--testFiles <testFiles...>", "run only specified test files")
   .option("--testNamePattern <test name pattern>", "run only tests with a name that matches the regex pattern")
-  .option("--onlyFailures", "Run tests that failed in the previous");
+  .option("--onlyFailures", "Run tests that failed in the previous")
+  .option("--isolated <boolean>", "Run tests in isolated mode")
+  .addHelpText(
+    "beforeAll",
+    "submit feature requests or issues: https://github.com/wasm-ecosystem/assemblyscript-unittest-framework/issues"
+  );
 
 program.parse(process.argv);
 const options = program.opts();
@@ -61,6 +66,33 @@ const collectCoverage =
   config.collectCoverage ||
   (testFiles === undefined && options.testNamePattern === undefined && !onlyFailures);
 
+const getBoolean = (optionValue, configValue) => {
+  if (optionValue !== undefined) {
+    if (optionValue == "true") {
+      return true;
+    } else if (optionValue == "false") {
+      return false;
+    }
+  }
+  if (configValue !== undefined) {
+    return Boolean(configValue);
+  }
+  return undefined;
+};
+const isolatedInConfig = getBoolean(options.isolated, config.isolated);
+if (isolatedInConfig === undefined) {
+  console.warn(
+    chalk.yellowBright(
+      "Warning: In the next version, the default value of isolated will change. Please specify isolated in config"
+    )
+  );
+}
+// TODO: switch to false default in 2.x
+const isolated = isolatedInConfig ?? true;
+
+/**
+ * @type {import("../dist/interface.d.ts").TestOption}
+ */
 const testOption = {
   includes,
   excludes,
@@ -77,6 +109,8 @@ const testOption = {
   mode: options.mode || config.mode || "table",
   warnLimit: Number(options.coverageLimit?.at(1)),
   errorLimit: Number(options.coverageLimit?.at(0)),
+
+  isolated,
 };
 
 start_unit_test(testOption)

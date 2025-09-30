@@ -59,6 +59,10 @@ runEndToEndTest("printLogInFailedInfo", "", (error, stdout, stderr) => {
   assert(error.code === 1);
 });
 
+runEndToEndTest("isolated-true", "", (error, stdout, stderr) => {});
+runEndToEndTest("isolated-false", "", (error, stdout, stderr) => {});
+runEndToEndTest("isolated-cli", "--isolated false", (error, stdout, stderr) => {});
+
 runEndToEndTest(
   "testFiles",
   "--testFiles tests/e2e/testFiles/succeed_0.test.ts tests/e2e/testFiles/succeed_1.test.ts",
