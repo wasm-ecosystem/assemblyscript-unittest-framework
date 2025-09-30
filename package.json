@@ -12,7 +12,7 @@
   },
   "prettier": "@schleifner/prettier-config",
   "scripts": {
-    "watch:ts": "tsc --build ./src/tsconfig.json --watch",
+    "watch:ts": "concurrently --kill-others \"tsc --build ./src/tsconfig.json --watch\" \"tsc --build ./transform/tsconfig.json --watch\"",
     "build": "node scripts/build_instrumentation.js -j 2 && tsc --build ./transform/tsconfig.json && tsc --build ./src/tsconfig.json",
     "test:as": "node bin/as-test.js",
     "test:ts": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
@@ -49,6 +49,7 @@
     "@types/jest": "^29.5.0",
     "@types/node": "^22.0.0",
     "assemblyscript-prettier": "^3.0.1",
+    "concurrently": "^9.2.1",
     "cross-env": "^7.0.3",
     "diff": "^8.0.2",
     "jest": "^29.5.0",
