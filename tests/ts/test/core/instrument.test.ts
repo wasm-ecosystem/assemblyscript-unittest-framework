@@ -27,5 +27,6 @@ test("Instrument", async () => {
   expect(fs.existsSync(instrumentedWasm)).toEqual(true);
   expect(fs.existsSync(debugInfo)).toEqual(true);
   expect(fs.existsSync(expectInfo)).toEqual(true);
-  expect(fs.readFileSync(debugInfo, { encoding: "utf8" })).toMatchSnapshot();
+  const debugInfoContent = fs.readFileSync(debugInfo, { encoding: "utf8" });
+  expect(debugInfoContent).toMatchSnapshot();
 });
