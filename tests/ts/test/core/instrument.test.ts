@@ -1,5 +1,4 @@
-import { existsSync, readFileSync, rmdirSync } from "node:fs";
-import { ensureDir } from "fs-extra";
+import { existsSync, mkdirSync, readFileSync, rmdirSync } from "node:fs";
 import { join, relative } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath, URL } from "node:url";
@@ -9,9 +8,13 @@ import { instrument } from "../../../../src/core/instrument.js";
 const fixturePath = join(fileURLToPath(new URL(".", import.meta.url)), "..", "..", "fixture", "constructor.ts");
 const outputDir = relative(process.cwd(), join(tmpdir(), "assemblyscript-unittest-framework"));
 
+function cleanDirSync(path: string) {
+  if (existsSync(path)) rmdirSync(path, { recursive: true });
+  mkdirSync(path);
+}
+
 test("Instrument", async () => {
-  rmdirSync(outputDir, { recursive: true });
-  await ensureDir(outputDir);
+  cleanDirSync(outputDir);
   await compile([fixturePath], { outputFolder: outputDir, flags: "--memoryBase 16 --exportTable", isolated: true });
   const base = join(outputDir, "constructor");
   const wasmPath = join(outputDir, "constructor.wasm");
