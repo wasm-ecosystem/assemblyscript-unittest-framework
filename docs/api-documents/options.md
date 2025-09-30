@@ -1,6 +1,8 @@
+[[toc]]
+
 ## Options
 
-### Define Config
+### Config File
 
 ```
   --config <config file>                 path of config file (default: "as-test.config.js")
@@ -8,13 +10,7 @@
 
 ### Override Config File
 
-There are command line options which can override the configuration in `as-test.config.js`.
-
-```
-  --temp <path>                          test template file folder
-  --output <path>                        coverage report output folder
-  --mode <output mode>                   test result output format
-```
+Command line options have higher priority then config file, so that it can override the configuration in `as-test.config.js`.
 
 ### Warning Behavior
 
@@ -108,3 +104,24 @@ Provides `--onlyFailures` command line option to run the test cases that failed 
 The framework collects coverage and generates reports by default, but it will be disablea while running partial test cases by `--testFiles` or `--testNamePattern`.
 
 You can control the coverage collection manually with `--collectCoverage` option.
+
+### Isolated Execution
+
+Isolated test execution helps isolate error propagation between different test scenarios and reduces the burden of restoring context, which is very helpful for rapid technical verification.
+
+However, as the project scales, isolated test execution will compile the source code multiple times, slowing down overall test performance. In this case, restoring the context in code and disabling the `isolated` option after testing can help reduce test time.
+
+- disable by config:
+
+  ```js
+  {
+    // ...
+    isolated: false
+  }
+  ```
+
+- disable by cli
+
+  ```bash
+  npx as-test ... --isolated false
+  ```

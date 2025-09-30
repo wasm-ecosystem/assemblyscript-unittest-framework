@@ -18,7 +18,6 @@ describe("mock test", () => {
   });
 
   test("function with functionRef, but not mocked", () => {
-    expect(add.index).equal(2);
     expect(add(1, 1)).equal(2);
   });
 

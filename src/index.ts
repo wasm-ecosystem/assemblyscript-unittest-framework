@@ -59,7 +59,7 @@ async function startUniTestImpl(options: TestOption): Promise<number> {
   );
   console.log(chalk.blueBright("code analysis: ") + chalk.bold.greenBright("OK"));
 
-  const wasmPaths = await compile(unittestPackage.testCodePaths, options.tempFolder, options.flags);
+  const wasmPaths = await compile(unittestPackage.testCodePaths, options);
   console.log(chalk.blueBright("compile test files: ") + chalk.bold.greenBright("OK"));
 
   const sourcePaths = unittestPackage.sourceFunctions ? Array.from(unittestPackage.sourceFunctions.keys()) : [];
