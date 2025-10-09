@@ -1,5 +1,7 @@
 import { Value } from "./expect";
 import {
+  afterEachImpl,
+  beforeEachImpl,
   describeImpl,
   mockImpl,
   remockImpl,
@@ -25,6 +27,42 @@ export function describe(description: string, testsFunction: () => void): void {
  */
 export function test(name: string, testFunction: () => void): void {
   testImpl(name, testFunction);
+}
+
+/**
+ * setup function before each test
+ * must be called inside describe block
+ * @example
+ * ```ts
+ * describe("test group", () => {
+ *  beforeEach(() => {
+ *    // setup code
+ *  });
+ *  test("test case", () => {
+ *    // test code
+ *  });
+ * });
+ */
+export function beforeEach(func: () => void): void {
+  beforeEachImpl(func);
+}
+
+/**
+ * teardown function after each test
+ * must be called inside describe block
+ * @example
+ * ```ts
+ * describe("test group", () => {
+ *  afterEach(() => {
+ *    // teardown code
+ *  });
+ *  test("test case", () => {
+ *    // test code
+ *  });
+ * });
+ */
+export function afterEach(func: () => void): void {
+  afterEachImpl(func);
 }
 
 /**

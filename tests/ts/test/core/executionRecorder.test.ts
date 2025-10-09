@@ -5,8 +5,9 @@ describe("execution recorder", () => {
     test("add single description", () => {
       const recorder = new ExecutionRecorder();
       recorder._addDescription("description");
-      recorder._registerTestFunction(1);
-      expect(recorder.registerFunctions).toEqual([["description", 1]]);
+      recorder._addTestCase(1);
+      console.log(recorder.testCases);
+      expect(recorder.testCases).toMatchObject([{ functionIndex: 1, fullName: "description" }]);
 
       recorder.startTestFunction("description");
       recorder.collectCheckResult(false, 0, "", "");
@@ -16,8 +17,8 @@ describe("execution recorder", () => {
       const recorder = new ExecutionRecorder();
       recorder._addDescription("description1");
       recorder._addDescription("description2");
-      recorder._registerTestFunction(1);
-      expect(recorder.registerFunctions).toEqual([["description1 description2", 1]]);
+      recorder._addTestCase(1);
+      expect(recorder.testCases).toMatchObject([{ functionIndex: 1, fullName: "description1 description2" }]);
 
       recorder.startTestFunction("description1 description2");
       recorder.collectCheckResult(false, 0, "", "");
@@ -29,8 +30,8 @@ describe("execution recorder", () => {
       recorder._addDescription("description1");
       recorder._addDescription("description2");
       recorder._removeDescription();
-      recorder._registerTestFunction(1);
-      expect(recorder.registerFunctions).toEqual([["description1", 1]]);
+      recorder._addTestCase(1);
+      expect(recorder.testCases).toMatchObject([{ functionIndex: 1, fullName: "description1" }]);
 
       recorder.startTestFunction("description1");
       recorder.collectCheckResult(false, 0, "", "");
