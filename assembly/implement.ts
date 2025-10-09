@@ -15,12 +15,16 @@ export function testImpl(name: string, testFunction: () => void): void {
   assertResult.removeDescription();
 }
 
+export function beforeEachImpl(func: () => void): void {}
+
+export function afterEachImpl(func: () => void): void {}
+
 export function mockImpl<T extends Function>(
   originalFunction: T,
   mockFunction: T,
 ): MockFn {
   if (!isFunction<T>(originalFunction) || !isFunction<T>(mockFunction)) {
-    ERROR("mock paramemter receive a function");
+    ERROR("mock parameter must receive a function");
   }
   const mockFn = new MockFn(originalFunction.index, mockFunction.index);
   mockFunctionStatus.setMockFunction(

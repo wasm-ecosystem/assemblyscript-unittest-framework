@@ -80,13 +80,13 @@ async function nodeExecutor(
   const execTestFunction = ins.exports["executeTestFunction"];
   assert(typeof execTestFunction === "function");
 
-  for (const functionInfo of executionRecorder.registerFunctions) {
+  for (const testCase of executionRecorder.testCases) {
     if (isCrashed) {
       break;
     }
-    const [testCaseName, functionIndex] = functionInfo;
-    if (matchedTestNames.length === 0 || matchedTestNames.includes(testCaseName)) {
-      executionRecorder.startTestFunction(testCaseName);
+    const { fullName, functionIndex } = testCase;
+    if (matchedTestNames.length === 0 || matchedTestNames.includes(fullName)) {
+      executionRecorder.startTestFunction(fullName);
       try {
         (execTestFunction as (a: number) => void)(functionIndex);
       } catch (error) {
