@@ -26,6 +26,7 @@ jobs:
             third_party/emsdk/node
             third_party/emsdk/python
             third_party/emsdk/upstream
+            third_party/emsdk/.emscripten
           key: cache-${{ runner.os }}-emsdk-${{ hashFiles('scripts/**') }}
 
       - uses: ./.github/action/setup-ccache
