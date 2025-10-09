@@ -7,10 +7,6 @@ inputs:
   restore-keys:
     description: "cache restore keys"
     required: true
-  size:
-    description: "cache size"
-    required: false
-    default: "512M"
 
 runs:
   using: "composite"
@@ -50,7 +46,5 @@ runs:
     - shell: bash
       run: |
         set -e
-        ccache --max-size=${{ inputs.size }}
+        ccache --max-size=512M
         ccache --zero-stats
-  post: ./.github/action/setup-ccache/post.sh
-  post-if: success()

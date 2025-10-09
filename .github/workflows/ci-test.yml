@@ -26,7 +26,6 @@ jobs:
 
       - uses: ./.github/action/setup-ccache
         with:
-          size: 128M
           key: ccache-${{ runner.os }}-build-${{ hashFiles('**/CMakeLists.txt') }}
           restore-keys: |
             ccache-${{ runner.os }}-build-
@@ -37,3 +36,8 @@ jobs:
       - run: npm run build
       - run: npm run lint
       - run: npm run test
+
+      - name: verify ccache stats
+        run: |
+          set -e
+          ccache --show-stats
