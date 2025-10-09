@@ -16,6 +16,9 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 22
+          cache: "npm"
+      - run: npm ci
+
       - name: cache emsdk
         uses: actions/cache@v4
         with:
@@ -32,7 +35,6 @@ jobs:
           restore-keys: |
             ccache-${{ runner.os }}-build-
 
-      - run: npm ci
       - run: sudo apt-get install libgtest-dev
 
       - run: npm run build
