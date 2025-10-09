@@ -5,7 +5,7 @@
     "assemblyscript-unittest-framework": "file:.."
   },
   "scripts": {
-    "test": "not as-test",
-    "test:cjs": "not as-test --config as-test.config.js"
+    "test": "! as-test",
+    "test:cjs": "! as-test --config as-test.config.js"
   }
 }
