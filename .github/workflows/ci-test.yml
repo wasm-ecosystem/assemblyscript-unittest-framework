@@ -2,8 +2,9 @@ name: run-tests
 
 on:
   pull_request:
+  push:
     branches:
-      - "main"
+      - main
 
 jobs:
   test:
@@ -15,18 +16,40 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 22
-
+          cache: "npm"
       - run: npm ci
+
+      - name: cache emsdk
+        uses: actions/cache@v4
+        with:
+          path: |
+            third_party/emsdk/node
+            third_party/emsdk/python
+            third_party/emsdk/upstream
+            third_party/emsdk/.emscripten
+          key: cache-${{ runner.os }}-emsdk-${{ hashFiles('scripts/**') }}
+
+      - uses: ./.github/action/setup-ccache
+        with:
+          size: 128M
+          key: ccache-${{ runner.os }}-build-${{ hashFiles('**/CMakeLists.txt') }}
+          restore-keys: |
+            ccache-${{ runner.os }}-build-
+
       - run: sudo apt-get install libgtest-dev
 
       - run: npm run build
       - run: npm run lint
       - run: npm run test
 
-      - name: example
-        working-directory: ./example
+      - working-directory: ./example
         run: |
           set -e
           npm ci
           npm run test
           npm run test:cjs
+
+      - name: verify ccache stats
+        run: |
+          set -e
+          ccache --show-stats
