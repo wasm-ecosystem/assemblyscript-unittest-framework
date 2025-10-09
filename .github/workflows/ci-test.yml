@@ -2,8 +2,9 @@ name: run-tests
 
 on:
   pull_request:
+  push:
     branches:
-      - "main"
+      - main
 
 jobs:
   test:
@@ -16,9 +17,20 @@ jobs:
         with:
           node-version: 22
 
+      - uses: ./.github/action/build
+        with:
+          key: ccahe-${{ runner.os }}-build-${{ hashFiles('**/CMakeLists.txt') }}
+          restore-keys: |
+            ccahe-${{ runner.os }}-build-
+
       - run: npm ci
       - run: sudo apt-get install libgtest-dev
 
       - run: npm run build
       - run: npm run lint
       - run: npm run test
+
+      - name: verify ccache stats
+        run: |
+          set -e
+          ccache --show-stats

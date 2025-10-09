@@ -1,0 +1,50 @@
+name: build
+description: build with cache
+inputs:
+  key:
+    description: "cache key"
+    required: true
+  restore-keys:
+    description: "cache restore keys"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - if: runner.os == 'Linux'
+      shell: bash
+      run: |
+        set -e
+        sudo rm /var/lib/man-db/auto-update
+        sudo apt-get update
+        sudo apt-get install -y ccache cmake ninja-build
+    - if: runner.os == 'macOS'
+      shell: bash
+      run: |
+        set -e
+        brew update
+        brew install ccache cmake ninja
+      env:
+        HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: 1
+        HOMEBREW_NO_AUTO_UPDATE: 1
+        HOMEBREW_NO_INSTALL_CLEANUP: 1
+
+    - uses: actions/cache@v4
+      with:
+        path: build_cache
+        key: ${{ inputs.key }}
+        restore-keys: ${{ inputs.restore-keys }}
+
+    - shell: bash
+      run: |
+        set -e
+        echo "CCACHE_DIR=$(pwd)/build_cache" >> $GITHUB_ENV
+        echo "CMAKE_GENERATOR=Ninja" >> $GITHUB_ENV
+        echo "CMAKE_C_COMPILER_LAUNCHER=ccache" >> $GITHUB_ENV
+        echo "CMAKE_CXX_COMPILER_LAUNCHER=ccache" >> $GITHUB_ENV
+
+    - shell: bash
+      run: |
+        set -e
+        ccache --max-size=512M
+        ccache --zero-stats
