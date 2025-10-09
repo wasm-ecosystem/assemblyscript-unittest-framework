@@ -26,6 +26,7 @@ jobs:
 
       - uses: ./.github/action/setup-ccache
         with:
+          size: 128M
           key: ccache-${{ runner.os }}-build-${{ hashFiles('**/CMakeLists.txt') }}
           restore-keys: |
             ccache-${{ runner.os }}-build-
