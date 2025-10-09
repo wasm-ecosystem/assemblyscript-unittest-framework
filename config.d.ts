@@ -18,10 +18,10 @@ export declare class Config {
   flags?: string;
   imports?: Imports;
 
-  /** template file path, default "coverage" */
+  /** template folder path, default "./coverage" */
   temp?: string;
 
-  /** report file path, default "coverage" */
+  /** report folder path, default "./coverage" */
   output?: string;
 
   /** output report mode, default is "table" */
