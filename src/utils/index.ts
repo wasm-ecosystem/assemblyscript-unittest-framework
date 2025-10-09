@@ -1,5 +1,5 @@
 import { Imports as ASImports } from "@assemblyscript/loader";
-import { ImportFunctionInfo } from "../interface.js";
+import { ImportFunctionInfo, ImportsArgument } from "../interface.js";
 import { TypeKind } from "wasmparser/dist/cjs/WasmParser.js";
 
 export function json2map<V>(json: Record<string, V>): Map<string, V> {
@@ -45,16 +45,34 @@ export function checkGenerics(functionName: string): string | undefined {
   return undefined;
 }
 
-export function supplyDefaultFunction(infos: ImportFunctionInfo[], importObject: ASImports) {
+export function supplyDefaultFunction(
+  infos: ImportFunctionInfo[],
+  importObject: ASImports,
+  importsArg: ImportsArgument
+) {
   for (const info of infos) {
     const module = info.module;
     const name = info.name;
-    if (importObject[module]?.[name] === undefined) {
-      if (importObject[module] === undefined) {
-        importObject[module] = {};
-      }
+    const importObjectModule = importObject[module] ?? {};
+    importObject[module] = importObjectModule;
+    if (importObjectModule[name] !== undefined) {
+      continue;
+    }
+    if (module === "env" && name === "abort") {
+      importObjectModule[name] = (msg: number, file: number, line: number, col: number) => {
+        const exports = importsArg.exports!;
+        throw new WebAssembly.RuntimeError(
+          `abort: ${exports.__getString(msg)} at ${exports.__getString(file)}:${line}:${col}`
+        );
+      };
+    } else if (module === "env" && name === "trace") {
+      importObjectModule[name] = (msg: number, n: number, ...args: number[]) => {
+        const exports = importsArg.exports!;
+        importsArg.framework.log(`trace: ${exports.__getString(msg)}${n > 0 ? " " : ""}${args.slice(0, n).join(", ")}`);
+      };
+    } else {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
-      (importObject[module] as any)[name] = (..._args: unknown[]): unknown => {
+      importObjectModule[name] = (..._args: unknown[]): unknown => {
         return info.return?.kind === TypeKind.i64 ? BigInt(0) : 0;
       };
     }
