@@ -55,13 +55,15 @@ runEndToEndTest("compilationFailed", "", (error, stdout, stderr) => {
   assert(error.code === 2);
 });
 
+runEndToEndTest("isolated-cli", "--isolated false", (error, stdout, stderr) => {});
+runEndToEndTest("isolated-false", "", (error, stdout, stderr) => {});
+runEndToEndTest("isolated-true", "", (error, stdout, stderr) => {});
+
 runEndToEndTest("printLogInFailedInfo", "", (error, stdout, stderr) => {
   assert(error.code === 1);
 });
 
-runEndToEndTest("isolated-true", "", (error, stdout, stderr) => {});
-runEndToEndTest("isolated-false", "", (error, stdout, stderr) => {});
-runEndToEndTest("isolated-cli", "--isolated false", (error, stdout, stderr) => {});
+runEndToEndTest("setup-teardown", "", (error, stdout, stderr) => {});
 
 runEndToEndTest(
   "testFiles",

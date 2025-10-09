@@ -12,6 +12,14 @@ export namespace assertResult {
   export declare function registerTestFunction(index: u32): void;
 
 
+  @external("__unittest_framework_env","registerBeforeEachFunction")
+  export declare function registerBeforeEachFunction(index: u32): boolean;
+
+
+  @external("__unittest_framework_env","registerAfterEachFunction")
+  export declare function registerAfterEachFunction(index: u32): boolean;
+
+
   @external("__unittest_framework_env","collectCheckResult")
   export declare function collectCheckResult(
     result: bool,

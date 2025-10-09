@@ -1,4 +1,4 @@
-import { ExecutionRecorder } from "../../../../src/core/executionRecorder.js";
+import { ExecutionRecorder, TestCase } from "../../../../src/core/executionRecorder.js";
 
 describe("execution recorder", () => {
   describe("description", () => {
@@ -6,7 +6,6 @@ describe("execution recorder", () => {
       const recorder = new ExecutionRecorder();
       recorder._addDescription("description");
       recorder._addTestCase(1);
-      console.log(recorder.testCases);
       expect(recorder.testCases).toMatchObject([{ functionIndex: 1, fullName: "description" }]);
 
       recorder.startTestFunction("description");
@@ -36,6 +35,39 @@ describe("execution recorder", () => {
       recorder.startTestFunction("description1");
       recorder.collectCheckResult(false, 0, "", "");
       expect(recorder.result.failedInfo).toHaveProperty("description1");
+    });
+  });
+
+  describe("setup and teardown", () => {
+    test("base", () => {
+      const recorder = new ExecutionRecorder();
+      recorder._addDescription("description");
+      recorder._registerSetup(10);
+      recorder._registerSetup(11);
+      recorder._registerTeardown(20);
+      recorder._registerTeardown(21);
+      recorder._addTestCase(1);
+      expect(recorder.testCases).toMatchObject([{ setupFunctions: [10, 11], teardownFunctions: [20, 21] }]);
+    });
+    test("pop", () => {
+      const recorder = new ExecutionRecorder();
+      recorder._addDescription("description 1");
+      recorder._registerSetup(10);
+      recorder._registerTeardown(20);
+
+      recorder._addDescription("description 2");
+      recorder._registerSetup(11);
+      recorder._registerTeardown(21);
+      recorder._removeDescription();
+
+      recorder._addTestCase(1);
+      expect(recorder.testCases).toMatchObject([{ setupFunctions: [10], teardownFunctions: [20] }]);
+    });
+
+    test("out of block", () => {
+      const recorder = new ExecutionRecorder();
+      expect(recorder._registerSetup(10)).toBe(false);
+      expect(recorder._registerTeardown(20)).toBe(false);
     });
   });
 

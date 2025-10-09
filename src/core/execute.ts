@@ -77,18 +77,24 @@ async function nodeExecutor(
   }
   executionRecorder.finishTestFunction();
 
-  const execTestFunction = ins.exports["executeTestFunction"];
+  const execTestFunction = ins.exports["executeTestFunction"] as (a: number) => void;
   assert(typeof execTestFunction === "function");
 
   for (const testCase of executionRecorder.testCases) {
     if (isCrashed) {
       break;
     }
-    const { fullName, functionIndex } = testCase;
+    const { fullName, functionIndex, setupFunctions, teardownFunctions } = testCase;
     if (matchedTestNames.length === 0 || matchedTestNames.includes(fullName)) {
       executionRecorder.startTestFunction(fullName);
       try {
-        (execTestFunction as (a: number) => void)(functionIndex);
+        for (const setupFuncIndex of setupFunctions) {
+          execTestFunction(setupFuncIndex);
+        }
+        execTestFunction(functionIndex);
+        for (const teardownFuncIndex of teardownFunctions) {
+          execTestFunction(teardownFuncIndex);
+        }
       } catch (error) {
         await exceptionHandler(error);
       }

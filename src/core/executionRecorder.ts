@@ -46,15 +46,21 @@ export class ExecutionResult implements IExecutionResult {
 
 class TestBlock {
   constructor(public description: string) {}
+  setupFunctions: number[] = [];
+  teardownFunctions: number[] = [];
 }
 
-class TestCase {
+export class TestCase {
   fullName: string;
+  setupFunctions: number[];
+  teardownFunctions: number[];
   constructor(
     testBlockStack: TestBlock[],
     public functionIndex: number
   ) {
     this.fullName = testBlockStack.map((block) => block.description).join(" ");
+    this.setupFunctions = testBlockStack.flatMap((block) => block.setupFunctions);
+    this.teardownFunctions = testBlockStack.flatMap((block) => block.teardownFunctions);
   }
 }
 
@@ -72,6 +78,30 @@ export class ExecutionRecorder implements UnitTestFramework {
   }
   _removeDescription(): void {
     this.testBlockStack.pop();
+  }
+
+  get lastTestBlock(): TestBlock | undefined {
+    return this.testBlockStack[this.testBlockStack.length - 1];
+  }
+  // return false if error
+  _registerSetup(functionIndex: number): boolean {
+    const lastTestBlock = this.lastTestBlock;
+    if (lastTestBlock === undefined) {
+      return false;
+    } else {
+      lastTestBlock.setupFunctions.push(functionIndex);
+      return true;
+    }
+  }
+  // return false if error
+  _registerTeardown(functionIndex: number): boolean {
+    const lastTestBlock = this.lastTestBlock;
+    if (lastTestBlock === undefined) {
+      return false;
+    } else {
+      lastTestBlock.teardownFunctions.push(functionIndex);
+      return true;
+    }
   }
   _addTestCase(functionIndex: number): void {
     this.testCases.push(new TestCase(this.testBlockStack, functionIndex));
@@ -127,6 +157,12 @@ export class ExecutionRecorder implements UnitTestFramework {
       },
       registerTestFunction: (index: number): void => {
         this._addTestCase(index);
+      },
+      registerBeforeEachFunction: (index: number): boolean => {
+        return this._registerSetup(index);
+      },
+      registerAfterEachFunction: (index: number): boolean => {
+        return this._registerTeardown(index);
       },
       collectCheckResult: (result: number, codeInfoIndex: number, actualValue: number, expectValue: number): void => {
         this.collectCheckResult(

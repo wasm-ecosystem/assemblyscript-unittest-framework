@@ -15,9 +15,15 @@ export function testImpl(name: string, testFunction: () => void): void {
   assertResult.removeDescription();
 }
 
-export function beforeEachImpl(func: () => void): void {}
+export function beforeEachImpl(func: () => void): void {
+  const result = assertResult.registerBeforeEachFunction(func.index);
+  assert(result, "register setup function failed");
+}
 
-export function afterEachImpl(func: () => void): void {}
+export function afterEachImpl(func: () => void): void {
+  const result = assertResult.registerAfterEachFunction(func.index);
+  assert(result, "register teardown function failed");
+}
 
 export function mockImpl<T extends Function>(
   originalFunction: T,
