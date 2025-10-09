@@ -1,0 +1,11 @@
+{
+  "name": "example",
+  "type": "module",
+  "dependencies": {
+    "assemblyscript-unittest-framework": "file:.."
+  },
+  "scripts": {
+    "test": "as-test",
+    "test:cjs": "as-test --config as-test.config.js"
+  }
+}

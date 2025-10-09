@@ -1,7 +1,7 @@
-import { describe, test, expect } from "../assembly";
-import { quick_sort } from "./source2";
+import { describe, test, expect } from "assemblyscript-unittest-framework/assembly";
+import { quick_sort } from "../assembly/source2";
 
-describe("quick_sork", () => {
+describe("quick_sort", () => {
   test("1", () => {
     let d = [1, 2, 3];
     quick_sort(d);

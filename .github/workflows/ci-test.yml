@@ -22,3 +22,11 @@ jobs:
       - run: npm run build
       - run: npm run lint
       - run: npm run test
+
+      - name: example
+        working-directory: ./example
+        run: |
+          set -e
+          npm ci
+          npm run test
+          npm run test:cjs
