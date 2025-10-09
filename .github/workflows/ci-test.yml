@@ -16,6 +16,13 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 22
+      - uses: actions/cache@v4
+        with:
+          path: |
+            third_party/emsdk/node
+            third_party/emsdk/python
+            third_party/emsdk/upstream
+          key: cache-${{ runner.os }}-emsdk-${{ hashFiles('scripts/**') }}
 
       - uses: ./.github/action/setup-ccache
         with:
