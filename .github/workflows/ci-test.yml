@@ -17,11 +17,11 @@ jobs:
         with:
           node-version: 22
 
-      - uses: ./.github/action/build
+      - uses: ./.github/action/setup-ccache
         with:
-          key: ccahe-${{ runner.os }}-build-${{ hashFiles('**/CMakeLists.txt') }}
+          key: ccache-${{ runner.os }}-build-${{ hashFiles('**/CMakeLists.txt') }}
           restore-keys: |
-            ccahe-${{ runner.os }}-build-
+            ccache-${{ runner.os }}-build-
 
       - run: npm ci
       - run: sudo apt-get install libgtest-dev
