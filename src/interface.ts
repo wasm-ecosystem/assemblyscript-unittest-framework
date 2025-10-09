@@ -213,6 +213,8 @@ export interface TestOption {
   mode: OutputMode | OutputMode[];
   warnLimit?: number;
   errorLimit?: number;
+
+  isolated: boolean;
 }
 
 export type OutputMode = "html" | "json" | "table";

@@ -25,4 +25,6 @@ export default {
 
   /** optional: test result output format, default "table" */
   mode: ["html", "json", "table"],
+
+  isolated: false,
 };
