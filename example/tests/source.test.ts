@@ -1,6 +1,6 @@
-import { describe, test, expect, mock } from "../assembly";
-import { log } from "./env";
-import { add, Test } from "./source";
+import { describe, test, expect, mock } from "assemblyscript-unittest-framework/assembly";
+import { log } from "../lib/env";
+import { add, Test } from "../assembly/source";
 
 describe("example 1", () => {
   test("two plus two is four", () => {

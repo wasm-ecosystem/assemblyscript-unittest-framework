@@ -42,6 +42,13 @@ jobs:
       - run: npm run lint
       - run: npm run test
 
+      - working-directory: ./example
+        run: |
+          set -e
+          npm ci
+          npm run test
+          npm run test:cjs
+
       - name: verify ccache stats
         run: |
           set -e

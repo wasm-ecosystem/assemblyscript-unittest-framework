@@ -23,7 +23,6 @@
     "lint:as": "npx eslint --config ./assembly/eslint.config.mjs assembly --max-warnings=0",
     "lint": "npm run lint:ts && prettier -c .",
     "lint:fix:ts": "eslint src transform tests/ts/test --fix && prettier --write .",
-    "example": "node bin/as-test.js --config example/as-test.config.cjs ; node bin/as-test.js --config example/as-test.config.js",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs"
   },
@@ -79,11 +78,12 @@
   "files": [
     "assembly/**/*",
     "bin/**/*",
-    "dist/**/*",
     "build_wasm/bin/wasm-instrumentation.js",
+    "config.d.ts",
+    "dist/**/*",
     "docs/**/*",
-    "transform/**/*",
     "resource/**/*",
+    "transform/**/*",
     "LICENSE",
     "README.md"
   ]

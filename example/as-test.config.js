@@ -1,15 +1,10 @@
+/** @type {import("assemblyscript-unittest-framework/config.d.ts").Config} */
 export default {
-  include: ["example"],
-  exclude: ["assembly/coverageCollector.ts", "assembly/mock.ts"],
+  include: ["tests"],
+  exclude: ["lib"],
 
-  /** assemblyscript compile flag, default is --exportStart _start --sourceMap --debug -O0 */
   flags: "",
 
-  /**
-   * import functions
-   * @param {ImportsArgument} runtime
-   * @returns
-   */
   imports(runtime) {
     return {
       env: {
@@ -20,9 +15,8 @@ export default {
     };
   },
 
-  /** template file path, default "coverage" */
   temp: "coverage",
-
-  /** report file path, default "coverage" */
   output: "coverage",
+
+  isolated: false,
 };
