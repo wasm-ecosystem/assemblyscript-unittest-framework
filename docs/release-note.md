@@ -1,6 +1,6 @@
 # Release Note
 
-## latest
+## 1.4.0
 
 🚀 Highlight Features
 
@@ -24,7 +24,7 @@
 
 🛠️ Improvements
 
-- Proper handling of situations where AS files are not invalid.
+- Proper handling of situations where AS files are invalid.
 
 ## 1.3.0
 
