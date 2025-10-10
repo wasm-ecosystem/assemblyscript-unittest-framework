@@ -36,8 +36,8 @@ function getAscArgs(sources: string[], outputWasm: string, outputWat: string, fl
 
 async function unifiedCompile(testCodePaths: string[], option: CompileOption): Promise<string> {
   const { outputFolder, flags } = option;
-  const outputWasm = join(outputFolder, "test.wasm").replaceAll(/\\/g, "/");;
-  const outputWat = join(outputFolder, "test.wat").replaceAll(/\\/g, "/");;
+  const outputWasm = join(outputFolder, "test.wasm").replaceAll(/\\/g, "/");
+  const outputWat = join(outputFolder, "test.wat").replaceAll(/\\/g, "/");
   const ascArgv = getAscArgs(testCodePaths, outputWasm, outputWat, flags);
   await ascMain(ascArgv, false);
   return outputWasm;

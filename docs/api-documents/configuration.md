@@ -26,6 +26,7 @@ There are 2 useful fields.
 
 - `exports`: contains exported function from test cases and [AS help API](https://github.com/AssemblyScript/assemblyscript/blob/3defefd5b09248d697a2e6bd1e7201c0cf98def1/lib/loader/index.d.ts#L23).
 - `framework`: contains runtime provided function.</br>
+
   - `log`: redirect log message from test cases to unittest framework. It will be showed in failed info.
     ::: details
 
