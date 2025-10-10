@@ -11,7 +11,7 @@ import path from "node:path";
 export class InstrumentResult {
   baseName: string;
   constructor(baseName: string) {
-    this.baseName = path.relative(process.cwd(), baseName);
+    this.baseName = baseName;
   }
   get sourceWasm() {
     return this.baseName.concat(".wasm");
