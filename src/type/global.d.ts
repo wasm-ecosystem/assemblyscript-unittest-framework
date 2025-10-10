@@ -1,4 +1,3 @@
-/* eslint-disable no-var */
 import { SourceFunctionInfo } from "../interface.ts";
 
 declare global {
