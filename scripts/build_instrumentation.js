@@ -1,5 +1,6 @@
 import { execSync } from "node:child_process";
 import { existsSync, copyFileSync } from "node:fs";
+import { join, resolve } from "node:path";
 
 const env = process.env;
 
@@ -12,14 +13,15 @@ if (jIndex !== -1 && args[jIndex + 1]) {
 }
 
 function initEmscripten() {
-  const sdkPath = "third_party/emsdk/";
+  const sdkPath = resolve("third_party/emsdk/");
+  const emscriptenPath = join(sdkPath, "upstream", "emscripten");
 
-  env["PATH"] = `${sdkPath}:` + env["PATH"];
-  if (!existsSync(`${sdkPath}upstream/emscripten`)) {
+  env["PATH"] += `${process.platform === "win32" ? ";" : ":"}${sdkPath}`;
+  if (!existsSync(emscriptenPath)) {
     execSync("emsdk install 3.1.32", { encoding: "utf8", stdio: "inherit", env });
     execSync("emsdk activate 3.1.32", { encoding: "utf8", stdio: "inherit", env });
   }
-  env["PATH"] = `${sdkPath}upstream/emscripten:` + env["PATH"];
+  env["PATH"] += `${process.platform === "win32" ? ";" : ":"}${emscriptenPath}`;
 }
 
 initEmscripten();
