@@ -4,9 +4,13 @@
 
 🚀 Highlight Features
 
-- Improved the as-test performances.
-- Introduce new features `isolated: false` to significantly reduce test execution time in large projects. ([#73](https://github.com/wasm-ecosystem/assemblyscript-unittest-framework/pull/73))
+- Introduced new features `isolated: false` to significantly reduce test execution time in large projects. ([#73](https://github.com/wasm-ecosystem/assemblyscript-unittest-framework/pull/73))
 - Introduce setup and teardown API. ([#77](https://github.com/wasm-ecosystem/assemblyscript-unittest-framework/pull/77))
+
+🛠️ Improvements
+
+- Improved the as-test performances.
+- Improved the error messages when test case assert failed.
 
 ## 1.3.1
 
@@ -18,7 +22,7 @@
   - `2` means invalid AS file.
   - `>2` means configuration error.
 
-🚀 Improvements
+🛠️ Improvements
 
 - Proper handling of situations where AS files are not invalid.
 
@@ -35,7 +39,7 @@
   - Expose the framework's `log` function in the configuration file, and the logs redirected to this function will be appended to the final test report.
   - Support test crashes and provide good call stack information.
 
-🚀 Improvements
+🛠️ Improvements
 
 - Code coverage calculation.
   - Skip type definitions.

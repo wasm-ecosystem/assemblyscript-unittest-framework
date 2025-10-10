@@ -8,14 +8,14 @@ test case: 0/2 (success/total)
 Error Message: 
   assert on test: 
     Test Crashed!
-This test will fail due to an assertion error
-Reason: unreachable
-  at start:tests/e2e/assertFailed/assertOnTest.test~anonymous|0 (tests/e2e/assertFailed/assertOnTest.test.ts:6:2)
-  at executeTestFunction (tests/e2e/assertFailed/tmp/assertOnTest.test.instrumented.wasm:1:649)
+trace: this test will fail due to an assertion error
+Reason: abort: this assertion is expected to fail at tests/e2e/assertFailed/assertOnTest.test.ts:5:3
+  at start:tests/e2e/assertFailed/assertOnTest.test~anonymous|0 (tests/e2e/assertFailed/assertOnTest.test.ts:5:2)
+  at executeTestFunction (tests/e2e/assertFailed/tmp/assertOnTest.test.instrumented.wasm:1:780)
 
   tests/e2e/assertFailed/tmp/assertOnInit.test - init: 
     Test Crashed!
-Reason: unreachable
+Reason: abort: null at tests/e2e/assertFailed/assertOnInit.test.ts:1:1
   at start:tests/e2e/assertFailed/assertOnInit.test (tests/e2e/assertFailed/assertOnInit.test.ts:1:0)
-  at ~start (tests/e2e/assertFailed/tmp/assertOnInit.test.instrumented.wasm:1:265)
+  at ~start (tests/e2e/assertFailed/tmp/assertOnInit.test.instrumented.wasm:1:289)
 

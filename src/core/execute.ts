@@ -47,7 +47,7 @@ async function nodeExecutor(
   const binaryBuffer = await readFile(instrumentResult.instrumentedWasm);
   const binary = binaryBuffer.buffer.slice(binaryBuffer.byteOffset, binaryBuffer.byteOffset + binaryBuffer.byteLength);
   const importFuncList = parseImportFunctionInfo(binary as ArrayBuffer);
-  supplyDefaultFunction(importFuncList, importObject);
+  supplyDefaultFunction(importFuncList, importObject, importsArg);
   const ins = await instantiate(binary, importObject);
   importsArg.module = ins.module;
   importsArg.instance = ins.instance;
