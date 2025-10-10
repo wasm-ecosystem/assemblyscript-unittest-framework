@@ -63,7 +63,9 @@ runEndToEndTest("printLogInFailedInfo", "", (error, stdout, stderr) => {
   assert(error.code === 1);
 });
 
-runEndToEndTest("setup-teardown", "", (error, stdout, stderr) => {});
+runEndToEndTest("setup-teardown", "", (error, stdout, stderr) => {
+  assert(error.code === 1);
+});
 
 runEndToEndTest(
   "testFiles",

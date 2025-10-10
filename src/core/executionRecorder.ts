@@ -81,7 +81,7 @@ export class ExecutionRecorder implements UnitTestFramework {
   }
 
   get lastTestBlock(): TestBlock | undefined {
-    return this.testBlockStack[this.testBlockStack.length - 1];
+    return this.testBlockStack.at(-1);
   }
   // return false if error
   _registerSetup(functionIndex: number): boolean {
@@ -107,17 +107,33 @@ export class ExecutionRecorder implements UnitTestFramework {
     this.testCases.push(new TestCase(this.testBlockStack, functionIndex));
   }
 
-  startTestFunction(testCaseFullName: string): void {
-    this.currentExecutedTestCaseFullName = testCaseFullName;
+  _startTestFunction(fullName: string): void {
+    this.currentExecutedTestCaseFullName = fullName;
     this.logRecorder.reset();
   }
-  finishTestFunction(): void {
+  _finishTestFunction(): void {
     const logMessages: string[] | null = this.logRecorder.onFinishTest();
     if (logMessages !== null) {
       this.result.failedLogMessages[this.currentExecutedTestCaseFullName] = (
         this.result.failedLogMessages[this.currentExecutedTestCaseFullName] || []
       ).concat(logMessages);
     }
+  }
+  async runTestFunction(
+    fullName: string,
+    runner: () => Promise<void> | void,
+    exceptionHandler: (error: unknown) => Promise<void>
+  ) {
+    this._startTestFunction(fullName);
+    try {
+      const r = runner();
+      if (r instanceof Promise) {
+        await r;
+      }
+    } catch (error) {
+      await exceptionHandler(error);
+    }
+    this._finishTestFunction();
   }
 
   notifyTestCrash(error: ExecutionError): void {

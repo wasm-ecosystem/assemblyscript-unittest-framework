@@ -3,7 +3,7 @@ compile test files: OK
 instrument: OK
 execute test files: OK
 
-test case: 12/13 (success/total)
+test case: 18/19 (success/total)
 
 Error Message: 
   tests/e2e/setup-teardown/tmp/setup_out_of_block.test - init: 

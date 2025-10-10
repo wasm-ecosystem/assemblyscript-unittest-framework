@@ -69,13 +69,13 @@ async function nodeExecutor(
     throw new Error("node executor abort");
   };
 
-  try {
-    executionRecorder.startTestFunction(`${instrumentResult.baseName} - init`);
-    wasi.start(ins);
-  } catch (error) {
-    await exceptionHandler(error);
-  }
-  executionRecorder.finishTestFunction();
+  await executionRecorder.runTestFunction(
+    `${instrumentResult.baseName} - init`,
+    () => {
+      wasi.start(ins);
+    },
+    exceptionHandler
+  );
 
   const execTestFunction = ins.exports["executeTestFunction"] as (a: number) => void;
   assert(typeof execTestFunction === "function");
@@ -86,19 +86,19 @@ async function nodeExecutor(
     }
     const { fullName, functionIndex, setupFunctions, teardownFunctions } = testCase;
     if (matchedTestNames.length === 0 || matchedTestNames.includes(fullName)) {
-      executionRecorder.startTestFunction(fullName);
-      try {
-        for (const setupFuncIndex of setupFunctions) {
-          execTestFunction(setupFuncIndex);
-        }
-        execTestFunction(functionIndex);
-        for (const teardownFuncIndex of teardownFunctions) {
-          execTestFunction(teardownFuncIndex);
-        }
-      } catch (error) {
-        await exceptionHandler(error);
-      }
-      executionRecorder.finishTestFunction();
+      await executionRecorder.runTestFunction(
+        fullName,
+        () => {
+          for (const setupFuncIndex of setupFunctions) {
+            execTestFunction(setupFuncIndex);
+          }
+          execTestFunction(functionIndex);
+          for (const teardownFuncIndex of teardownFunctions) {
+            execTestFunction(teardownFuncIndex);
+          }
+        },
+        exceptionHandler
+      );
       mockStatusRecorder.clear();
     }
   }

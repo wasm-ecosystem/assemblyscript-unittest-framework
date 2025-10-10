@@ -1,4 +1,4 @@
-import { ExecutionRecorder, TestCase } from "../../../../src/core/executionRecorder.js";
+import { ExecutionRecorder } from "../../../../src/core/executionRecorder.js";
 
 describe("execution recorder", () => {
   describe("description", () => {
@@ -8,7 +8,7 @@ describe("execution recorder", () => {
       recorder._addTestCase(1);
       expect(recorder.testCases).toMatchObject([{ functionIndex: 1, fullName: "description" }]);
 
-      recorder.startTestFunction("description");
+      recorder._startTestFunction("description");
       recorder.collectCheckResult(false, 0, "", "");
       expect(recorder.result.failedInfo).toHaveProperty("description");
     });
@@ -19,7 +19,7 @@ describe("execution recorder", () => {
       recorder._addTestCase(1);
       expect(recorder.testCases).toMatchObject([{ functionIndex: 1, fullName: "description1 description2" }]);
 
-      recorder.startTestFunction("description1 description2");
+      recorder._startTestFunction("description1 description2");
       recorder.collectCheckResult(false, 0, "", "");
       expect(recorder.result.failedInfo).toHaveProperty("description1 description2");
     });
@@ -32,7 +32,7 @@ describe("execution recorder", () => {
       recorder._addTestCase(1);
       expect(recorder.testCases).toMatchObject([{ functionIndex: 1, fullName: "description1" }]);
 
-      recorder.startTestFunction("description1");
+      recorder._startTestFunction("description1");
       recorder.collectCheckResult(false, 0, "", "");
       expect(recorder.result.failedInfo).toHaveProperty("description1");
     });
