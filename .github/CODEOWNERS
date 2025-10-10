@@ -1,1 +1,5 @@
-* @wasm-ecosystem/assemblyscript-unittest-framework-team
+./assembly @wasm-ecosystem/assemblyscript-unittest-framework-team
+./bin @wasm-ecosystem/assemblyscript-unittest-framework-team
+./instrumentation @wasm-ecosystem/assemblyscript-unittest-framework-team
+./src @wasm-ecosystem/assemblyscript-unittest-framework-team
+./transform @wasm-ecosystem/assemblyscript-unittest-framework-team
