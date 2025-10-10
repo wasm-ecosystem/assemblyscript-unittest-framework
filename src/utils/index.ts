@@ -71,7 +71,7 @@ export function supplyDefaultFunction(
         importsArg.framework.log(`trace: ${exports.__getString(msg)}${n > 0 ? " " : ""}${args.slice(0, n).join(", ")}`);
       };
     } else {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       importObjectModule[name] = (..._args: unknown[]): unknown => {
         return info.return?.kind === TypeKind.i64 ? BigInt(0) : 0;
       };
