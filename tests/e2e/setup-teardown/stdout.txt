@@ -1,0 +1,16 @@
+code analysis: OK
+compile test files: OK
+instrument: OK
+execute test files: OK
+
+test case: 18/19 (success/total)
+
+Error Message: 
+  tests/e2e/setup-teardown/tmp/setup_out_of_block.test - init: 
+    Test Crashed!
+Reason: unreachable
+  at assembly/implement/beforeEachImpl (assembly/implement.ts:20:2)
+  at assembly/index/beforeEach (assembly/index.ts:47:2)
+  at start:tests/e2e/setup-teardown/setup_out_of_block.test (tests/e2e/setup-teardown/tmp/setup_out_of_block.test.instrumented.wasm:1:547)
+  at ~start (tests/e2e/setup-teardown/tmp/setup_out_of_block.test.instrumented.wasm:1:325)
+

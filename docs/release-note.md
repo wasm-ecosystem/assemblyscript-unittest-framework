@@ -5,6 +5,7 @@
 🚀 Highlight Features
 
 - Introduced new features `isolated: false` to significantly reduce test execution time in large projects. ([#73](https://github.com/wasm-ecosystem/assemblyscript-unittest-framework/pull/73))
+- Introduce setup and teardown API. ([#77](https://github.com/wasm-ecosystem/assemblyscript-unittest-framework/pull/77))
 
 🛠️ Improvements
 

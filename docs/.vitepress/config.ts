@@ -32,6 +32,7 @@ export default defineConfig({
               { text: "Configuration", link: "/api-documents/configuration" },
               { text: "Options", link: "/api-documents/options" },
               { text: "Matchers", link: "/api-documents/matchers" },
+              { text: "Setup Teardown", link: "/api-documents/setup-teardown" },
               { text: "Mock Function", link: "/api-documents/mock-function" },
               { text: "Report", link: "/api-documents/coverage-report" },
               { text: "Return Code", link: "/api-documents/return-code.md" },
