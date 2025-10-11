@@ -5,7 +5,6 @@
 
 import { Type } from "wasmparser";
 import { ASUtil } from "@assemblyscript/loader";
-import path from "node:path";
 
 // instrumented file information
 export class InstrumentResult {
