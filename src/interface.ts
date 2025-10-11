@@ -5,13 +5,13 @@
 
 import { Type } from "wasmparser";
 import { ASUtil } from "@assemblyscript/loader";
-import path from "node:path";
+import { relative } from "node:path";
 
 // instrumented file information
 export class InstrumentResult {
   baseName: string;
   constructor(baseName: string) {
-    this.baseName = path.relative(process.cwd(), baseName);
+    this.baseName = relative(process.cwd(), baseName).replaceAll(/\\/g, "/");
   }
   get sourceWasm() {
     return this.baseName.concat(".wasm");
