@@ -46,7 +46,8 @@ TEST(lit, coverageInstrumentation) {
   const char *include = "[\"main\",\"assembly/.*\"]";
   Json::Reader jsonReader;
   // step 3, instrument , run and check;
-  for (Json::String const &wast : wastFiles) {
+  for (std::filesystem::path const &wastPath : wastFiles) {
+    const std::string wast = wastPath.string();
     const std::filesystem::path wasmFile = tmpDir / (wast + ".out.wasm");
     const std::filesystem::path wasmFileMap = tmpDir / (wast + ".out.wasm.map");
     const std::filesystem::path wasmTarget = tmpDir / (wast + ".instrumented.wasm");
@@ -55,11 +56,16 @@ TEST(lit, coverageInstrumentation) {
     const char *traceFunName = "assembly/env/traceExpression";
     wasmInstrumentation::InstrumentationConfig config;
     std::cout << "running lit - " << fixtureFolder << "/" << wast << std::endl;
-    config.fileName = wasmFile.c_str();
-    config.debugInfoOutputFilePath = debugTarget.c_str();
-    config.expectInfoOutputFilePath = expectTarget.c_str();
-    config.sourceMap = wasmFileMap.c_str();
-    config.targetName = wasmTarget.c_str();
+    const std::string wasmFileStr = wasmFile.string();
+    const std::string debugTargetStr = debugTarget.string();
+    const std::string expectTargetStr = expectTarget.string();
+    const std::string wasmFileMapStr = wasmFileMap.string();
+    const std::string wasmTargetStr = wasmTarget.string();
+    config.fileName = wasmFileStr;
+    config.debugInfoOutputFilePath = debugTargetStr;
+    config.expectInfoOutputFilePath = expectTargetStr;
+    config.sourceMap = wasmFileMapStr;
+    config.targetName = wasmTargetStr;
     config.reportFunction = traceFunName;
     config.includes = include;
     config.excludes = "";
@@ -103,11 +109,16 @@ TEST(lit, expectInstrumentation) {
   const std::filesystem::path wasmTarget = tmpDir / "expect.test.instrumented.wasm";
   const char *traceFunName = "assembly/env/traceExpression";
   const char *include = "[\"tests-as\",\"assembly/.*\"]";
-  config.fileName = wasmFile.c_str();
-  config.sourceMap = wasmFileMap.c_str();
-  config.debugInfoOutputFilePath = debugTarget.c_str();
-  config.expectInfoOutputFilePath = expectTarget.c_str();
-  config.targetName = wasmTarget.c_str();
+  const std::string wasmFileStr = wasmFile.string();
+  const std::string wasmFileMapStr = wasmFileMap.string();
+  const std::string debugTargetStr = debugTarget.string();
+  const std::string expectTargetStr = expectTarget.string();
+  const std::string wasmTargetStr = wasmTarget.string();
+  config.fileName = wasmFileStr;
+  config.sourceMap = wasmFileMapStr;
+  config.debugInfoOutputFilePath = debugTargetStr;
+  config.expectInfoOutputFilePath = expectTargetStr;
+  config.targetName = wasmTargetStr;
   config.reportFunction = traceFunName;
   config.includes = include;
   config.excludes = "";

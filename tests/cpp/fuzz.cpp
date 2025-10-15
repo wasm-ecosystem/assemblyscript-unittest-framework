@@ -22,12 +22,17 @@ TEST(fuzz, asc) {
   const std::filesystem::path targetExpectInfoPath =
       build_path / "assemblyscript.debug.wasm.expectinfo.json";
   const char *reportName = "assembly/env/traceExpression";
+  const std::string wasmPathStr = wasmPath.string();
+  const std::string targetDebugInfoPathStr = targetDebugInfoPath.string();
+  const std::string mapPathStr = mapPath.string();
+  const std::string targetPathStr = targetPath.string();
+  const std::string targetExpectInfoPathStr = targetExpectInfoPath.string();
   wasmInstrumentation::InstrumentationConfig config;
-  config.fileName = wasmPath.c_str();
-  config.debugInfoOutputFilePath = targetDebugInfoPath.c_str();
-  config.sourceMap = mapPath.c_str();
-  config.targetName = targetPath.c_str();
-  config.expectInfoOutputFilePath = targetExpectInfoPath.c_str();
+  config.fileName = wasmPathStr;
+  config.debugInfoOutputFilePath = targetDebugInfoPathStr;
+  config.sourceMap = mapPathStr;
+  config.targetName = targetPathStr;
+  config.expectInfoOutputFilePath = targetExpectInfoPathStr;
   config.reportFunction = reportName;
   wasmInstrumentation::CoverageInstru instrumentor(&config);
   ASSERT_EQ(instrumentor.instrument(), wasmInstrumentation::InstrumentationResponse::NORMAL);

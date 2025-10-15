@@ -33,6 +33,11 @@ runs:
         HOMEBREW_NO_AUTO_UPDATE: 1
         HOMEBREW_NO_INSTALL_CLEANUP: 1
 
+    - if: runner.os == 'Windows'
+      shell: bash
+      run: |
+        choco install ccache ninja -y
+
     - uses: actions/cache@v4
       with:
         path: build_cache

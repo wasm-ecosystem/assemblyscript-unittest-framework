@@ -16,15 +16,15 @@ function cleanDirSync(path: string) {
 test("Instrument", async () => {
   cleanDirSync(outputDir);
   await compile([fixturePath], { outputFolder: outputDir, flags: "--memoryBase 16 --exportTable", isolated: true });
-  const base = join(outputDir, "constructor");
-  const wasmPath = join(outputDir, "constructor.wasm");
+  const base = join(outputDir, "constructor").replaceAll(/\\/g, "/");
+  const wasmPath = base.concat(".wasm");
   const sourceCodePath = "tests/ts/fixture/constructor.ts";
   const results = await instrument([wasmPath], [sourceCodePath], true);
   expect(results.length).toEqual(1);
   const result = results[0]!;
-  const instrumentedWasm = join(outputDir, "constructor.instrumented.wasm");
-  const debugInfo = join(outputDir, "constructor.debugInfo.json");
-  const expectInfo = join(outputDir, "constructor.expectInfo.json");
+  const instrumentedWasm = base.concat(".instrumented.wasm");
+  const debugInfo = base.concat(".debugInfo.json");
+  const expectInfo = base.concat(".expectInfo.json");
   expect(result.baseName).toEqual(base);
   expect(result.sourceWasm).toEqual(wasmPath);
   expect(result.instrumentedWasm).toEqual(instrumentedWasm);
