@@ -36,8 +36,6 @@ jobs:
           restore-keys: |
             ccache-${{ runner.os }}-build-
 
-      - run: sudo apt-get install libgtest-dev
-
       - run: npm run build
       - run: npm run lint
       - run: npm run test
