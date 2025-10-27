@@ -32,7 +32,7 @@ jobs:
       - uses: ./.github/action/setup-ccache
         with:
           size: 128M
-          key: ccache-${{ runner.os }}-build-${{ hashFiles('**/CMakeLists.txt') }}
+          key: ccache-${{ runner.os }}-build-${{ github.run_id }}
           restore-keys: |
             ccache-${{ runner.os }}-build-
 
@@ -77,7 +77,7 @@ jobs:
       - uses: ./.github/action/setup-ccache
         with:
           size: 128M
-          key: ccache-${{ runner.os }}-build-${{ hashFiles('**/CMakeLists.txt') }}
+          key: ccache-${{ runner.os }}-build-${{ github.run_id }}
           restore-keys: |
             ccache-${{ runner.os }}-build-
 
@@ -86,3 +86,8 @@ jobs:
       - name: run test for windows
         run: |
           npm run test:as
+
+      - name: verify ccache stats
+        run: |
+          set -e
+          ccache --show-stats
