@@ -10,6 +10,6 @@
       "assemblyscript/transform": ["../node_modules/assemblyscript/dist/transform"]
     }
   },
-  "files": ["listFunctions.mts", "listTestNames.mts"],
+  "files": ["listFunctions.mts"],
   "exclude": []
 }

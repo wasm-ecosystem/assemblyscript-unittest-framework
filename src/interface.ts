@@ -174,7 +174,7 @@ export class CodeCoverage {
 
 export interface UnittestPackage {
   readonly testCodePaths: string[];
-  readonly matchedTestNames: string[];
+  readonly filterByName: (fullTestName: string) => boolean;
   readonly sourceFunctions?: Map<string, SourceFunctionInfo[]>;
 }
 
@@ -201,7 +201,7 @@ export interface TestOption {
   includes: string[];
   excludes: string[];
   testFiles?: string[];
-  testNamePattern?: string;
+  testNamePattern: string | null;
   collectCoverage: boolean;
   onlyFailures: boolean;
 

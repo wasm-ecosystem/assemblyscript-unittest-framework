@@ -69,7 +69,7 @@ async function startUniTestImpl(options: TestOption): Promise<number> {
   const executedResult = await execWasmBinaries(
     options.tempFolder,
     instrumentResult,
-    unittestPackage.matchedTestNames,
+    unittestPackage.filterByName,
     options.imports
   );
   console.log(chalk.blueBright("execute test files: ") + chalk.bold.greenBright("OK"));

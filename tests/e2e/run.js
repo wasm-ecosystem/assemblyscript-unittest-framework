@@ -28,42 +28,73 @@ function isEnabled(name) {
   return enabledTests.includes(name);
 }
 
-function runEndToEndTest(name, flags, handle) {
-  if (isEnabled(name)) {
+async function runEndToEndTest(name, flags, handle) {
+  if (!isEnabled(name)) {
+    return;
+  }
+  return new Promise((resolve) => {
     console.log(`Running e2e test: ${name}`);
     exec(`node ./bin/as-test.js --config tests/e2e/${name}/as-test.config.js ${flags}`, (error, stdout, stderr) => {
-      // standard check
-      const expectStdOut = readFileSync(`tests/e2e/${name}/stdout.txt`, "utf-8");
-      if (expectStdOut !== stdout) {
-        console.log(`========= STDOUT ${name} =========`);
-        console.log(getDiff(expectStdOut, stdout));
-        console.log(`========= STDERR ${name} =========`);
-        console.log(stderr);
-        process.exit(1);
-      }
-      // customize check
       handle(error, stdout, stderr);
+      resolve();
     });
+  });
+}
+
+function checkOutput(name, stdout, stderr) {
+  const expectStdOut = readFileSync(`tests/e2e/${name}/stdout.txt`, "utf-8");
+  if (expectStdOut !== stdout) {
+    console.log(`========= STDOUT ${name} =========`);
+    console.log(getDiff(expectStdOut, stdout));
+    console.log(`========= STDERR ${name} =========`);
+    console.log(stderr);
+    process.exit(1);
   }
 }
 
 runEndToEndTest("assertFailed", "", (error, stdout, stderr) => {
+  checkOutput("assertFailed", stdout, stderr);
   assert(error.code === 1);
 });
 
 runEndToEndTest("compilationFailed", "", (error, stdout, stderr) => {
+  checkOutput("compilationFailed", stdout, stderr);
   assert(error.code === 2);
 });
 
-runEndToEndTest("isolated-cli", "--isolated false", (error, stdout, stderr) => {});
-runEndToEndTest("isolated-false", "", (error, stdout, stderr) => {});
-runEndToEndTest("isolated-true", "", (error, stdout, stderr) => {});
+runEndToEndTest("isolated-cli", "--isolated false", (error, stdout, stderr) => {
+  checkOutput("isolated-cli", stdout, stderr);
+});
+runEndToEndTest("isolated-false", "", (error, stdout, stderr) => {
+  checkOutput("isolated-false", stdout, stderr);
+});
+runEndToEndTest("isolated-true", "", (error, stdout, stderr) => {
+  checkOutput("isolated-true", stdout, stderr);
+});
+
+(async () => {
+  let mergedStdout = "";
+  let mergedStderr = "";
+  await runEndToEndTest("on-failure-only", "", (error, stdout, stderr) => {
+    mergedStdout += stdout;
+    mergedStderr += stderr;
+  });
+  mergedStdout += "\n";
+  mergedStderr += "\n";
+  await runEndToEndTest("on-failure-only", "--onlyFailures", (error, stdout, stderr) => {
+    mergedStdout += stdout;
+    mergedStderr += stderr;
+  });
+  checkOutput("on-failure-only", mergedStdout, mergedStderr);
+})();
 
 runEndToEndTest("printLogInFailedInfo", "", (error, stdout, stderr) => {
+  checkOutput("printLogInFailedInfo", stdout, stderr);
   assert(error.code === 1);
 });
 
 runEndToEndTest("setup-teardown", "", (error, stdout, stderr) => {
+  checkOutput("setup-teardown", stdout, stderr);
   assert(error.code === 1);
 });
 
@@ -71,6 +102,7 @@ runEndToEndTest(
   "testFiles",
   "--testFiles tests/e2e/testFiles/succeed_0.test.ts tests/e2e/testFiles/succeed_1.test.ts",
   (error, stdout, stderr) => {
+    checkOutput("testFiles", stdout, stderr);
     assert(error === null);
   }
 );
