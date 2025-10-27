@@ -88,6 +88,4 @@ jobs:
           npm run test:as
 
       - name: verify ccache stats
-        run: |
-          set -e
-          ccache --show-stats
+        run: ccache --show-stats
