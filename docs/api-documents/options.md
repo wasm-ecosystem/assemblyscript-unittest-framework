@@ -88,7 +88,6 @@ run `as-test --testNamePattern "groupA case_\d"` will run `case_1`, `case_2`, `c
 
 ::: tip
 The framework join `DescriptionName` and `TestName` with `" "` by default, e.g. `groupA case_1` is the full test case name of `case_1`.
-
 :::
 
 #### Run only failures
@@ -107,21 +106,27 @@ You can control the coverage collection manually with `--collectCoverage` option
 
 ### Isolated Execution
 
-Isolated test execution helps isolate error propagation between different test scenarios and reduces the burden of restoring context, which is very helpful for rapid technical verification.
+Isolated test execution helps isolate error propagation between different test scenarios and reduces the burden of restoring context, which is very helpful for rapid technical verification. However, as the project scales, isolated test execution will compile the source code multiple times, slowing down overall test performance. In this case, restoring the context in code and disabling the `isolated` option after testing can reduce test time.
 
-However, as the project scales, isolated test execution will compile the source code multiple times, slowing down overall test performance. In this case, restoring the context in code and disabling the `isolated` option after testing can help reduce test time.
+::: tip
+In version 1.4.x, isolated is enabled by default.
+After version 2.x, isolated is disabled by default.
+:::
 
-- disable by config:
+- enable/disable by config:
 
   ```js
   {
-    // ...
+    // enable
+    isolated: true
+    // disable
     isolated: false
   }
   ```
 
-- disable by cli
+- enable/disable by cli
 
   ```bash
+  npx as-test ... --isolated true
   npx as-test ... --isolated false
   ```

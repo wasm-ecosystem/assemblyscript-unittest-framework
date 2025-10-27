@@ -1,5 +1,17 @@
 # Release Note
 
+## 2.0.0
+
+🔄 Break Changes
+
+- Changed the default value of `isolated` from `true` to `false`.
+
+## 1.4.1
+
+🚀 Highlight Features
+
+- Supported windows officially.
+
 ## 1.4.0
 
 🚀 Highlight Features

@@ -80,15 +80,7 @@ const getBoolean = (optionValue, configValue) => {
   return undefined;
 };
 const isolatedInConfig = getBoolean(options.isolated, config.isolated);
-if (isolatedInConfig === undefined) {
-  console.warn(
-    chalk.yellowBright(
-      "Warning: In the next version, the default value of isolated will change. Please specify isolated in config"
-    )
-  );
-}
-// TODO: switch to false default in 2.x
-const isolated = isolatedInConfig ?? true;
+const isolated = isolatedInConfig ?? false;
 
 /**
  * @type {import("../dist/interface.d.ts").TestOption}
