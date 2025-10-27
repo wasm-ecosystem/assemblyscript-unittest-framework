@@ -35,9 +35,9 @@ function runEndToEndTest(name, flags, handle) {
       // standard check
       const expectStdOut = readFileSync(`tests/e2e/${name}/stdout.txt`, "utf-8");
       if (expectStdOut !== stdout) {
-        console.log(`=========STDOUT ${name}=========`);
+        console.log(`========= STDOUT ${name} =========`);
         console.log(getDiff(expectStdOut, stdout));
-        console.log(`=========STDERR ${name}=========`);
+        console.log(`========= STDERR ${name} =========`);
         console.log(stderr);
         process.exit(1);
       }
