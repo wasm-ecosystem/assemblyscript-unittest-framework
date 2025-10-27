@@ -87,8 +87,7 @@ if (isolatedInConfig === undefined) {
     )
   );
 }
-// TODO: switch to false default in 2.x
-const isolated = isolatedInConfig ?? true;
+const isolated = isolatedInConfig ?? false;
 
 /**
  * @type {import("../dist/interface.d.ts").TestOption}
