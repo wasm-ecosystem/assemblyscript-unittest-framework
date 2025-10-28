@@ -88,6 +88,8 @@ const getBoolean = (optionValue, configValue) => {
 const isolatedInConfig = getBoolean(options.isolated, config.isolated);
 const isolated = isolatedInConfig ?? false;
 
+const entryFiles = config.entryFiles ?? null;
+
 /**
  * @type {import("../dist/interface.d.ts").TestOption}
  */
@@ -95,6 +97,8 @@ const testOption = {
   includes,
   excludes,
   testFiles,
+  entryFiles,
+
   testNamePattern: testNamePattern,
   collectCoverage,
   onlyFailures,

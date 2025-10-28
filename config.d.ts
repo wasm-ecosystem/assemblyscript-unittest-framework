@@ -1,4 +1,4 @@
-import { Imports } from "./dist/interface.d.ts";
+import type { Imports } from "./dist/interface.d.ts";
 
 export type OutputMode = "html" | "json" | "table";
 
@@ -7,6 +7,8 @@ export declare class Config {
   include: string[];
   /** Files to exclude from testing and coverage statistics, has higher priority than include */
   exclude?: string[];
+  /** entry files for the whole projects, used to collect all source code information. default value is `${include}/index.ts` */
+  entryFiles?: string[];
 
   /** whether to collect coverage information, default is true */
   collectCoverage?: boolean;

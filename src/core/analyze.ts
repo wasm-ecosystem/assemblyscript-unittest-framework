@@ -3,30 +3,39 @@
  */
 
 import ignore from "ignore";
-import { relative, resolve } from "node:path";
+import { join, relative, resolve } from "node:path";
 import { getIncludeFiles } from "../utils/pathResolver.js";
-import { UnittestPackage } from "../interface.js";
+import { TestOption, UnittestPackage } from "../interface.js";
 import assert from "node:assert";
 
+export type AnalyzeOption = Pick<TestOption, "includes" | "excludes" | "testFiles" | "testNamePattern" | "entryFiles">;
+
 export async function analyze(
-  includes: string[],
-  excludes: string[],
-  testFiles: string[] | undefined, // this field specifed test file names
-  testNamePattern: string | null,
+  { includes, excludes, testNamePattern, testFiles, entryFiles }: AnalyzeOption,
   failedTestNames: string[]
 ): Promise<UnittestPackage> {
+  const testCodePaths = testFiles ?? getRelatedFiles(includes, excludes, (path: string) => path.endsWith(".test.ts"));
+  const sourceCodePaths = getRelatedFiles(
+    includes,
+    excludes,
+    (path: string) => path.endsWith(".ts") && !path.endsWith(".test.ts")
+  );
   return {
     // if specify testFiles, use testFiles for unittest
     // otherwise, get testFiles(*.test.ts) in includes directory
-    testCodePaths: testFiles ?? getRelatedFiles(includes, excludes, (path: string) => path.endsWith(".test.ts")),
+    testCodePaths: testCodePaths,
     // get all source files in includes directory
-    sourceCodePaths: getRelatedFiles(
-      includes,
-      excludes,
-      (path: string) => path.endsWith(".ts") && !path.endsWith(".test.ts")
-    ),
+    sourceCodePaths: sourceCodePaths,
+    entryFiles: entryFiles ?? getEntryFiles(includes, sourceCodePaths),
     filterByName: getFilterByName(testNamePattern, failedTestNames),
   };
+}
+
+function getEntryFiles(includes: string[], sourceCodePaths: string[]): string[] {
+  // entry files must be in source code paths
+  return includes
+    .map((include) => (include.endsWith(".ts") ? include : join(include, "index.ts")))
+    .filter((include) => include.endsWith(".ts") && sourceCodePaths.includes(include));
 }
 
 function getFilterByName(testNamePattern: string | null, failedTestNames: string[]): UnittestPackage["filterByName"] {
