@@ -1,6 +1,6 @@
 // eslint-disable-next-line n/no-extraneous-import
 import { jest } from "@jest/globals";
-import { precompile } from "../../../../src/core/precompile.js";
+import { analyze } from "../../../../src/core/analyze.js";
 import { compile } from "../../../../src/core/compile.js";
 import { compiler } from "../../../../src/utils/ascWrapper.js";
 
@@ -12,12 +12,6 @@ beforeEach(() => {
 
 afterEach(() => {
   jest.clearAllMocks();
-});
-
-test("transform error", async () => {
-  await expect(async () => {
-    await precompile(["tests/ts/fixture/transformFunction.ts"], [], undefined, undefined, [], true, "");
-  }).rejects.toThrow("mock asc.main() error");
 });
 
 test("compile error", async () => {

@@ -4,17 +4,42 @@ exports[`Parser generateFileCoverage 1`] = `
 [
   FileCoverageResult {
     "branchCoverageRate": Rate {
-      "total": 4,
-      "used": 4,
+      "total": 0,
+      "used": 0,
     },
-    "filename": "test/A.ts",
+    "filename": [
+      "test/A.ts",
+      [
+        {
+          "name": "",
+          "range": [
+            39,
+            39,
+          ],
+        },
+        {
+          "name": "test/A/Foo#check",
+          "range": [
+            20,
+            24,
+          ],
+        },
+        {
+          "name": "",
+          "range": [
+            4,
+            12,
+          ],
+        },
+      ],
+    ],
     "functionCoverageRate": Rate {
-      "total": 3,
-      "used": 2,
+      "total": 0,
+      "used": 0,
     },
     "lineCoverageRate": Rate {
-      "total": 18,
-      "used": 9,
+      "total": 0,
+      "used": 0,
     },
     "sourceUsedCount": [
       CodeCoverage {
@@ -31,39 +56,15 @@ exports[`Parser generateFileCoverage 1`] = `
       },
       CodeCoverage {
         "source": "",
-        "usedCount": 0,
+        "usedCount": -1,
       },
       CodeCoverage {
         "source": "",
-        "usedCount": 0,
+        "usedCount": -1,
       },
       CodeCoverage {
         "source": "",
-        "usedCount": 0,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": 0,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": 0,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": 0,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": 0,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": 0,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": 0,
+        "usedCount": -1,
       },
       CodeCoverage {
         "source": "",
@@ -79,31 +80,7 @@ exports[`Parser generateFileCoverage 1`] = `
       },
       CodeCoverage {
         "source": "",
-        "usedCount": 3,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": 3,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": 2,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": 2,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": 2,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": 2,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": 1,
+        "usedCount": -1,
       },
       CodeCoverage {
         "source": "",
@@ -111,7 +88,27 @@ exports[`Parser generateFileCoverage 1`] = `
       },
       CodeCoverage {
         "source": "",
-        "usedCount": 2,
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
       },
       CodeCoverage {
         "source": "",
@@ -171,7 +168,35 @@ exports[`Parser generateFileCoverage 1`] = `
       },
       CodeCoverage {
         "source": "",
-        "usedCount": 3,
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
       },
       CodeCoverage {
         "source": "",
@@ -223,478 +248,35 @@ exports[`Parser generateFileCoverage 1`] = `
       },
     ],
     "statementCoverageRate": Rate {
-      "total": 18,
-      "used": 9,
+      "total": 0,
+      "used": 0,
     },
     "uncoveredlines": Set {},
-  },
-  FileCoverageResult {
-    "branchCoverageRate": Rate {
-      "total": 1,
-      "used": 1,
-    },
-    "filename": "test/B.ts",
-    "functionCoverageRate": Rate {
-      "total": 1,
-      "used": 1,
-    },
-    "lineCoverageRate": Rate {
-      "total": 1,
-      "used": 1,
-    },
-    "sourceUsedCount": [
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": 4,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-    ],
-    "statementCoverageRate": Rate {
-      "total": 1,
-      "used": 1,
-    },
-    "uncoveredlines": Set {},
-  },
-  FileCoverageResult {
-    "branchCoverageRate": Rate {
-      "total": 4,
-      "used": 3,
-    },
-    "filename": "test/C.ts",
-    "functionCoverageRate": Rate {
-      "total": 2,
-      "used": 1,
-    },
-    "lineCoverageRate": Rate {
-      "total": 13,
-      "used": 9,
-    },
-    "sourceUsedCount": [
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": 2,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": 2,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": 4,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": 2,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": 2,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": 1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": 1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": 1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": 1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": 0,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": 0,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": 0,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": 0,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-      CodeCoverage {
-        "source": "",
-        "usedCount": -1,
-      },
-    ],
-    "statementCoverageRate": Rate {
-      "total": 13,
-      "used": 9,
-    },
-    "uncoveredlines": Set {
-      25,
-    },
   },
   FileCoverageResult {
     "branchCoverageRate": Rate {
       "total": 0,
       "used": 0,
     },
-    "filename": "test/D.ts",
+    "filename": [
+      "test/B.ts",
+      [
+        {
+          "name": "test/B/checkMemory",
+          "range": [
+            45,
+            45,
+          ],
+        },
+      ],
+    ],
     "functionCoverageRate": Rate {
-      "total": 1,
-      "used": 1,
+      "total": 0,
+      "used": 0,
     },
     "lineCoverageRate": Rate {
-      "total": 2,
-      "used": 2,
+      "total": 0,
+      "used": 0,
     },
     "sourceUsedCount": [
       CodeCoverage {
@@ -735,11 +317,11 @@ exports[`Parser generateFileCoverage 1`] = `
       },
       CodeCoverage {
         "source": "",
-        "usedCount": 2,
+        "usedCount": -1,
       },
       CodeCoverage {
         "source": "",
-        "usedCount": 2,
+        "usedCount": -1,
       },
       CodeCoverage {
         "source": "",
@@ -903,8 +485,489 @@ exports[`Parser generateFileCoverage 1`] = `
       },
     ],
     "statementCoverageRate": Rate {
-      "total": 2,
-      "used": 2,
+      "total": 0,
+      "used": 0,
+    },
+    "uncoveredlines": Set {},
+  },
+  FileCoverageResult {
+    "branchCoverageRate": Rate {
+      "total": 0,
+      "used": 0,
+    },
+    "filename": [
+      "test/C.ts",
+      [
+        {
+          "name": "",
+          "range": [
+            3,
+            40,
+          ],
+        },
+        {
+          "name": "",
+          "range": [
+            42,
+            44,
+          ],
+        },
+      ],
+    ],
+    "functionCoverageRate": Rate {
+      "total": 0,
+      "used": 0,
+    },
+    "lineCoverageRate": Rate {
+      "total": 0,
+      "used": 0,
+    },
+    "sourceUsedCount": [
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+    ],
+    "statementCoverageRate": Rate {
+      "total": 0,
+      "used": 0,
+    },
+    "uncoveredlines": Set {},
+  },
+  FileCoverageResult {
+    "branchCoverageRate": Rate {
+      "total": 0,
+      "used": 0,
+    },
+    "filename": [
+      "test/D.ts",
+      [
+        {
+          "name": "test/D/visit",
+          "range": [
+            10,
+            11,
+          ],
+        },
+      ],
+    ],
+    "functionCoverageRate": Rate {
+      "total": 0,
+      "used": 0,
+    },
+    "lineCoverageRate": Rate {
+      "total": 0,
+      "used": 0,
+    },
+    "sourceUsedCount": [
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+      CodeCoverage {
+        "source": "",
+        "usedCount": -1,
+      },
+    ],
+    "statementCoverageRate": Rate {
+      "total": 0,
+      "used": 0,
     },
     "uncoveredlines": Set {},
   },

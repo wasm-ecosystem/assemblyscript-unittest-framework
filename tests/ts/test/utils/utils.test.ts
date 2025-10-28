@@ -2,24 +2,17 @@ import fs from "fs-extra";
 import { join } from "node:path";
 import { Imports as ASImports } from "@assemblyscript/loader";
 import { fileURLToPath, URL } from "node:url";
-import { DebugInfo, CovDebugInfo, ImportFunctionInfo } from "../../../../src/interface.js";
 import {
-  isIncluded,
-  json2map,
-  checkFunctionName,
-  checkGenerics,
-  supplyDefaultFunction,
-} from "../../../../src/utils/index.js";
+  DebugInfo,
+  CovDebugInfo,
+  ImportFunctionInfo,
+  ImportsArgument,
+  UnitTestFramework,
+} from "../../../../src/interface.js";
+import { json2map, isFunctionInsideFile, checkGenerics, supplyDefaultFunction } from "../../../../src/utils/index.js";
 import { Type } from "wasmparser";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
-
-test("isIncluded", () => {
-  expect(isIncluded([39, 47], [36, 50])).toEqual(true);
-  expect(isIncluded([36, 50], [36, 50])).toEqual(true);
-  expect(isIncluded([33, 38], [36, 50])).toEqual(false);
-  expect(isIncluded([38, 52], [36, 50])).toEqual(false);
-});
 
 test("json2map", () => {
   const debugInfoFile = join(__dirname, "..", "..", "fixture", "ifBlock.debugInfo.json");
@@ -59,9 +52,9 @@ test("json2map", () => {
   expect(debugInfos).toEqual(expectDebugInfos);
 });
 
-test("checkFunctionName", () => {
-  expect(checkFunctionName("source/api.ts", "source/api/myMethod")).toEqual(true);
-  expect(checkFunctionName("source/api.ts", "start:source/api~anonymous|3~anonymous|1")).toEqual(true);
+test("isFunctionInsideFile", () => {
+  expect(isFunctionInsideFile("source/api.ts", "source/api/myMethod")).toEqual(true);
+  expect(isFunctionInsideFile("source/api.ts", "start:source/api~anonymous|3~anonymous|1")).toEqual(true);
 });
 
 test("checkGenerics", () => {
@@ -87,7 +80,7 @@ describe("supplyDefaultFunction", () => {
       env: {},
       wasi_snapshot_preview1: {},
     };
-    supplyDefaultFunction(mockInfos, mockImportObject);
+    supplyDefaultFunction(mockInfos, mockImportObject, new ImportsArgument({ log: console.log }));
 
     expect(typeof mockImportObject["ns"]?.["ut.i32"]).toBe("function");
     expect(typeof mockImportObject["ns"]?.["ut.i64"]).toBe("function");

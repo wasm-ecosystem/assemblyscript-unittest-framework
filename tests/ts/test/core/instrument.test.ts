@@ -18,8 +18,7 @@ test("Instrument", async () => {
   await compile([fixturePath], { outputFolder: outputDir, flags: "--memoryBase 16 --exportTable", isolated: true });
   const base = join(outputDir, "constructor").replaceAll(/\\/g, "/");
   const wasmPath = base.concat(".wasm");
-  const sourceCodePath = "tests/ts/fixture/constructor.ts";
-  const results = await instrument([wasmPath], [sourceCodePath], true);
+  const results = await instrument([wasmPath], true);
   expect(results.length).toEqual(1);
   const result = results[0]!;
   const instrumentedWasm = base.concat(".instrumented.wasm");
