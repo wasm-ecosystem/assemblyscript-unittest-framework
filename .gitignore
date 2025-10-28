@@ -5,8 +5,6 @@
 /dist
 
 /build*
-/transform/*.mjs
-/transform/tsconfig.tsbuildinfo
 
 /coverage
 /coverage-ts

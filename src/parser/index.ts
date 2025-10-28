@@ -12,7 +12,6 @@ import {
   FunctionIndex,
   LineInfoMap,
   FunctionCoverageResult,
-  SourceFunctionInfo,
   LineRange,
   InstrumentResult,
 } from "../interface.js";

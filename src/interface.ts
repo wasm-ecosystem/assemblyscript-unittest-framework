@@ -175,12 +175,6 @@ export class CodeCoverage {
 export interface UnittestPackage {
   readonly testCodePaths: string[];
   readonly filterByName: (fullTestName: string) => boolean;
-  readonly sourceFunctions?: Map<string, SourceFunctionInfo[]>;
-}
-
-export interface SourceFunctionInfo {
-  name: string;
-  range: [number, number];
 }
 
 export interface TestNameInfo {

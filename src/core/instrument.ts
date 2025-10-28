@@ -1,15 +1,7 @@
 import initInstrumenter from "../../build_wasm/bin/wasm-instrumentation.js";
 import { InstrumentResult } from "../interface.js";
 
-export async function instrument(
-  sourceWasms: string[],
-  sourceCodePaths: string[],
-  collectCoverage: boolean
-): Promise<InstrumentResult[]> {
-  const includeRegexs = sourceCodePaths.map((path) => {
-    return `(start:)?${path.slice(0, -3)}.*`;
-  });
-  const includeFilter = JSON.stringify(includeRegexs);
+export async function instrument(sourceWasms: string[], collectCoverage: boolean): Promise<InstrumentResult[]> {
   const res: InstrumentResult[] = [];
   const instrumenter = await initInstrumenter();
   for (const sourceFile of sourceWasms) {

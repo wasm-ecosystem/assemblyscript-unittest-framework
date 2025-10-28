@@ -12,8 +12,8 @@
   },
   "prettier": "@schleifner/prettier-config",
   "scripts": {
-    "watch:ts": "concurrently --kill-others \"tsc --build ./src/tsconfig.json --watch\" \"tsc --build ./transform/tsconfig.json --watch\"",
-    "build": "node scripts/build_instrumentation.js -j 2 && tsc --build ./transform/tsconfig.json && tsc --build ./src/tsconfig.json",
+    "watch:ts": "tsc --build ./src/tsconfig.json --watch",
+    "build": "node scripts/build_instrumentation.js -j 2 && tsc --build ./src/tsconfig.json",
     "test:as": "node bin/as-test.js",
     "test:ts": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
     "test:cpp": "cmake -B build -S . && cmake --build build --parallel 2 --target wasm-instrumentation-test wasm-opt && build/bin/wasm-instrumentation-test",
@@ -83,7 +83,6 @@
     "dist/**/*",
     "docs/**/*",
     "resource/**/*",
-    "transform/**/*",
     "LICENSE",
     "README.md"
   ]
