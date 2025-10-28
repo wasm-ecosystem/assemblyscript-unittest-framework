@@ -17,7 +17,7 @@ const readFile = promises.readFile;
 async function nodeExecutor(
   instrumentResult: InstrumentResult,
   outFolder: string,
-  matchedTestNames: string[],
+  filterByName: (fullTestName: string) => boolean,
   imports?: Imports
 ): Promise<ExecutionResult> {
   const wasi = new WASI({
@@ -85,7 +85,7 @@ async function nodeExecutor(
       break;
     }
     const { fullName, functionIndex, setupFunctions, teardownFunctions } = testCase;
-    if (matchedTestNames.length === 0 || matchedTestNames.includes(fullName)) {
+    if (filterByName(fullName)) {
       await executionRecorder.runTestFunction(
         fullName,
         () => {
@@ -110,14 +110,14 @@ async function nodeExecutor(
 export async function execWasmBinaries(
   outFolder: string,
   instrumentResults: InstrumentResult[],
-  matchedTestNames: string[],
+  filterByName: (fullTestName: string) => boolean,
   imports?: Imports
 ): Promise<ExecutionResultSummary> {
   const assertRes = new ExecutionResultSummary();
   ensureDirSync(outFolder);
   await Promise.all<void>(
     instrumentResults.map(async (instrumentResult): Promise<void> => {
-      const result: ExecutionResult = await nodeExecutor(instrumentResult, outFolder, matchedTestNames, imports);
+      const result: ExecutionResult = await nodeExecutor(instrumentResult, outFolder, filterByName, imports);
       await assertRes.merge(result, instrumentResult.expectInfo);
     })
   );

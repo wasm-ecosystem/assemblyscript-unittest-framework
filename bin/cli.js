@@ -59,6 +59,12 @@ if (options.testcase !== undefined) {
 const testFiles = options.testFiles || options.testcase;
 
 const onlyFailures = options.onlyFailures || false;
+const testNamePattern = options.testNamePattern ?? null;
+
+if (onlyFailures && testNamePattern !== null) {
+  console.error(chalk.redBright("Cannot use --onlyFailures and --testNamePattern together") + "\n");
+  exit(3);
+}
 
 // if enabled testcase or testNamePattern or onlyFailures, disable collectCoverage by default
 const collectCoverage =
@@ -89,7 +95,7 @@ const testOption = {
   includes,
   excludes,
   testFiles,
-  testNamePattern: options.testNamePattern,
+  testNamePattern: testNamePattern,
   collectCoverage,
   onlyFailures,
 
