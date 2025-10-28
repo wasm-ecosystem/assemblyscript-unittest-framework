@@ -11,15 +11,6 @@ void CoverageInstru::innerAnalysis(BasicBlockAnalysis &basicBlockAnalysis) const
   Json::Reader jsonReader;
   Json::Value includesJsonValue;
   Json::Value excludesJsonValue;
-  if (!config->includes.empty()) {
-    jsonReader.parse(std::string(config->includes), includesJsonValue);
-    if (includesJsonValue.isArray()) {
-      const uint32_t includesJsonSize = includesJsonValue.size();
-      for (uint32_t i = 0U; i < includesJsonSize; ++i) {
-        basicBlockAnalysis.addInclude(includesJsonValue[i].asString());
-      }
-    }
-  }
   if (!config->excludes.empty()) {
     jsonReader.parse(std::string(config->excludes), excludesJsonValue);
     if (excludesJsonValue.isArray()) {
@@ -181,8 +172,8 @@ extern "C" EMSCRIPTEN_KEEPALIVE wasmInstrumentation::InstrumentationResponse
 wasm_instrument(char const *const fileName, char const *const targetName,
                 char const *const reportFunction, char const *const sourceMap,
                 char const *const expectInfoOutputFilePath,
-                char const *const debugInfoOutputFilePath, char const *const includes,
-                char const *const excludes, bool skipLib, bool collectCoverage) noexcept {
+                char const *const debugInfoOutputFilePath, char const *const excludes, bool skipLib,
+                bool collectCoverage) noexcept {
 
   wasmInstrumentation::InstrumentationConfig config;
   config.fileName = fileName;
@@ -191,7 +182,6 @@ wasm_instrument(char const *const fileName, char const *const targetName,
   config.sourceMap = sourceMap;
   config.expectInfoOutputFilePath = expectInfoOutputFilePath;
   config.debugInfoOutputFilePath = debugInfoOutputFilePath;
-  config.includes = includes;
   config.excludes = excludes;
   config.skipLib = skipLib;
   config.collectCoverage = collectCoverage;

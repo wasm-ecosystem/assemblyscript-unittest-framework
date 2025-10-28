@@ -40,7 +40,6 @@ public:
   std::string_view reportFunction;           ///< trace report function name
   std::string_view sourceMap;                ///< input source map file name
   std::string_view debugInfoOutputFilePath;  ///< debug info output file name
-  std::string_view includes;                 ///< function include filter
   std::string_view excludes;                 ///< function exclude filter
   std::string_view expectInfoOutputFilePath; ///< exception info output file name
   bool skipLib = true;                       ///< if skip lib functions
@@ -56,7 +55,7 @@ public:
                                   const InstrumentationConfig &instance) noexcept {
     out << "filename: " << instance.fileName << ", targetName: " << instance.targetName
         << ", sourceMap: " << instance.sourceMap << ", reportFunction:" << instance.reportFunction
-        << ", includes: " << instance.includes << ", excludes: " << instance.excludes
+        << ", excludes: " << instance.excludes
         << ", expectInfoOutputFilePath: " << instance.expectInfoOutputFilePath
         << ", skipLib: " << std::boolalpha << instance.skipLib
         << ", collectCoverage: " << std::boolalpha << instance.collectCoverage << std::endl;
@@ -120,7 +119,7 @@ extern "C" EMSCRIPTEN_KEEPALIVE wasmInstrumentation::InstrumentationResponse
 wasm_instrument(char const *const fileName, char const *const targetName,
                 char const *const reportFunction, char const *const sourceMap,
                 char const *const expectInfoOutputFilePath,
-                char const *const debugInfoOutputFilePath, char const *const includes = NULL,
-                char const *const excludes = NULL, bool skipLib = true, bool collectCoverage = true) noexcept;
+                char const *const debugInfoOutputFilePath, char const *const excludes, bool skipLib,
+                bool collectCoverage) noexcept;
 #endif
 #endif

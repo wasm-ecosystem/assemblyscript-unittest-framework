@@ -16,21 +16,9 @@ export async function instrument(sourceWasms: string[], collectCoverage: boolean
     const sourceMap = instrumenter.allocateUTF8(result.sourceMap);
     const debugInfo = instrumenter.allocateUTF8(result.debugInfo);
     const expectInfo = instrumenter.allocateUTF8(result.expectInfo);
-    const include = instrumenter.allocateUTF8(includeFilter);
 
-    instrumenter._wasm_instrument(
-      source,
-      output,
-      report,
-      sourceMap,
-      expectInfo,
-      debugInfo,
-      include,
-      0,
-      true,
-      collectCoverage
-    );
-    for (const ptr of [source, output, report, sourceMap, debugInfo, expectInfo, include]) {
+    instrumenter._wasm_instrument(source, output, report, sourceMap, expectInfo, debugInfo, 0, true, collectCoverage);
+    for (const ptr of [source, output, report, sourceMap, debugInfo, expectInfo]) {
       instrumenter._free(ptr);
     }
     res.push(result);

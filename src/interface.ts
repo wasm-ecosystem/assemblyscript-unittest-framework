@@ -174,6 +174,7 @@ export class CodeCoverage {
 
 export interface UnittestPackage {
   readonly testCodePaths: string[];
+  readonly sourceCodePaths: string[];
   readonly filterByName: (fullTestName: string) => boolean;
 }
 

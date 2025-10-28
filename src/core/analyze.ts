@@ -19,6 +19,12 @@ export async function analyze(
     // if specify testFiles, use testFiles for unittest
     // otherwise, get testFiles(*.test.ts) in includes directory
     testCodePaths: testFiles ?? getRelatedFiles(includes, excludes, (path: string) => path.endsWith(".test.ts")),
+    // get all source files in includes directory
+    sourceCodePaths: getRelatedFiles(
+      includes,
+      excludes,
+      (path: string) => path.endsWith(".ts") && !path.endsWith(".test.ts")
+    ),
     filterByName: getFilterByName(testNamePattern, failedTestNames),
   };
 }

@@ -48,7 +48,7 @@ async function startUniTestImpl(options: TestOption): Promise<number> {
 
   emptydirSync(options.outputFolder);
   emptydirSync(options.tempFolder);
-  const { testCodePaths, filterByName } = await analyze(
+  const { sourceCodePaths, testCodePaths, filterByName } = await analyze(
     options.includes,
     options.excludes,
     options.testFiles,
@@ -70,7 +70,7 @@ async function startUniTestImpl(options: TestOption): Promise<number> {
   executedResult.print(console.log);
   if (options.collectCoverage) {
     const parser = new Parser();
-    const fileCoverageInfo = await parser.parse(instrumentResult, unittestPackage.sourceFunctions!);
+    const fileCoverageInfo = await parser.parse(instrumentResult, sourceCodePaths);
     reportConfig.warningLimit = options.warnLimit || reportConfig.warningLimit;
     reportConfig.errorLimit = options.errorLimit || reportConfig.errorLimit;
     generateReport(options.mode, options.outputFolder, fileCoverageInfo);
