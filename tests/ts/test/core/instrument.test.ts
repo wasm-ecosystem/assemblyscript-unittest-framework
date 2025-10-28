@@ -15,7 +15,7 @@ function cleanDirSync(path: string) {
 
 test("Instrument", async () => {
   cleanDirSync(outputDir);
-  await compile([fixturePath], { outputFolder: outputDir, flags: "--memoryBase 16 --exportTable", isolated: true });
+  await compile([fixturePath], [], { outputFolder: outputDir, flags: "--memoryBase 16 --exportTable", isolated: true });
   const base = join(outputDir, "constructor").replaceAll(/\\/g, "/");
   const wasmPath = base.concat(".wasm");
   const results = await instrument([wasmPath], true);

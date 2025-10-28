@@ -2,7 +2,7 @@ import chalk from "chalk";
 import pkg from "fs-extra";
 import { Parser } from "./parser/index.js";
 import { compile } from "./core/compile.js";
-import { analyze as analyze } from "./core/analyze.js";
+import { analyze } from "./core/analyze.js";
 import { instrument } from "./core/instrument.js";
 import { execWasmBinaries } from "./core/execute.js";
 import { generateReport, reportConfig } from "./generator/index.js";
@@ -48,10 +48,10 @@ async function startUniTestImpl(options: TestOption): Promise<number> {
 
   emptydirSync(options.outputFolder);
   emptydirSync(options.tempFolder);
-  const { sourceCodePaths, testCodePaths, filterByName } = await analyze(options, failedTestCases);
+  const { sourceCodePaths, testCodePaths, entryFiles, filterByName } = await analyze(options, failedTestCases);
   console.log(chalk.blueBright("code analysis: ") + chalk.bold.greenBright("OK"));
 
-  const wasmPaths = await compile(testCodePaths, options);
+  const wasmPaths = await compile(testCodePaths, entryFiles, options);
   console.log(chalk.blueBright("compile test files: ") + chalk.bold.greenBright("OK"));
 
   const instrumentResult = await instrument(wasmPaths, options.collectCoverage);

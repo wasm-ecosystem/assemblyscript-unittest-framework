@@ -16,7 +16,7 @@ export declare class Config {
   /** create an wasm instance for each test files. default is false (will be true in next major version) */
   isolated?: boolean;
 
-  /** assemblyscript compile flag, default is --exportStart _start --sourceMap --debug -O0 */
+  /** assemblyscript compile flag, default is --exportStart __unit_test_start --sourceMap --debug -O0 */
   flags?: string;
   imports?: Imports;
 

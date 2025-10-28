@@ -138,13 +138,22 @@ export class Parser {
    */
   async generateFileCoverage(sourceCodePaths: string[]) {
     for (const sourceCodePath of sourceCodePaths) {
+      const source = await readFile(sourceCodePath, { encoding: "utf8" });
+      const singleFileAnalysis = new SingleFileCoverageAnalysis(sourceCodePath, source);
+
       const functionCovInfosInCurrentFile = this.functionCoverageResults.filter((result) =>
         isFunctionInsideFile(sourceCodePath, result.functionName)
       );
 
-      const source = await readFile(sourceCodePath, { encoding: "utf8" });
-      const singleFileAnalysis = new SingleFileCoverageAnalysis(sourceCodePath, source);
-      singleFileAnalysis.setTotalFunction(functionCovInfosInCurrentFile.length);
+      const totalFunctionCount = new Set(
+        this.functionCovInfoMap
+          .keys()
+          .map((functionName) => checkGenerics(functionName) ?? functionName)
+          .filter((functionName) => isFunctionInsideFile(sourceCodePath, functionName))
+      ).size;
+      console.log(`Total functions in ${sourceCodePath}: ${totalFunctionCount}`);
+      singleFileAnalysis.setTotalFunction(totalFunctionCount);
+
       singleFileAnalysis.merge(functionCovInfosInCurrentFile);
       this.fileCoverageResults.push(singleFileAnalysis.getResult());
     }
