@@ -25,7 +25,6 @@ function getFilterByName(testNamePattern: string | null, failedTestNames: string
   return (): boolean => true;
 }
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
 export async function precompile(
   includes: string[],
   excludes: string[],
