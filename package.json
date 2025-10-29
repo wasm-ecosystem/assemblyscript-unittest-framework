@@ -19,10 +19,10 @@
     "test:cpp": "cmake -B build -S . && cmake --build build --parallel 2 --target wasm-instrumentation-test wasm-opt && build/bin/wasm-instrumentation-test",
     "test:e2e": " node tests/e2e/run.js",
     "test": "npm run test:as && npm run test:ts && npm run test:cpp && npm run test:e2e",
-    "lint:ts": "eslint src transform tests/ts/test --max-warnings=0",
+    "lint:ts": "eslint src tests/ts/test --max-warnings=0",
     "lint:as": "npx eslint --config ./assembly/eslint.config.mjs assembly --max-warnings=0",
     "lint": "npm run lint:ts && prettier -c .",
-    "lint:fix:ts": "eslint src transform tests/ts/test --fix && prettier --write .",
+    "lint:fix:ts": "eslint src tests/ts/test --fix && prettier --write .",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs"
   },

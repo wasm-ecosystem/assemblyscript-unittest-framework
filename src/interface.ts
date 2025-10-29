@@ -172,13 +172,6 @@ export class CodeCoverage {
   }
 }
 
-export interface UnittestPackage {
-  readonly testCodePaths: string[];
-  readonly sourceCodePaths: string[];
-  readonly entryFiles: string[];
-  readonly filterByName: (fullTestName: string) => boolean;
-}
-
 export interface TestNameInfo {
   testName: string;
   testFilePath: string;

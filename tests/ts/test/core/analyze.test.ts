@@ -1,8 +1,8 @@
 import { analyze } from "../../../../src/core/analyze.js";
 
 describe("entry files", () => {
-  test("specify", async () => {
-    const { entryFiles } = await analyze(
+  test("specify", () => {
+    const { entryFiles } = analyze(
       {
         includes: ["tests/ts/fixture/src"],
         excludes: [],
@@ -14,8 +14,8 @@ describe("entry files", () => {
     );
     expect(entryFiles).toEqual(["tests/ts/fixture/src/main.ts"]);
   });
-  test("specify empty", async () => {
-    const { entryFiles } = await analyze(
+  test("specify empty", () => {
+    const { entryFiles } = analyze(
       {
         includes: ["tests/ts/fixture/src"],
         excludes: [],
@@ -27,8 +27,8 @@ describe("entry files", () => {
     );
     expect(entryFiles).toEqual([]);
   });
-  test("infer", async () => {
-    const { entryFiles } = await analyze(
+  test("infer", () => {
+    const { entryFiles } = analyze(
       {
         includes: ["tests/ts/fixture/src"],
         excludes: [],

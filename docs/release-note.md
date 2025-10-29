@@ -6,6 +6,10 @@
 
 - Changed the default value of `isolated` from `true` to `false`.
 
+🛠️ Improvements
+
+- Introduce new configuration `entryFiles` to reach all source code. ([#88](https://github.com/wasm-ecosystem/assemblyscript-unittest-framework/pull/88))
+
 ## 1.4.1
 
 🚀 Highlight Features

@@ -2,13 +2,7 @@ import fs from "fs-extra";
 import { join } from "node:path";
 import { Imports as ASImports } from "@assemblyscript/loader";
 import { fileURLToPath, URL } from "node:url";
-import {
-  DebugInfo,
-  CovDebugInfo,
-  ImportFunctionInfo,
-  ImportsArgument,
-  UnitTestFramework,
-} from "../../../../src/interface.js";
+import { DebugInfo, CovDebugInfo, ImportFunctionInfo, ImportsArgument } from "../../../../src/interface.js";
 import {
   json2map,
   isFunctionInsideFile,

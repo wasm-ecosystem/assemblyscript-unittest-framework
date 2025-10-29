@@ -5,15 +5,22 @@
 import ignore from "ignore";
 import { join, relative, resolve } from "node:path";
 import { getIncludeFiles } from "../utils/pathResolver.js";
-import { TestOption, UnittestPackage } from "../interface.js";
+import { TestOption } from "../interface.js";
 import assert from "node:assert";
 
-export type AnalyzeOption = Pick<TestOption, "includes" | "excludes" | "testFiles" | "testNamePattern" | "entryFiles">;
+type AnalyzeOption = Pick<TestOption, "includes" | "excludes" | "testFiles" | "testNamePattern" | "entryFiles">;
 
-export async function analyze(
+interface UnittestPackage {
+  readonly testCodePaths: string[];
+  readonly sourceCodePaths: string[];
+  readonly entryFiles: string[];
+  readonly filterByName: (fullTestName: string) => boolean;
+}
+
+export function analyze(
   { includes, excludes, testNamePattern, testFiles, entryFiles }: AnalyzeOption,
   failedTestNames: string[]
-): Promise<UnittestPackage> {
+): UnittestPackage {
   const testCodePaths = testFiles ?? getRelatedFiles(includes, excludes, (path: string) => path.endsWith(".test.ts"));
   const sourceCodePaths = getRelatedFiles(
     includes,

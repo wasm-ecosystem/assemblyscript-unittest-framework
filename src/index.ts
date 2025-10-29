@@ -48,7 +48,7 @@ async function startUniTestImpl(options: TestOption): Promise<number> {
 
   emptydirSync(options.outputFolder);
   emptydirSync(options.tempFolder);
-  const { sourceCodePaths, testCodePaths, entryFiles, filterByName } = await analyze(options, failedTestCases);
+  const { sourceCodePaths, testCodePaths, entryFiles, filterByName } = analyze(options, failedTestCases);
   console.log(chalk.blueBright("code analysis: ") + chalk.bold.greenBright("OK"));
 
   const wasmPaths = await compile(testCodePaths, entryFiles, options);
