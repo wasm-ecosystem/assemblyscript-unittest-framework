@@ -1,6 +1,6 @@
 /** @type {import("assemblyscript-unittest-framework/config.d.ts").Config} */
 module.exports = {
-  include: ["tests"],
+  include: ["tests", "assembly"],
   exclude: ["lib"],
 
   flags: "",
