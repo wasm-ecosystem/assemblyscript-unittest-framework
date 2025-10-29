@@ -11,6 +11,7 @@ import {
   FailedLogMessages,
 } from "./interface.js";
 import chalk from "chalk";
+import assert from "node:assert";
 
 const { readFile, writeFile } = promises;
 
@@ -32,12 +33,13 @@ export class ExecutionResultSummary {
     return failedInfo;
   }
 
-  #processAssertInfo(failedInfo: AssertFailMessage, expectInfo: ExpectInfo) {
+  #processAssertInfo(failedInfo: AssertFailMessage, expectInfo: ExpectInfo | null) {
     for (const [testcaseName, value] of json2map<AssertMessage[]>(failedInfo)) {
       const errorMsgs: string[] = [];
       for (const msg of value) {
-        const [index, actualValue, expectValue] = msg;
-        const debugLocation = expectInfo[index];
+        const [expectInfoIndex, actualValue, expectValue] = msg;
+        assert(expectInfo !== null && "missing expect info!");
+        const debugLocation = expectInfo[expectInfoIndex];
         let errorMsg = `${debugLocation ?? ""}  value: ${actualValue}  expect: ${expectValue}`;
         if (errorMsg.length > 160) {
           errorMsg = `${debugLocation ?? ""}\nvalue: \n  ${actualValue}\nexpect: \n  ${expectValue}`;
@@ -72,7 +74,7 @@ export class ExecutionResultSummary {
     if (result.fail > 0) {
       try {
         const expectContent = await readFile(expectInfoFilePath, { encoding: "utf8" });
-        const expectInfo = JSON.parse(expectContent) as ExpectInfo;
+        const expectInfo = JSON.parse(expectContent) as ExpectInfo | null;
         this.#processAssertInfo(result.failedInfo, expectInfo);
         this.#processCrashInfo(result.crashInfo);
         this.#processLogMessages(result.failedLogMessages);
