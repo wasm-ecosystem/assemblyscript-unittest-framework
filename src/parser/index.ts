@@ -1,6 +1,6 @@
 import fs from "fs-extra";
 import { readFile } from "node:fs/promises";
-import { isFunctionInsideFile, checkGenerics, json2map } from "../utils/index.js";
+import { isFunctionInsideFile, checkGenerics, json2map, checkVarargs } from "../utils/index.js";
 import { SingleFileCoverageAnalysis } from "./singleFileAnalysis.js";
 import { SingleFunctionCoverageAnalysis } from "./singleFunctionAnalysis.js";
 import {
@@ -145,31 +145,26 @@ export class Parser {
         isFunctionInsideFile(sourceCodePath, result.functionName)
       );
 
-      const totalFunctionCount = new Set(
-        this.functionCovInfoMap
-          .keys()
-          .map((functionName) => checkGenerics(functionName) ?? functionName)
-          .filter((functionName) => isFunctionInsideFile(sourceCodePath, functionName))
-      ).size;
-      console.log(`Total functions in ${sourceCodePath}: ${totalFunctionCount}`);
-      console.log(
-        JSON.stringify(
-          Array.from(
-            new Set(
-              this.functionCovInfoMap
-                .keys()
-                .map((functionName) => checkGenerics(functionName) ?? functionName)
-                .filter((functionName) => isFunctionInsideFile(sourceCodePath, functionName))
-            )
-          ),
-          null,
-          2
-        )
-      );
-      singleFileAnalysis.setTotalFunction(totalFunctionCount);
+      singleFileAnalysis.setTotalFunction(getTotalFunctionCount(this.functionCovInfoMap, sourceCodePath));
 
       singleFileAnalysis.merge(functionCovInfosInCurrentFile);
       this.fileCoverageResults.push(singleFileAnalysis.getResult());
     }
   }
+}
+
+function getTotalFunctionCount(functionCovInfoMap: Map<string, CovInfo>, sourceCodePath: string): number {
+  const totalFunctionCount = new Set(
+    functionCovInfoMap
+      .keys()
+      .map((functionName) => cleanupFunctionVariants(functionName) ?? functionName)
+      .filter((functionName) => isFunctionInsideFile(sourceCodePath, functionName))
+  ).size;
+  return totalFunctionCount;
+}
+
+function cleanupFunctionVariants(functionName: string): string {
+  functionName = checkGenerics(functionName) ?? functionName;
+  functionName = checkVarargs(functionName) ?? functionName;
+  return functionName;
 }

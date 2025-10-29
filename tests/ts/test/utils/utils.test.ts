@@ -9,7 +9,13 @@ import {
   ImportsArgument,
   UnitTestFramework,
 } from "../../../../src/interface.js";
-import { json2map, isFunctionInsideFile, checkGenerics, supplyDefaultFunction } from "../../../../src/utils/index.js";
+import {
+  json2map,
+  isFunctionInsideFile,
+  checkGenerics,
+  supplyDefaultFunction,
+  checkVarargs,
+} from "../../../../src/utils/index.js";
 import { Type } from "wasmparser";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
@@ -65,6 +71,11 @@ test("checkGenerics", () => {
   expect(checkGenerics("noGenerics")).toEqual(undefined);
   expect(checkGenerics("func<")).toEqual(undefined);
   expect(checkGenerics("fun>a")).toEqual(undefined);
+});
+
+test("checkVarargs", () => {
+  expect(checkVarargs("tests/testUtilities/createEmptyVss@varargs")).toEqual("tests/testUtilities/createEmptyVss");
+  expect(checkVarargs("tests/testUtilities/createEmptyVss")).toEqual(undefined);
 });
 
 describe("supplyDefaultFunction", () => {

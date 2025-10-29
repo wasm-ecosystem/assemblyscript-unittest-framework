@@ -19,7 +19,7 @@ export function json2map<V>(json: Record<string, V>): Map<string, V> {
  * @param fileName example: "assembly/assertCollector.ts"
  * @param functionName example:
  *    "start:assembly/assertCollector~anonymous|0"
- *    || "assemblly/assertCollector/addDescription"
+ *    || "assembly/assertCollector/addDescription"
  */
 export function isFunctionInsideFile(fileName: string, functionName: string) {
   const regex = new RegExp(`^(start:)?${fileName.slice(0, -3)}[/~]`);
@@ -27,10 +27,18 @@ export function isFunctionInsideFile(fileName: string, functionName: string) {
 }
 
 export function checkGenerics(functionName: string): string | undefined {
+  // FIXME: cannot handle nested generic method in generic class
   const startIndex = functionName.indexOf("<");
   const endIndex = functionName.lastIndexOf(">");
   if (startIndex !== -1 && endIndex !== -1) {
     return functionName.slice(0, startIndex) + functionName.slice(endIndex + 1);
+  }
+  return undefined;
+}
+
+export function checkVarargs(functionName: string): string | undefined {
+  if (functionName.endsWith("@varargs")) {
+    return functionName.slice(0, -8);
   }
   return undefined;
 }
