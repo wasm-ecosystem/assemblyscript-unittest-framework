@@ -152,6 +152,20 @@ export class Parser {
           .filter((functionName) => isFunctionInsideFile(sourceCodePath, functionName))
       ).size;
       console.log(`Total functions in ${sourceCodePath}: ${totalFunctionCount}`);
+      console.log(
+        JSON.stringify(
+          Array.from(
+            new Set(
+              this.functionCovInfoMap
+                .keys()
+                .map((functionName) => checkGenerics(functionName) ?? functionName)
+                .filter((functionName) => isFunctionInsideFile(sourceCodePath, functionName))
+            )
+          ),
+          null,
+          2
+        )
+      );
       singleFileAnalysis.setTotalFunction(totalFunctionCount);
 
       singleFileAnalysis.merge(functionCovInfosInCurrentFile);
