@@ -2,7 +2,7 @@ import chalk from "chalk";
 import pkg from "fs-extra";
 import { Parser } from "./parser/index.js";
 import { compile } from "./core/compile.js";
-import { precompile } from "./core/precompile.js";
+import { analyze } from "./core/analyze.js";
 import { instrument } from "./core/instrument.js";
 import { execWasmBinaries } from "./core/execute.js";
 import { generateReport, reportConfig } from "./generator/index.js";
@@ -48,37 +48,23 @@ async function startUniTestImpl(options: TestOption): Promise<number> {
 
   emptydirSync(options.outputFolder);
   emptydirSync(options.tempFolder);
-  const unittestPackage = await precompile(
-    options.includes,
-    options.excludes,
-    options.testFiles,
-    options.testNamePattern,
-    failedTestCases,
-    options.collectCoverage,
-    options.flags
-  );
+  const { sourceCodePaths, testCodePaths, entryFiles, filterByName } = analyze(options, failedTestCases);
   console.log(chalk.blueBright("code analysis: ") + chalk.bold.greenBright("OK"));
 
-  const wasmPaths = await compile(unittestPackage.testCodePaths, options);
+  const wasmPaths = await compile(testCodePaths, entryFiles, options);
   console.log(chalk.blueBright("compile test files: ") + chalk.bold.greenBright("OK"));
 
-  const sourcePaths = unittestPackage.sourceFunctions ? Array.from(unittestPackage.sourceFunctions.keys()) : [];
-  const instrumentResult = await instrument(wasmPaths, sourcePaths, options.collectCoverage);
+  const instrumentResult = await instrument(wasmPaths, options.collectCoverage);
   console.log(chalk.blueBright("instrument: ") + chalk.bold.greenBright("OK"));
 
-  const executedResult = await execWasmBinaries(
-    options.tempFolder,
-    instrumentResult,
-    unittestPackage.filterByName,
-    options.imports
-  );
+  const executedResult = await execWasmBinaries(options.tempFolder, instrumentResult, filterByName, options.imports);
   console.log(chalk.blueBright("execute test files: ") + chalk.bold.greenBright("OK"));
 
   await executedResult.writeFailures(failurePath);
   executedResult.print(console.log);
   if (options.collectCoverage) {
     const parser = new Parser();
-    const fileCoverageInfo = await parser.parse(instrumentResult, unittestPackage.sourceFunctions!);
+    const fileCoverageInfo = await parser.parse(instrumentResult, sourceCodePaths);
     reportConfig.warningLimit = options.warnLimit || reportConfig.warningLimit;
     reportConfig.errorLimit = options.errorLimit || reportConfig.errorLimit;
     generateReport(options.mode, options.outputFolder, fileCoverageInfo);

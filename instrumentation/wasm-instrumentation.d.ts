@@ -9,7 +9,6 @@ interface Instrumenter {
     sourceMap: number,
     expectInfoOutputFilePath: number,
     debugInfoOutputFilePath: number,
-    includes: number,
     excludes: number,
     skipLib: boolean,
     collectCoverage: boolean

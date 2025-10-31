@@ -172,17 +172,6 @@ export class CodeCoverage {
   }
 }
 
-export interface UnittestPackage {
-  readonly testCodePaths: string[];
-  readonly filterByName: (fullTestName: string) => boolean;
-  readonly sourceFunctions?: Map<string, SourceFunctionInfo[]>;
-}
-
-export interface SourceFunctionInfo {
-  name: string;
-  range: [number, number];
-}
-
 export interface TestNameInfo {
   testName: string;
   testFilePath: string;
@@ -200,7 +189,9 @@ export type Imports = ((arg: ImportsArgument) => Record<string, unknown>) | null
 export interface TestOption {
   includes: string[];
   excludes: string[];
-  testFiles?: string[];
+  entryFiles: string[] | null;
+
+  testFiles: string[] | undefined;
   testNamePattern: string | null;
   collectCoverage: boolean;
   onlyFailures: boolean;

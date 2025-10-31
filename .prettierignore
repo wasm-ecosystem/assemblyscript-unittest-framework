@@ -2,7 +2,6 @@
 /coverage-ts
 /dist
 /node_modules
-/transform/*.mjs
 /tests/ts/fixture
 /third_party
 /tests/cpp/lit/expectInstrument**/*.json

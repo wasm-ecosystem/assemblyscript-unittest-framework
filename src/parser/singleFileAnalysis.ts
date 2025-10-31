@@ -13,19 +13,6 @@ export class SingleFileCoverageAnalysis {
     this.result.functionCoverageRate.total = count;
   }
 
-  setUnTestedFunction(ranges: [number, number][]) {
-    for (const range of ranges) {
-      const [startLine, endLine] = range;
-      for (let index = startLine - 1; index < endLine; index++) {
-        const codeCoverage = this.result.sourceUsedCount[index];
-        if (codeCoverage === undefined) {
-          throw new Error(`unknown error: There is no ${index} Line in file ${this.result.filename}`);
-        }
-        codeCoverage.usedCount = 0;
-      }
-    }
-  }
-
   merge(results: FunctionCoverageResult[]) {
     // SingleFileCoverageAnalysis contains FileCoverageResult
     if (results.length === 0) return;

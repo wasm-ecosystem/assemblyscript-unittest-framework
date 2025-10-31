@@ -10,6 +10,7 @@ export default [
   {
     rules: {
       "unicorn/no-array-for-each": "off",
+      "sonarjs/fixme-tag": "off",
     },
   },
 ];

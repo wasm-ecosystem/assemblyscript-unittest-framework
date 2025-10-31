@@ -1,32 +1,33 @@
 #include "utils.h"
 #include "json/value.h"
+#include <gmock/gmock.h>
 #include <unordered_map>
 #include <unordered_set>
 
 namespace testUtils {
 
-bool compareDebugInfoJson(Json::Value &debugInfoJson1, Json::Value &debugInfoJson2) noexcept {
-
-  if ((!debugInfoJson1.isObject()) && (!debugInfoJson2.isObject())) {
+bool compareDebugInfoJson(Json::Value const &fixtureJson,
+                          Json::Value const &debugInfoJson) noexcept {
+  if ((!fixtureJson.isObject()) && (!debugInfoJson.isObject())) {
     std::cerr << "Not same with types\n";
     return false;
   }
 
   // compare debug files
-  const auto &files1 = debugInfoJson1["debugFiles"];
-  const auto &files2 = debugInfoJson2["debugFiles"];
+  const auto &files1 = fixtureJson["debugFiles"];
+  const auto &files2 = debugInfoJson["debugFiles"];
   if (!(files1 == files2)) {
     std::cerr << "Not same with files\n";
     return false;
   }
 
   // compare function debug info
-  const Json::Value &debugInfos1 = debugInfoJson1["debugInfos"];
-  const Json::Value &debugInfos2 = debugInfoJson2["debugInfos"];
+  const Json::Value &debugInfos1 = fixtureJson["debugInfos"];
+  const Json::Value &debugInfos2 = debugInfoJson["debugInfos"];
   const Json::Value::Members &functionNames = debugInfos1.getMemberNames();
   const Json::Value::Members &compareFunctionNames = debugInfos2.getMemberNames();
+  EXPECT_THAT(functionNames, testing::UnorderedElementsAreArray(compareFunctionNames));
   if (functionNames != compareFunctionNames) {
-    std::cerr << "Not same with function names\n";
     return false;
   }
   for (const std::string_view functionName : functionNames) {

@@ -1,6 +1,5 @@
 #include "json/reader.h"
 #include "json/value.h"
-#include <algorithm>
 #include <filesystem>
 #include <fstream>
 #include <gtest/gtest.h>
@@ -55,7 +54,7 @@ TEST(lit, coverageInstrumentation) {
     const std::filesystem::path expectTarget = tmpDir / (wast + ".expect.json");
     const char *traceFunName = "assembly/env/traceExpression";
     wasmInstrumentation::InstrumentationConfig config;
-    std::cout << "running lit - " << fixtureFolder << "/" << wast << std::endl;
+    std::cout << "running lit - " << (fixtureFolder / wast) << std::endl;
     const std::string wasmFileStr = wasmFile.string();
     const std::string debugTargetStr = debugTarget.string();
     const std::string expectTargetStr = expectTarget.string();
@@ -67,7 +66,6 @@ TEST(lit, coverageInstrumentation) {
     config.sourceMap = wasmFileMapStr;
     config.targetName = wasmTargetStr;
     config.reportFunction = traceFunName;
-    config.includes = include;
     config.excludes = "";
     wasmInstrumentation::CoverageInstru instrumentor(&config);
     ASSERT_EQ(instrumentor.instrument(), wasmInstrumentation::InstrumentationResponse::NORMAL);
@@ -108,7 +106,6 @@ TEST(lit, expectInstrumentation) {
   const std::filesystem::path expectTarget = tmpDir / "expect.test.expect.json";
   const std::filesystem::path wasmTarget = tmpDir / "expect.test.instrumented.wasm";
   const char *traceFunName = "assembly/env/traceExpression";
-  const char *include = "[\"tests-as\",\"assembly/.*\"]";
   const std::string wasmFileStr = wasmFile.string();
   const std::string wasmFileMapStr = wasmFileMap.string();
   const std::string debugTargetStr = debugTarget.string();
@@ -120,7 +117,6 @@ TEST(lit, expectInstrumentation) {
   config.expectInfoOutputFilePath = expectTargetStr;
   config.targetName = wasmTargetStr;
   config.reportFunction = traceFunName;
-  config.includes = include;
   config.excludes = "";
   wasmInstrumentation::CoverageInstru instrumentor(&config);
   ASSERT_EQ(instrumentor.instrument(), wasmInstrumentation::InstrumentationResponse::NORMAL);

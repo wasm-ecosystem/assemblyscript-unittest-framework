@@ -72,7 +72,7 @@ async function nodeExecutor(
   await executionRecorder.runTestFunction(
     `${instrumentResult.baseName} - init`,
     () => {
-      wasi.start(ins);
+      (ins.exports["__unit_test_start"] as () => void)();
     },
     exceptionHandler
   );

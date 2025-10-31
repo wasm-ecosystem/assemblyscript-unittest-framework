@@ -19,22 +19,4 @@
 }
 ```
 
-```ts
-interface CodeDebugInfo {
-    debugFiles: string[];
-    debugInfos: Record<string, FunctionDebugInfo>;
-}
-
-interface FunctionDebugInfo {
-    index: number;
-    branchInfo: Branch[];
-    lineInfo: LineInfos;
-}
-
-type LineRange = [FileIndex, LineIndex, ColumnIndex][][];
-type LineInfos = LineRange[][];
-type FileIndex = number;
-type LineIndex = number;
-type ColumnIndex = number;
-type Branch = [number, number];
-```
+The schema corresponding to json can be found in interface `DebugInfo` in `src/interface.ts`.

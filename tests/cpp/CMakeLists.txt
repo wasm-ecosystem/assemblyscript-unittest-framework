@@ -8,7 +8,7 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(googletest)
 
-file(GLOB test_sources CONFIGURE_DEPENDS *.cpp ./utils/*.cpp) # innclude lit test by default
+file(GLOB test_sources CONFIGURE_DEPENDS *.cpp ./utils/*.cpp) # include lit test by default
 
 add_executable(
   wasm-instrumentation-test
@@ -19,6 +19,7 @@ target_link_libraries(
   PUBLIC
   wasm-instrumentation
   GTest::gtest_main
+  GTest::gmock
   binaryen
   jsoncpp_static
 )

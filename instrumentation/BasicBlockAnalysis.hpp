@@ -16,14 +16,6 @@ namespace wasmInstrumentation {
 class BasicBlockAnalysis final {
 public:
   ///
-  /// @brief Add include file to debug info analysis
-  ///
-  /// @param include
-  inline void addInclude(const std::string &&include) noexcept {
-    includes.emplace_back(include);
-  }
-
-  ///
   /// @brief Add exclude file to debug info analysis
   ///
   /// @param exclude

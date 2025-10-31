@@ -12,17 +12,17 @@
   },
   "prettier": "@schleifner/prettier-config",
   "scripts": {
-    "watch:ts": "concurrently --kill-others \"tsc --build ./src/tsconfig.json --watch\" \"tsc --build ./transform/tsconfig.json --watch\"",
-    "build": "node scripts/build_instrumentation.js -j 2 && tsc --build ./transform/tsconfig.json && tsc --build ./src/tsconfig.json",
+    "watch:ts": "tsc --build ./src/tsconfig.json --watch",
+    "build": "node scripts/build_instrumentation.js -j 2 && tsc --build ./src/tsconfig.json",
     "test:as": "node bin/as-test.js",
     "test:ts": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
     "test:cpp": "cmake -B build -S . && cmake --build build --parallel 2 --target wasm-instrumentation-test wasm-opt && build/bin/wasm-instrumentation-test",
     "test:e2e": " node tests/e2e/run.js",
     "test": "npm run test:as && npm run test:ts && npm run test:cpp && npm run test:e2e",
-    "lint:ts": "eslint src transform tests/ts/test --max-warnings=0",
+    "lint:ts": "eslint src tests/ts/test --max-warnings=0",
     "lint:as": "npx eslint --config ./assembly/eslint.config.mjs assembly --max-warnings=0",
     "lint": "npm run lint:ts && prettier -c .",
-    "lint:fix:ts": "eslint src transform tests/ts/test --fix && prettier --write .",
+    "lint:fix:ts": "eslint src tests/ts/test --fix && prettier --write .",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs"
   },
@@ -83,7 +83,6 @@
     "dist/**/*",
     "docs/**/*",
     "resource/**/*",
-    "transform/**/*",
     "LICENSE",
     "README.md"
   ]

@@ -10,22 +10,6 @@ describe("singleFileAnalysis", () => {
     expect(analyzer.getResult().functionCoverageRate.toString()).toEqual("0/0");
   });
 
-  test("setUnTestedFunction", () => {
-    const analyzer = new SingleFileCoverageAnalysis("main", source);
-    analyzer.setTotalFunction(5);
-    analyzer.setUnTestedFunction([
-      [2, 4],
-      [7, 9],
-    ]);
-    const result = analyzer.getResult();
-    expect(result.functionCoverageRate.toString()).toEqual("0/5");
-    expect(result.lineCoverageRate.toString()).toEqual("0/6");
-    expect(result.statementCoverageRate.toString()).toEqual("0/6");
-    expect(result.sourceUsedCount.map((count) => count.usedCount)).toEqual([
-      -1, 0, 0, 0, -1, -1, 0, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-    ]);
-  });
-
   test("merge", () => {
     const analyzer = new SingleFileCoverageAnalysis("main", source);
     analyzer.setTotalFunction(5);
@@ -59,23 +43,13 @@ describe("singleFileAnalysis", () => {
       ]),
     };
     analyzer.merge([funcResult_A, funcResult_B]);
-    analyzer.setUnTestedFunction([
-      [2, 4],
-      [16, 16],
-      [17, 19],
-    ]);
     const result = analyzer.getResult();
     expect(result.functionCoverageRate.toString()).toEqual("2/5");
-    expect(result.lineCoverageRate.toString()).toEqual("5/14");
-    expect(result.statementCoverageRate.toString()).toEqual("5/14");
+    expect(result.lineCoverageRate.toString()).toEqual("5/7");
+    expect(result.statementCoverageRate.toString()).toEqual("5/7");
     expect(result.sourceUsedCount.map((count) => count.usedCount)).toEqual([
-      -1, 0, 0, 0, -1, 3, 0, -1, 3, 2, 0, 3, -1, 5, -1, 0, 0, 0, 0, -1,
+      -1, -1, -1, -1, -1, 3, 0, -1, 3, 2, 0, 3, -1, 5, -1, -1, -1, -1, -1, -1,
     ]);
-  });
-
-  test("setUnTestedFunction error", () => {
-    const analyzer = new SingleFileCoverageAnalysis("main", source);
-    expect(() => analyzer.setUnTestedFunction([[30, 31]])).toThrow("unknown error: There is no 29 Line in file main");
   });
 
   test("merge error", () => {

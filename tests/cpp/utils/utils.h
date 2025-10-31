@@ -26,10 +26,9 @@ inline const std::filesystem::path getProjectPath() noexcept {
 ///
 /// @brief Compare two debug info json object
 ///
-/// @param debugInfoJson1
-/// @param debugInfoJson2
 /// @return Return true if the are same debug info json object
-bool compareDebugInfoJson(Json::Value &debugInfoJson1, Json::Value &debugInfoJson2) noexcept;
+bool compareDebugInfoJson(Json::Value const &fixtureJson,
+                          Json::Value const &debugInfoJson) noexcept;
 
 } // namespace testUtils
 
