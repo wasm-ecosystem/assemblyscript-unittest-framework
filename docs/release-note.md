@@ -4,6 +4,7 @@
 
 🔄 Break Changes
 
+- Remove deprecated `endTest` API.
 - Changed the default value of `isolated` from `true` to `false`.
 
 🛠️ Improvements
