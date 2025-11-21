@@ -59,8 +59,8 @@ if (onlyFailures && testNamePattern !== null) {
 
 // if enabled testcase or testNamePattern or onlyFailures, disable collectCoverage by default
 const collectCoverage =
-  Boolean(options.collectCoverage) ||
-  config.collectCoverage ||
+  (options.collectCoverage === "false" ? false : options.collectCoverage === "true" ? true : null) ??
+  config.collectCoverage ??
   (testFiles === null && options.testNamePattern === undefined && !onlyFailures);
 
 const getBoolean = (optionValue, configValue) => {
