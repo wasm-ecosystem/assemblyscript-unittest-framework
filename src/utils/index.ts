@@ -22,8 +22,22 @@ export function json2map<V>(json: Record<string, V>): Map<string, V> {
  *    || "assembly/assertCollector/addDescription"
  */
 export function isFunctionInsideFile(fileName: string, functionName: string) {
-  const regex = new RegExp(`^(start:)?${fileName.slice(0, -3)}[/~]`);
-  return regex.test(functionName);
+  // `/`: parent is File
+  // `#`: parent is Class, this is non-static
+  // `.`: parent is Class, this is static
+  // `<`: generic
+  // `~`: parent is Function
+  const regex = new RegExp(`^(start:)?${fileName.slice(0, -3)}[/~](?<rest>.+)`);
+  const matchPrefix = regex.exec(functionName);
+  const rest = matchPrefix?.groups?.["rest"] ?? null;
+  if (rest === null) {
+    return false;
+  }
+  const specialCharIndex = rest.search(/[/#.<~]/g);
+  if (specialCharIndex === -1) {
+    return true;
+  }
+  return rest[specialCharIndex] !== "/";
 }
 
 export function checkGenerics(functionName: string): string | undefined {
