@@ -55,6 +55,9 @@ test("json2map", () => {
 test("isFunctionInsideFile", () => {
   expect(isFunctionInsideFile("source/api.ts", "source/api/myMethod")).toEqual(true);
   expect(isFunctionInsideFile("source/api.ts", "start:source/api~anonymous|3~anonymous|1")).toEqual(true);
+  expect(isFunctionInsideFile("source/api.ts", "source/api/index/myFunc")).toEqual(false); // this function belong to source/api/index.ts
+  expect(isFunctionInsideFile("source/api.ts", "source/api/Class#method")).toEqual(true);
+  expect(isFunctionInsideFile("source/api.ts", "source/api/Class.static_method")).toEqual(true);
 });
 
 test("checkGenerics", () => {
