@@ -33,8 +33,8 @@ export function isFunctionInsideFile(fileName: string, functionName: string) {
   if (rest === null) {
     return false;
   }
-  const specialCharIndex = rest.search(/[\/\#\.\<\~]/g);
-  if (specialCharIndex == -1) {
+  const specialCharIndex = rest.search(/[/#.<~]/g);
+  if (specialCharIndex === -1) {
     return true;
   }
   return rest[specialCharIndex] !== "/";
