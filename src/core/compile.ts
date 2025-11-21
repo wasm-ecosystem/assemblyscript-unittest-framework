@@ -37,11 +37,23 @@ function getAscArgs(sources: string[], outputWasm: string, outputWat: string, fl
   return ascArgv;
 }
 
+function combineWithEntryFiles({
+  testCodePaths,
+  entryFiles,
+}: {
+  testCodePaths: string[];
+  entryFiles: string[];
+}): string[] {
+  // Because AS has recursive import resolution issue.
+  // put entryFiles firstly will force ASC compile entry file firstly, which can avoid compilation failed due to test files import ordering
+  return entryFiles.concat(testCodePaths);
+}
+
 async function unifiedCompile(testCodePaths: string[], entryFiles: string[], option: CompileOption): Promise<string> {
   const { outputFolder, flags } = option;
   const outputWasm = join(outputFolder, "test.wasm").replaceAll(/\\/g, "/");
   const outputWat = join(outputFolder, "test.wat").replaceAll(/\\/g, "/");
-  const ascArgv = getAscArgs(testCodePaths.concat(entryFiles), outputWasm, outputWat, flags);
+  const ascArgv = getAscArgs(combineWithEntryFiles({ testCodePaths, entryFiles }), outputWasm, outputWat, flags);
   await ascMain(ascArgv, false);
   return outputWasm;
 }
@@ -58,7 +70,12 @@ async function separatedCompile(
     const outputWasm = getNewPath(outputFolder, root, testCodePath).slice(0, -2).concat("wasm");
     wasm.push(outputWasm);
     const outputWat = getNewPath(outputFolder, root, testCodePath).slice(0, -2).concat("wat");
-    const ascArgv = getAscArgs([testCodePath, ...entryFiles], outputWasm, outputWat, flags);
+    const ascArgv = getAscArgs(
+      combineWithEntryFiles({ testCodePaths: [testCodePath], entryFiles }),
+      outputWasm,
+      outputWat,
+      flags
+    );
     await ascMain(ascArgv, false);
   };
 
