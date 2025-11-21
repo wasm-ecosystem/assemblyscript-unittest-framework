@@ -191,7 +191,7 @@ export interface TestOption {
   excludes: string[];
   entryFiles: string[] | null;
 
-  testFiles: string[] | undefined;
+  testFiles: string[] | null;
   testNamePattern: string | null;
   collectCoverage: boolean;
   onlyFailures: boolean;

@@ -20,7 +20,6 @@ program
   .option("--coverageLimit [error warning...]", "set warn(yellow) and error(red) upper limit in coverage report")
   .option("--collectCoverage <boolean>", "whether to collect coverage information and report")
 
-  .option("--testcase <testcases...>", "run only specified test cases deprecated, use --testFiles instead")
   .option("--testFiles <testFiles...>", "run only specified test files")
   .option("--testNamePattern <test name pattern>", "run only tests with a name that matches the regex pattern")
   .option("--onlyFailures", "Run tests that failed in the previous")
@@ -49,15 +48,7 @@ if (includes === undefined) {
 const excludes = config.exclude || [];
 validateArgument(includes, excludes);
 
-if (options.testcase !== undefined) {
-  console.log(
-    chalk.yellowBright(
-      "Warning: --testcase is deprecated, please use --testFiles instead, --testcase will be removed in next versions"
-    )
-  );
-}
-const testFiles = options.testFiles || options.testcase;
-
+const testFiles = options.testFiles ?? null;
 const onlyFailures = options.onlyFailures || false;
 const testNamePattern = options.testNamePattern ?? null;
 
@@ -70,7 +61,7 @@ if (onlyFailures && testNamePattern !== null) {
 const collectCoverage =
   Boolean(options.collectCoverage) ||
   config.collectCoverage ||
-  (testFiles === undefined && options.testNamePattern === undefined && !onlyFailures);
+  (testFiles === null && options.testNamePattern === undefined && !onlyFailures);
 
 const getBoolean = (optionValue, configValue) => {
   if (optionValue !== undefined) {

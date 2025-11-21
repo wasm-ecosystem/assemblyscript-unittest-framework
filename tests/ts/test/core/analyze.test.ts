@@ -6,7 +6,7 @@ describe("entry files", () => {
       {
         includes: ["tests/ts/fixture/src"],
         excludes: [],
-        testFiles: undefined,
+        testFiles: null,
         testNamePattern: null,
         entryFiles: ["tests/ts/fixture/src/main.ts"],
       },
@@ -19,7 +19,7 @@ describe("entry files", () => {
       {
         includes: ["tests/ts/fixture/src"],
         excludes: [],
-        testFiles: undefined,
+        testFiles: null,
         testNamePattern: null,
         entryFiles: [],
       },
@@ -32,7 +32,7 @@ describe("entry files", () => {
       {
         includes: ["tests/ts/fixture/src"],
         excludes: [],
-        testFiles: undefined,
+        testFiles: null,
         testNamePattern: null,
         entryFiles: null,
       },

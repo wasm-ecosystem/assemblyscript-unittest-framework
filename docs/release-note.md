@@ -5,6 +5,7 @@
 🔄 Break Changes
 
 - Changed the default value of `isolated` from `true` to `false`.
+- Remove deprecated `--testcase` CLI option.
 
 🛠️ Improvements
 
