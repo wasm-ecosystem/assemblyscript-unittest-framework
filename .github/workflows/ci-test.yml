@@ -82,10 +82,12 @@ jobs:
             ccache-${{ runner.os }}-build-
 
       - run: npm run build
+        shell: bash
 
       - name: run test for windows
-        run: |
-          npm run test:as
+        shell: bash
+        run: npm run test:as
 
       - name: verify ccache stats
         run: ccache --show-stats
+        shell: bash

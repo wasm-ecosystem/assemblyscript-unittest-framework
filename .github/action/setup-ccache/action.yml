@@ -50,7 +50,11 @@ runs:
         echo "CMAKE_GENERATOR=Ninja" >> $GITHUB_ENV
         echo "CMAKE_C_COMPILER_LAUNCHER=ccache" >> $GITHUB_ENV
         echo "CMAKE_CXX_COMPILER_LAUNCHER=ccache" >> $GITHUB_ENV
-
+    - if: runner.os == 'Windows'
+      shell: bash
+      run: |
+        echo "CCACHE_SLOPPINESS=include_file_mtime,include_file_ctime,time_macros,pch_defines,file_stat_matches" >> $env:GITHUB_ENV
+        echo "CCACHE_BASEDIR=$(pwd)" >> $env:GITHUB_ENV
     - shell: bash
       run: |
         set -e
