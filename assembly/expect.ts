@@ -12,8 +12,28 @@ export class Value<T> {
   constructor(_data: T) {
     this.data = _data;
   }
-  isNull(codeInfoIndex: u32 = EXPECT_MAX_INDEX): Value<T> {
+
+  private collect(
+    result: bool,
+    codeInfoIndex: number,
+    actualValue: string,
+    expectValue: string,
+  ): void {
     assertResult.collectCheckResult(
+      this.reversed ? !result : result,
+      codeInfoIndex,
+      actualValue,
+      expectValue,
+    );
+  }
+
+  get not(): Value<T> {
+    this.reversed = !this.reversed;
+    return this;
+  }
+
+  isNull(codeInfoIndex: u32 = EXPECT_MAX_INDEX): Value<T> {
+    this.collect(
       isNull<T>(this.data),
       codeInfoIndex,
       toJson(this.data),
@@ -22,7 +42,7 @@ export class Value<T> {
     return this;
   }
   notNull(codeInfoIndex: u32 = EXPECT_MAX_INDEX): Value<T> {
-    assertResult.collectCheckResult(
+    this.collect(
       !isNull<T>(this.data),
       codeInfoIndex,
       toJson(this.data),
@@ -32,7 +52,7 @@ export class Value<T> {
   }
 
   equal(checkValue: T, codeInfoIndex: u32 = EXPECT_MAX_INDEX): Value<T> {
-    assertResult.collectCheckResult(
+    this.collect(
       equal<T>(this.data, checkValue),
       codeInfoIndex,
       toJson(this.data),
@@ -41,7 +61,7 @@ export class Value<T> {
     return this;
   }
   notEqual(checkValue: T, codeInfoIndex: u32 = EXPECT_MAX_INDEX): Value<T> {
-    assertResult.collectCheckResult(
+    this.collect(
       !equal<T>(this.data, checkValue),
       codeInfoIndex,
       toJson(this.data),
@@ -51,7 +71,7 @@ export class Value<T> {
   }
 
   greaterThan(checkValue: T, codeInfoIndex: u32 = EXPECT_MAX_INDEX): Value<T> {
-    assertResult.collectCheckResult(
+    this.collect(
       this.data > checkValue,
       codeInfoIndex,
       toJson(this.data),
@@ -63,7 +83,7 @@ export class Value<T> {
     checkValue: T,
     codeInfoIndex: u32 = EXPECT_MAX_INDEX,
   ): Value<T> {
-    assertResult.collectCheckResult(
+    this.collect(
       this.data >= checkValue,
       codeInfoIndex,
       toJson(this.data),
@@ -72,7 +92,7 @@ export class Value<T> {
     return this;
   }
   lessThan(checkValue: T, codeInfoIndex: u32 = EXPECT_MAX_INDEX): Value<T> {
-    assertResult.collectCheckResult(
+    this.collect(
       this.data < checkValue,
       codeInfoIndex,
       toJson(this.data),
@@ -84,7 +104,7 @@ export class Value<T> {
     checkValue: T,
     codeInfoIndex: u32 = EXPECT_MAX_INDEX,
   ): Value<T> {
-    assertResult.collectCheckResult(
+    this.collect(
       this.data <= checkValue,
       codeInfoIndex,
       toJson(this.data),
@@ -100,7 +120,7 @@ export class Value<T> {
   ): Value<T> {
     const data = this.data;
     if (isFloat<T>(checkValue) && isFloat<T>(data)) {
-      assertResult.collectCheckResult(
+      this.collect(
         abs(data - checkValue) < delta,
         codeInfoIndex,
         toJson(this.data),
@@ -113,7 +133,7 @@ export class Value<T> {
   }
 
   isa<ExpectType>(codeInfoIndex: u32 = EXPECT_MAX_INDEX): Value<T> {
-    assertResult.collectCheckResult(
+    this.collect(
       // @ts-ignore
       this.data instanceof ExpectType,
       codeInfoIndex,
@@ -127,7 +147,7 @@ export class Value<T> {
   isExactly<ExpectType>(codeInfoIndex: u32 = EXPECT_MAX_INDEX): Value<T> {
     if (isNullable<T>()) {
       if (this.data == null) {
-        assertResult.collectCheckResult(
+        this.collect(
           false,
           codeInfoIndex,
           `<<null>>`,
@@ -137,7 +157,7 @@ export class Value<T> {
       }
     }
     const rtid = load<u32>(changetype<usize>(this.data) - 8);
-    assertResult.collectCheckResult(
+    this.collect(
       rtid == idof<ExpectType>(),
       codeInfoIndex,
       `RTID<${rtid}>`,
