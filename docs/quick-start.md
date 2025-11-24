@@ -64,6 +64,7 @@ Finally, run `npm run test` and as-test will print this message:
 
 (node:144985) ExperimentalWarning: WASI is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
+using asc
 code analysis: OK
 compile test files: OK
 instrument: OK

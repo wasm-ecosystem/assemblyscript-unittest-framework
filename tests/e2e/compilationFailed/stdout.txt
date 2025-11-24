@@ -1,3 +1,4 @@
+using asc
 code analysis: OK
 ERROR TS2304: Cannot find name 'f'.
    :
