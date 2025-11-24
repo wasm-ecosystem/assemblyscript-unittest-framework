@@ -206,6 +206,7 @@ export interface TestOption {
   errorLimit?: number;
 
   isolated: boolean;
+  warpo: boolean;
 }
 
 export type OutputMode = "html" | "json" | "table";

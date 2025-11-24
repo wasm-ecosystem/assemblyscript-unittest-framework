@@ -28,4 +28,7 @@ export declare class Config {
 
   /** output report mode, default is "table" */
   mode?: OutputMode | OutputMode[];
+
+  /** whether to build with warpo */
+  warpo?: boolean;
 }

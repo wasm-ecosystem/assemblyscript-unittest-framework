@@ -1,3 +1,4 @@
+using asc
 code analysis: OK
 compile test files: OK
 instrument: OK
@@ -9,6 +10,7 @@ Error Message:
   failure on test: 
     tests/e2e/on-failure-only/index.test.ts:4:2  value: 2  expect: = 3
 
+using asc
 code analysis: OK
 compile test files: OK
 instrument: OK

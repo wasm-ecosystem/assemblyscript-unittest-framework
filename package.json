@@ -15,10 +15,11 @@
     "watch:ts": "tsc --build ./src/tsconfig.json --watch",
     "build": "node scripts/build_instrumentation.js -j 2 && tsc --build ./src/tsconfig.json",
     "test:as": "node bin/as-test.js",
+    "test:as:warpo": "node bin/as-test --config as-test.config.warpo.js",
     "test:ts": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
     "test:cpp": "cmake -B build -S . && cmake --build build --parallel 2 --target wasm-instrumentation-test wasm-opt && build/bin/wasm-instrumentation-test",
     "test:e2e": " node tests/e2e/run.js",
-    "test": "npm run test:as && npm run test:ts && npm run test:cpp && npm run test:e2e",
+    "test": "npm run test:as && npm run test:as:warpo && npm run test:ts && npm run test:cpp && npm run test:e2e",
     "lint:ts": "eslint src tests/ts/test --max-warnings=0",
     "lint:as": "npx eslint --config ./assembly/eslint.config.mjs assembly --max-warnings=0",
     "lint": "npm run lint:ts && prettier -c .",
@@ -39,7 +40,8 @@
     "wasmparser": "5.11.1"
   },
   "peerDependencies": {
-    "assemblyscript": ">=0.25.1"
+    "assemblyscript": ">=0.25.1",
+    "warpo": ">=2.2.0"
   },
   "devDependencies": {
     "@schleifner/eslint-config-base": "^2.0.0",
