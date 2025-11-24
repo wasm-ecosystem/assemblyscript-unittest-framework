@@ -26,5 +26,14 @@ Specially, for float type, use `closeTo` instead of `equal` to avoid rounding er
 
 ## Nullable
 
-`isNull` and `notNull` matcher can be used to a nullable object.
-Of cource, you can also use `equal` and `notEqual` to do same thing with explicit generic declartion `expect<T | null>()`
+`isNull` and `notNull` matchers can be used to a nullable object.
+Of course, you can also use `equal` and `notEqual` to do same thing with explicit generic declaration `expect<T | null>()`
+
+## Typing
+
+`isa` and `isExactly` matchers can be used to compare typing.
+
+In Assemblyscript, a variable has 2 kinds of types: the defined type and the runtime type. For example, when `Ext` extends `Base`, a variable declared as type `Base` may actually be of type `Ext` at runtime.
+
+- `isa` will check whether runtime type of given value is instance of expected type. In previous example, the runtime type of variable is instance of both `Base` and `Ext`.
+- `isExactly` will check whether runtime type of give value is exactly same as expected type. In previous example, the runtime type of variable is exactly `Ext` but not `Base`.
