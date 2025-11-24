@@ -90,3 +90,4 @@ jobs:
 
       - name: verify ccache stats
         run: ccache --show-stats
+        shell: bash
