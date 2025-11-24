@@ -39,7 +39,8 @@
     "wasmparser": "5.11.1"
   },
   "peerDependencies": {
-    "assemblyscript": ">=0.25.1"
+    "assemblyscript": ">=0.25.1",
+    "warpo": "file:../warpo"
   },
   "devDependencies": {
     "@schleifner/eslint-config-base": "^2.0.0",

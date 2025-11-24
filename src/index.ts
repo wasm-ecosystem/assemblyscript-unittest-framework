@@ -8,7 +8,7 @@ import { execWasmBinaries } from "./core/execute.js";
 import { generateReport, reportConfig } from "./generator/index.js";
 import { TestOption } from "./interface.js";
 import { join } from "node:path";
-import { CompilationError } from "./utils/ascWrapper.js";
+import { CompilationError } from "./core/compiler.js";
 
 const { readFileSync, emptydirSync } = pkg;
 

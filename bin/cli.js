@@ -80,6 +80,12 @@ const isolatedInConfig = getBoolean(options.isolated, config.isolated);
 const isolated = isolatedInConfig ?? false;
 
 const entryFiles = config.entryFiles ?? null;
+const warpo = config.warpo ?? false;
+if (warpo) {
+  console.log(chalk.gray("using warpo"));
+} else {
+  console.log(chalk.gray("using asc"));
+}
 
 /**
  * @type {import("../dist/interface.d.ts").TestOption}
@@ -104,6 +110,7 @@ const testOption = {
   errorLimit: Number(options.coverageLimit?.at(0)),
 
   isolated,
+  warpo,
 };
 
 start_unit_test(testOption)
