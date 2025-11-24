@@ -10,6 +10,15 @@ test('two plus two is four', () => {
 
 In this code, `expect(2+2)` returns an "Value" object. You typically won't do much with these objects except call matchers on them. In this code, `.equal(4)` is the matcher. When Jest runs, it tracks all the failing matchers so that it can print out nice error messages for you.
 
+### Not
+
+`not` matcher can reverse the matching results of all subsequent `matcher` statements.
+
+```ts
+expect(1).not.equal(2); // success
+expect(1).not.equal(1); // fail
+```
+
 ### Equal
 
 In the most condition, `equal` is similar as `==`, you can use this matcher to compare `i32 | i64 | u32 | u64 | f32 | f64 | string` just like `==`. What's more, it can also be used to compare some inner type, such as `Array | Map | Set`.
@@ -24,12 +33,12 @@ Most ways of comparing numbers have matcher equivalents, like `equal`, `greaterT
 
 Specially, for float type, use `closeTo` instead of `equal` to avoid rounding error.
 
-## Nullable
+### Nullable
 
 `isNull` and `notNull` matchers can be used to a nullable object.
 Of course, you can also use `equal` and `notEqual` to do same thing with explicit generic declaration `expect<T | null>()`
 
-## Typing
+### Typing
 
 `isa` and `isExactly` matchers can be used to compare typing.
 
