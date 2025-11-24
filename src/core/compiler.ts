@@ -59,13 +59,12 @@ async function buildWithWARPO({ sources, outputWASM, userDefinedFlags }: Compila
       .split(" ");
     warpoArgv = warpoArgv.concat(argv);
   }
-  const returnCode = await (
-    await import("warpo/dist/lib.js")
-  ).main({
+  const warpo = await import("warpo/dist/lib.js");
+  const returnCode = await warpo.main({
     argv: warpoArgv,
     env: process.env,
   });
-  if (returnCode != 0) {
+  if (returnCode !== 0) {
     throw new CompilationError(undefined);
   }
 }
@@ -77,9 +76,5 @@ export interface CompilationOption {
 }
 
 export async function compileImpl(option: CompilationOption, useWarpo: boolean): Promise<void> {
-  if (useWarpo) {
-    await buildWithWARPO(option);
-  } else {
-    await buildWithASC(option);
-  }
+  await (useWarpo ? buildWithWARPO : buildWithASC)(option);
 }
