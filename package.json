@@ -41,7 +41,7 @@
   },
   "peerDependencies": {
     "assemblyscript": ">=0.25.1",
-    "warpo": ">=2.2.0"
+    "warpo": ">=2.2.1"
   },
   "devDependencies": {
     "@schleifner/eslint-config-base": "^2.0.0",
