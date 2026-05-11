@@ -1,3 +1,4 @@
+import { assertResult } from "./env";
 import { Value } from "./expect";
 import {
   afterEachImpl,
@@ -92,4 +93,13 @@ export function remock<T extends Function>(originalFunction: T): void {
 
 export function expect<T>(value: T): Value<T> {
   return new Value<T>(value);
+}
+
+/**
+ * @deprecated no need to use endTest now
+ */
+export function endTest(): void {
+  assertResult.printWarning(
+    "warning: endTest() is deprecated, and will be removed in next versions.",
+  );
 }
