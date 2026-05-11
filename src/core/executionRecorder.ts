@@ -65,6 +65,8 @@ export class TestCase {
 }
 
 export class ExecutionRecorder implements UnitTestFramework {
+  static readonly #warningPrinted = new Set<string>();
+
   result = new ExecutionResult();
 
   testBlockStack: TestBlock[] = [];
@@ -187,6 +189,13 @@ export class ExecutionRecorder implements UnitTestFramework {
           arg.exports!.__getString(actualValue),
           arg.exports!.__getString(expectValue)
         );
+      },
+      printWarning: (message: number): void => {
+        const msg = arg.exports!.__getString(message);
+        if (!ExecutionRecorder.#warningPrinted.has(msg)) {
+          ExecutionRecorder.#warningPrinted.add(msg);
+          console.warn(chalk.yellow(msg));
+        }
       },
     };
   }

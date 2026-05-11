@@ -4,6 +4,10 @@ export namespace assertResult {
   export declare function addDescription(description: string): void;
 
 
+  @external("__unittest_framework_env","printWarning")
+  export declare function printWarning(message: string): void;
+
+
   @external("__unittest_framework_env","removeDescription")
   export declare function removeDescription(): void;
 

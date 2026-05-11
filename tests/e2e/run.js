@@ -106,3 +106,11 @@ runEndToEndTest(
     assert(error === null);
   }
 );
+
+runEndToEndTest("deprecatedEndTest", "", (error, stdout, stderr) => {
+  checkOutput("deprecatedEndTest", stdout, stderr);
+  assert(error === null);
+  assert(stderr.includes("endTest() is deprecated"), "Expected stderr to contain deprecation warning for endTest()");
+  const warningCount = stderr.split("endTest() is deprecated").length - 1;
+  assert(warningCount === 1, `Expected exactly 1 deprecation warning, but got ${warningCount}`);
+});

@@ -11,7 +11,7 @@ Error Message:
     Test Crashed!
 Reason: abort: register setup function failed at assembly/implement.ts:20:3
   at assembly/implement/beforeEachImpl (assembly/implement.ts:20:2)
-  at assembly/index/beforeEach (assembly/index.ts:47:2)
+  at assembly/index/beforeEach (assembly/index.ts:48:2)
   at start:tests/e2e/setup-teardown/setup_out_of_block.test (tests/e2e/setup-teardown/tmp/setup_out_of_block.test.instrumented.wasm:1:558)
   at ~start (tests/e2e/setup-teardown/tmp/setup_out_of_block.test.instrumented.wasm:1:336)
 
