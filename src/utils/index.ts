@@ -29,7 +29,6 @@ export function isFunctionInsideFile(fileName: string, functionName: string) {
   // `~`: parent is Function
   const pureFileName = fileName.slice(0, -3);
   if (functionName.startsWith("start:")) {
-    // remove the `start:` prefix before parsing the symbol path
     const pureFunctionName = functionName.slice(6);
     const specialCharIndex = pureFunctionName.search(/[#.<]/g);
     if (specialCharIndex === -1) {
