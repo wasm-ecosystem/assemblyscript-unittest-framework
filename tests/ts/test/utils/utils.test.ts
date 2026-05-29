@@ -56,8 +56,30 @@ test("isFunctionInsideFile", () => {
   expect(isFunctionInsideFile("source/api.ts", "source/api/myMethod")).toEqual(true);
   expect(isFunctionInsideFile("source/api.ts", "start:source/api~anonymous|3~anonymous|1")).toEqual(true);
   expect(isFunctionInsideFile("source/api.ts", "source/api/index/myFunc")).toEqual(false); // this function belong to source/api/index.ts
-  expect(isFunctionInsideFile("source/api.ts", "source/api/Class#method")).toEqual(true);
-  expect(isFunctionInsideFile("source/api.ts", "source/api/Class.static_method")).toEqual(true);
+
+  expect(isFunctionInsideFile("source/api/AdService.ts", "start:source/api/AdService")).toEqual(true);
+  expect(isFunctionInsideFile("source/api.ts", "start:source/api/AdService")).toEqual(false);
+
+  expect(
+    isFunctionInsideFile("source/api/AdService.ts", "source/api/AdService/MyClass#constructor~anonymous|0")
+  ).toEqual(true);
+  expect(isFunctionInsideFile("source/api.ts", "source/api/AdService/MyClass#constructor~anonymous|0")).toEqual(false);
+
+  expect(isFunctionInsideFile("source/api/AdService.ts", "start:source/api/AdService~anonymous|0")).toEqual(true);
+  expect(isFunctionInsideFile("source/api.ts", "start:source/api/AdService~anonymous|0")).toEqual(false);
+
+  expect(
+    isFunctionInsideFile("source/api/AdService.ts", "source/api/AdService/MyClass#memberFunction~anonymous|0")
+  ).toEqual(true);
+  expect(isFunctionInsideFile("source/api.ts", "source/api/AdService/MyClass#memberFunction~anonymous|0")).toEqual(
+    false
+  );
+
+  expect(isFunctionInsideFile("source/api/AdService.ts", "source/api/AdService/MyClass.staticFunction")).toEqual(true);
+  expect(isFunctionInsideFile("source/api.ts", "source/api/AdService/MyClass.staticFunction")).toEqual(false);
+
+  expect(isFunctionInsideFile("source/api/AdService.ts", "source/api/AdService/MyClass#memberFunction")).toEqual(true);
+  expect(isFunctionInsideFile("source/api.ts", "source/api/AdService/MyClass#memberFunction")).toEqual(false);
 });
 
 test("checkGenerics", () => {
