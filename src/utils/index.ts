@@ -27,7 +27,23 @@ export function isFunctionInsideFile(fileName: string, functionName: string) {
   // `.`: parent is Class, this is static
   // `<`: generic
   // `~`: parent is Function
-  const regex = new RegExp(`^(start:)?${fileName.slice(0, -3)}[/~](?<rest>.+)`);
+  const pureFileName = fileName.slice(0, -3);
+  if (functionName.startsWith("start:")) {
+    // remove the `start:` prefix before parsing the symbol path
+    const pureFunctionName = functionName.slice(6);
+    const specialCharIndex = pureFunctionName.search(/[#.<]/g);
+    if (specialCharIndex === -1) {
+      const anonymousIndex = pureFunctionName.indexOf("~");
+      const functionFileName = anonymousIndex === -1 ? pureFunctionName : pureFunctionName.slice(0, anonymousIndex);
+      return functionFileName === pureFileName;
+    }
+    const fileSeparatorIndex = pureFunctionName.lastIndexOf("/", specialCharIndex);
+    if (fileSeparatorIndex === -1) {
+      return false;
+    }
+    return pureFunctionName.slice(0, fileSeparatorIndex) === pureFileName;
+  }
+  const regex = new RegExp(`^${pureFileName}[/~](?<rest>.+)`);
   const matchPrefix = regex.exec(functionName);
   const rest = matchPrefix?.groups?.["rest"] ?? null;
   if (rest === null) {
