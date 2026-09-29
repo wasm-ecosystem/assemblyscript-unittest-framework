@@ -22,26 +22,30 @@ export function json2map<V>(json: Record<string, V>): Map<string, V> {
  *    || "assembly/assertCollector/addDescription"
  */
 export function isFunctionInsideFile(fileName: string, functionName: string) {
+  // `/`: parent is File
+  // `#`: parent is Class, this is non-static
+  // `.`: parent is Class, this is static
+  // `<`: generic
+  // `~`: parent is Function
   const pureFileName = fileName.slice(0, -3);
-  const pureFunctionName = functionName.startsWith("start:") ? functionName.slice(6) : functionName;
-
   if (functionName.startsWith("start:")) {
+    const pureFunctionName = functionName.slice(6);
     const anonymousIndex = pureFunctionName.indexOf("~");
     const functionFileName = anonymousIndex === -1 ? pureFunctionName : pureFunctionName.slice(0, anonymousIndex);
     return functionFileName === pureFileName;
   }
 
   const anonymousPrefix = `${pureFileName}~`;
-  if (pureFunctionName.startsWith(anonymousPrefix)) {
-    return pureFunctionName.length > anonymousPrefix.length;
+  if (functionName.startsWith(anonymousPrefix)) {
+    return functionName.length > anonymousPrefix.length;
   }
 
   const filePrefix = `${pureFileName}/`;
-  if (!pureFunctionName.startsWith(filePrefix)) {
+  if (!functionName.startsWith(filePrefix)) {
     return false;
   }
 
-  const rest = pureFunctionName.slice(filePrefix.length);
+  const rest = functionName.slice(filePrefix.length);
   if (rest.length === 0) {
     return false;
   }
