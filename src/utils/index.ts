@@ -22,37 +22,32 @@ export function json2map<V>(json: Record<string, V>): Map<string, V> {
  *    || "assembly/assertCollector/addDescription"
  */
 export function isFunctionInsideFile(fileName: string, functionName: string) {
-  // `/`: parent is File
-  // `#`: parent is Class, this is non-static
-  // `.`: parent is Class, this is static
-  // `<`: generic
-  // `~`: parent is Function
   const pureFileName = fileName.slice(0, -3);
+  const pureFunctionName = functionName.startsWith("start:") ? functionName.slice(6) : functionName;
+
   if (functionName.startsWith("start:")) {
-    const pureFunctionName = functionName.slice(6);
-    const specialCharIndex = pureFunctionName.search(/[#.<]/g);
-    if (specialCharIndex === -1) {
-      const anonymousIndex = pureFunctionName.indexOf("~");
-      const functionFileName = anonymousIndex === -1 ? pureFunctionName : pureFunctionName.slice(0, anonymousIndex);
-      return functionFileName === pureFileName;
-    }
-    const fileSeparatorIndex = pureFunctionName.lastIndexOf("/", specialCharIndex);
-    if (fileSeparatorIndex === -1) {
-      return false;
-    }
-    return pureFunctionName.slice(0, fileSeparatorIndex) === pureFileName;
+    const anonymousIndex = pureFunctionName.indexOf("~");
+    const functionFileName = anonymousIndex === -1 ? pureFunctionName : pureFunctionName.slice(0, anonymousIndex);
+    return functionFileName === pureFileName;
   }
-  const regex = new RegExp(`^${pureFileName}[/~](?<rest>.+)`);
-  const matchPrefix = regex.exec(functionName);
-  const rest = matchPrefix?.groups?.["rest"] ?? null;
-  if (rest === null) {
+
+  const anonymousPrefix = `${pureFileName}~`;
+  if (pureFunctionName.startsWith(anonymousPrefix)) {
+    return pureFunctionName.length > anonymousPrefix.length;
+  }
+
+  const filePrefix = `${pureFileName}/`;
+  if (!pureFunctionName.startsWith(filePrefix)) {
     return false;
   }
-  const specialCharIndex = rest.search(/[/#.<~]/g);
-  if (specialCharIndex === -1) {
-    return true;
+
+  const rest = pureFunctionName.slice(filePrefix.length);
+  if (rest.length === 0) {
+    return false;
   }
-  return rest[specialCharIndex] !== "/";
+  const pathSeparatorIndex = rest.indexOf("/");
+  const functionSyntaxIndex = rest.search(/[#<~]/);
+  return pathSeparatorIndex === -1 || (functionSyntaxIndex !== -1 && functionSyntaxIndex < pathSeparatorIndex);
 }
 
 export function checkGenerics(functionName: string): string | undefined {

@@ -54,8 +54,28 @@ test("json2map", () => {
 
 test("isFunctionInsideFile", () => {
   expect(isFunctionInsideFile("source/api.ts", "source/api/myMethod")).toEqual(true);
+  expect(isFunctionInsideFile("source/api.ts", "source/api~anonymous|0")).toEqual(true);
+  expect(isFunctionInsideFile("source/api.ts", "source/api~")).toEqual(false);
+  expect(isFunctionInsideFile("source/api.ts", "source/api/")).toEqual(false);
+  expect(isFunctionInsideFile("source/api.ts", "source/other/myMethod")).toEqual(false);
   expect(isFunctionInsideFile("source/api.ts", "start:source/api~anonymous|3~anonymous|1")).toEqual(true);
   expect(isFunctionInsideFile("source/api.ts", "source/api/index/myFunc")).toEqual(false); // this function belong to source/api/index.ts
+  expect(isFunctionInsideFile("source/api.v1.ts", "source/api.v1/myMethod")).toEqual(true);
+  expect(isFunctionInsideFile("source/api.v1.ts", "source/apiXv1/myMethod")).toEqual(false);
+  expect(isFunctionInsideFile("source/someip.ts", "source/someip/BMW.POWERTRAIN.Service/myMethod")).toEqual(false);
+  expect(
+    isFunctionInsideFile("source/someip/BMW.POWERTRAIN.Service.ts", "source/someip/BMW.POWERTRAIN.Service/myMethod")
+  ).toEqual(true);
+  expect(isFunctionInsideFile("source/someip.ts", "start:source/someip/BMW.POWERTRAIN.Service~anonymous|0")).toEqual(
+    false
+  );
+  expect(
+    isFunctionInsideFile(
+      "source/someip/BMW.POWERTRAIN.Service.ts",
+      "start:source/someip/BMW.POWERTRAIN.Service~anonymous|0"
+    )
+  ).toEqual(true);
+  expect(isFunctionInsideFile("source/api.ts", "source/api/toJson<~lib/array/Array<i32>>")).toEqual(true);
 
   expect(isFunctionInsideFile("source/api/AdService.ts", "start:source/api/AdService")).toEqual(true);
   expect(isFunctionInsideFile("source/api.ts", "start:source/api/AdService")).toEqual(false);
