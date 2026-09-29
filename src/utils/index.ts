@@ -30,29 +30,28 @@ export function isFunctionInsideFile(fileName: string, functionName: string) {
   const pureFileName = fileName.slice(0, -3);
   if (functionName.startsWith("start:")) {
     const pureFunctionName = functionName.slice(6);
-    const specialCharIndex = pureFunctionName.search(/[#.<]/g);
-    if (specialCharIndex === -1) {
-      const anonymousIndex = pureFunctionName.indexOf("~");
-      const functionFileName = anonymousIndex === -1 ? pureFunctionName : pureFunctionName.slice(0, anonymousIndex);
-      return functionFileName === pureFileName;
-    }
-    const fileSeparatorIndex = pureFunctionName.lastIndexOf("/", specialCharIndex);
-    if (fileSeparatorIndex === -1) {
-      return false;
-    }
-    return pureFunctionName.slice(0, fileSeparatorIndex) === pureFileName;
+    const anonymousIndex = pureFunctionName.indexOf("~");
+    const functionFileName = anonymousIndex === -1 ? pureFunctionName : pureFunctionName.slice(0, anonymousIndex);
+    return functionFileName === pureFileName;
   }
-  const regex = new RegExp(`^${pureFileName}[/~](?<rest>.+)`);
-  const matchPrefix = regex.exec(functionName);
-  const rest = matchPrefix?.groups?.["rest"] ?? null;
-  if (rest === null) {
+
+  const anonymousPrefix = `${pureFileName}~`;
+  if (functionName.startsWith(anonymousPrefix)) {
+    return functionName.length > anonymousPrefix.length;
+  }
+
+  const filePrefix = `${pureFileName}/`;
+  if (!functionName.startsWith(filePrefix)) {
     return false;
   }
-  const specialCharIndex = rest.search(/[/#.<~]/g);
-  if (specialCharIndex === -1) {
-    return true;
+
+  const rest = functionName.slice(filePrefix.length);
+  if (rest.length === 0) {
+    return false;
   }
-  return rest[specialCharIndex] !== "/";
+  const pathSeparatorIndex = rest.indexOf("/");
+  const functionSyntaxIndex = rest.search(/[#<~]/);
+  return pathSeparatorIndex === -1 || (functionSyntaxIndex !== -1 && functionSyntaxIndex < pathSeparatorIndex);
 }
 
 export function checkGenerics(functionName: string): string | undefined {
