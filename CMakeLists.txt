@@ -16,6 +16,7 @@ add_subdirectory(third_party/jsoncpp)
 
 set(BUILD_TESTS OFF CACHE BOOL "force disable binaryen's deps" FORCE)
 set(BUILD_STATIC_LIB ON)
+set(ENABLE_WERROR OFF CACHE BOOL "Disable binaryen's -Werror" FORCE)
 add_subdirectory(third_party/binaryen)
 
 add_subdirectory(instrumentation)
